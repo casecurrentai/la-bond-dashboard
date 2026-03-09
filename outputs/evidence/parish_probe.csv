@@ -1,0 +1,16 @@
+parish,url,source_type,http_status,bond_field_present,fields_detected,inmate_count,extraction_method,access_friction,api_endpoints,html_path,screenshot_path,error
+"Jefferson Parish","https://apps.jpso.com/inmatesearch2","custom_spa","null","false","","0","playwright","blocked","","","","page.goto: net::ERR_CONNECTION_CLOSED at https://apps.jpso.com/inmatesearch2
+Call log:
+[2m  - navigating to ""https://apps.jpso.com/inmatesearch2"", waiting until ""domcontentloaded""[22m
+"
+"Orleans Parish","https://www.opso.gov/246/Detainee-Search","cms","200","false","","0","playwright","heavy_js","https://content.civicplus.com/api/assets/c8722818-1457-46ba-9664-3e62773f4b5f?cache=1800&width=919&m","/home/ubuntu/la-bond-dashboard/outputs/evidence/orleans_roster.html","/home/ubuntu/la-bond-dashboard/outputs/evidence/orleans_screenshot.png",""
+"St. Bernard Parish","http://stbernard.lavns.org/roster.aspx","lavine","200","false","","0","playwright","heavy_js","http://stbernard.lavns.org/roster.aspx","/home/ubuntu/la-bond-dashboard/outputs/evidence/stbernard_roster.html","/home/ubuntu/la-bond-dashboard/outputs/evidence/stbernard_screenshot.png",""
+"Plaquemines Parish","http://plaquemines.lavns.org/roster.aspx","lavine","200","false","name;booking_date;dob;race;gender","619","playwright","heavy_js","http://plaquemines.lavns.org/roster.aspx","/home/ubuntu/la-bond-dashboard/outputs/evidence/plaquemines_roster.html","/home/ubuntu/la-bond-dashboard/outputs/evidence/plaquemines_screenshot.png",""
+"St. John the Baptist Parish","https://stjohn-so-la.zuercherportal.com/inmates","zuercher","null","false","","0","playwright","blocked","","","","page.goto: net::ERR_CONNECTION_CLOSED at https://stjohn-so-la.zuercherportal.com/inmates
+Call log:
+[2m  - navigating to ""https://stjohn-so-la.zuercherportal.com/inmates"", waiting until ""domcontentloaded""[22m
+"
+"St. James Parish","https://stjamesso.org/inmate-roster/filters/current/booking_time=desc/1","most_wanted_cms","null","false","","0","playwright","blocked","","","","page.goto: Navigation to ""https://stjamessheriff.com/inmate-roster/filters/current/booking_time=desc/1"" is interrupted by another navigation to ""chrome-error://chromewebdata/""
+Call log:
+[2m  - navigating to ""https://stjamessheriff.com/inmate-roster/filters/current/booking_time=desc/1"", waiting until ""domcontentloaded""[22m
+"

@@ -1,0 +1,18 @@
+BondCurrent Verifier Log — St. Bernard Parish
+Run at: 2026-03-09T23:22:54.504Z
+Duration: 1266ms
+
+HTTP Status: 200
+URL: http://stbernard.lavns.org/roster.aspx
+Platform: lavine_aspnet
+Bond Available: FALSE (LA VINE platform does not expose bond amounts)
+HTML snapshot saved: /home/ubuntu/la-bond-dashboard/outputs/st._bernard_roster.html
+Total inmates in roster: 0
+Bond keyword found in page: false
+Sample names parsed: 
+
+NOTE: This parish uses LA VINE (Appriss). Bond amounts are not available on public roster.
+Fields available: Name, DOB, Race, Gender
+
+Result: PASS
+Bond Available: false

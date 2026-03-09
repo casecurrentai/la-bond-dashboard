@@ -1,0 +1,22 @@
+BondCurrent Verifier Log — Evangeline Parish
+Run at: 2026-03-09T23:22:49.549Z
+Duration: 3154ms
+
+HTTP Status: 200
+URL: https://www.evangelineparishsheriff.org/inmate-roster/filters/current/booking_time=desc/1
+Platform: most_wanted_cms
+HTML snapshot saved: /home/ubuntu/la-bond-dashboard/outputs/evangeline_roster.html
+Total records parsed: 20
+Records with bond amount: 17
+
+Sample bond extractions (first 5):
+  WILLS, ZACKERY D | Booking: 260152 | Bond: $1,500.00
+  EZELL, ASHTON D | Booking: 260151 | Bond: $75,000.00
+  FONTENOT, FABIAN B | Booking: 260148 | Bond: $17,500.00
+  CATOIRE, MARK A | Booking: 260147 | Bond: $0.00
+  LANCLOS, ASHLEY M | Booking: 260145 | Bond: $0.00
+
+Bond field present: true
+
+Result: PASS
+Bond Available: true

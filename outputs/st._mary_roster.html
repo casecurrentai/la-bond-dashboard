@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+			
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-9H836KFKYR"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-9H836KFKYR');
+		</script>
+
+        <!-- Generated 2026-03-09 18:22:40 -->
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" content="#000052">
+
+        	<title>Inmate Roster | St. Mary Parish Sheriff's Office, Louisiana | Sort Booking Time -  Descending | Page 1</title>
+
+		<meta name="ControllerName" content="inmate_rosterController">
+		<meta name="ControllerAction" content="Index">
+		<meta name="controllerViewFile" content="roster">
+        <link rel="stylesheet" href="/libs/css/helpers.css">
+		<link rel="stylesheet" href="/libs/css/bootstrap/bootstrap-icons.css?v=0.01"><link rel="stylesheet" href="/libs/css/bootstrap/bootstrap.min.css?v=0.01"><script src="/libs/js/bootstrap/bootstrap.min.js?v=0.01"></script>
+		<link rel="stylesheet" href="/templates/stmaryso.com/css/styles.css?v=0.02">
+		<link rel="stylesheet" href="/libs/css/roster.css?v=0.01">
+<link rel="stylesheet" href="/libs/css/global.css?v=0.01">
+<link rel="stylesheet" href="/libs/js/galleria/themes/classic/galleria.classic.css?v=0.01">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>		<script src="/libs/js/helpers.js"></script>
+		<script src="/templates/stmaryso.com/js/main.js?v=0.02"></script>
+		<script src="/libs/js/roster.js?v=0.01"></script>
+<script src="/libs/js/utility.js?v=0.01"></script>
+<script src="/libs/js/cookie_consent.js?v=0.0?v=0.01"></script>
+
+    </head>
+
+	<body>
+
+		<div id="skipToContent">
+			<a href="#interior">
+				<span>Skip to Main Content</span>
+			</a>
+		</div>
+
+		
+		<div class="row flex-nowrap g-0">
+
+			<div class="col-auto menu-col">
+				<script>
+
+    function closeMenu(){
+        $('.mobile-menu-element').collapse('toggle');
+        $("body").removeClass("menu-open");
+        $('.menu-trigger').attr('aria-expanded', false);
+        $("ul[id^='mm-nav-']").removeClass('show');
+
+        setTimeout(() => {
+            $("#menu-trigger").focus();
+        }, 500);  
+    }
+
+    function openSubMenu(key){
+        $('#mm-nav-'+key).collapse('toggle');
+        $('#mm-nav').collapse('toggle');
+        $('#mm-link-'+key).attr("aria-expanded",true);
+        setTimeout(() => {
+            $('#mm-back-button-'+key).focus();
+        }, 500);
+    }
+
+    function openChildSubMenu(navid, ckey){
+        $('#mm-nav-'+navid+'-'+ckey).collapse('toggle');
+        $('#mm-nav-'+navid).collapse('toggle');
+        $('#mm-link-'+navid+'-'+ckey).attr('aria-expanded', true);
+        setTimeout(() => {
+            $('#mm-back-button-'+navid+'-'+ckey).focus();
+        }, 500);
+    }
+
+    function backButton(navid, parentid, backlink){
+        $('#mm-nav-'+navid).collapse('toggle');
+        $('#'+parentid).collapse('toggle');
+        $('#'+backlink).attr('aria-expanded',false);
+        setTimeout(() => {
+            $('#'+backlink).focus();
+        }, 500);
+    }
+
+</script>
+
+<div id="mobile-menu" class="mobile-menu-element collapse collapse-horizontal min-vh-100">
+
+    <div class="close-menu-box mm-close-block">
+        <a href="#" aria-label="Close the mobile menu" role="button" class="close-menu mm-close accentText noUnderline" onclick="closeMenu();"><i class="fas fa-times-circle"></i></a>
+    </div>
+
+            <div class="mobile-menu-search">
+            <form action="/search.php" class="search-form" name="mobile_form_search" title="Search This Site">
+                <input type="hidden" name="search" value="1">
+                <input type="text" id="search-input2" class="search-input query2" name="query" placeholder="Search" onFocus="$('.query2').val(''); $('.search-submit').removeAttr('disabled');" title="Enter Terms to Search For" aria-label="Search this Site">
+                <button type="submit" name="submit" value="1" class="search-button pointer search-submit" onclick="if($('.query2').val() == '') { return false; }" aria-label="Activate to Search This Site"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    
+    <ul id="mm-nav" class="list-group border-0 rounded-0 text-sm-start collapse show"><!-- item full url: app --><li class="mm-uppercase mm-accent"><a href="/app" class="mm-link ease mm-uppercase mm-accent">Download Our App</a></li><li class="mm-accent mm-uppercase"><a href="/alerts-signup" class="mm-link ease mm-accent mm-uppercase">Sign Up For Alerts</a></li><!-- item full url: crime-tip/68139476ed46da16cc0bfad9 --><li class="mm-uppercase mm-accent"><a href="/crime-tip/68139476ed46da16cc0bfad9" class="mm-link ease mm-uppercase mm-accent">Submit Crime Tip</a></li><li class=""><a href="/" class="mm-link ease ">Home</a></li><!-- item full url: employment --><li class=""><a href="/employment" class="mm-link ease ">Employment</a></li><!-- item full url: faq --><li class=""><a href="/faq" class="mm-link ease ">FAQs</a></li><!-- item full url: forms --><li class=""><a href="/forms" class="mm-link ease ">Forms</a></li><!-- item full url: history --><li class=""><a href="/history" class="mm-link ease ">History</a></li><!-- item full url: inmate-roster/disclaim --><li class=""><a href="/inmate-roster/disclaim" class="mm-link ease ">Inmate Roster</a></li><!-- item full url: most-wanted/disclaim --><li class=""><a href="/most-wanted/disclaim" class="mm-link ease ">Most Wanted</a></li><!-- item full url: press-releases --><li class=""><a href="/press-releases" class="mm-link ease ">Press Releases</a></li><!-- item full url: services --><li class=""><a href="#" id="mm-link-11" role="button" aria-expanded="false" onclick="openSubMenu(11);" 
+                                            class="mm-link ease ">Services&nbsp;<i class="fas fa-arrow-right"></i></a></li>
+            <!-- item full url: sex-offenders --><li class=""><a href="/sex-offenders" class="mm-link ease ">Sex Offenders</a></li><!-- item full url: sheriffs-message --><li class=""><a href="/sheriffs-message" class="mm-link ease ">Sheriff's Message</a></li><li class=""><a href="/contact" class="mm-link ease ">Contact</a></li></ul><div id="submenu" class="submenus"><ul id="mm-nav-11" class="list-group border-0 rounded-0 text-sm-start min-vh-100 collapse"><li><a href="#" id="mm-back-button-11" onclick="backButton('11', 'mm-nav', 'mm-link-11');" 
+                                    role="button" tabindex="0" class="mm-link mm-back-link"><i class="fas fa-arrow-left"></i>&nbsp;Back</a></li><li class=""><a href="/services" class="mm-link ease ">Services</a></li><li><a href="/administration" class="mm-link ease ">Administration</a></li><li><a href="/civil" class="mm-link ease ">Civil</a></li><li><a href="/crime-prevention" class="mm-link ease ">Crime Prevention</a></li><li><a href="/fallen-officers" class="mm-link ease ">Fallen Officers</a></li><li><a href="/harassment-policy" class="mm-link ease ">Harassment Policy</a></li><li><a href="/investigations" class="mm-link ease ">Investigations</a></li><li><a href="/jail" class="mm-link ease ">Jail</a></li><li><a href="/links-resources" class="mm-link ease ">Links & Resources</a></li><li><a href="/marine-section" class="mm-link ease ">Marine Section</a></li><li><a href="/new-branch-office-project" class="mm-link ease ">New Branch Office Project</a></li><li><a href="/parish-statistics" class="mm-link ease ">Parish Statistics</a></li><li><a href="/patrol" class="mm-link ease ">Patrol</a></li><li><a href="/pay-taxes-fines-online" class="mm-link ease ">Pay Taxes & Fines Online</a></li><li><a href="/public-information-office" class="mm-link ease ">Public Information Office</a></li><li><a href="/public-notices" class="mm-link ease ">Public Notices</a></li><li><a href="/reports" class="mm-link ease ">Reports</a></li><li><a href="/reserves" class="mm-link ease ">Reserves</a></li><li><a href="/sex-offenders" class="mm-link ease ">Sex Offenders</a></li><li><a href="/sheriffs-sale" class="mm-link ease ">Sheriffs Sale</a></li><li><a href="/sheriffs-shooting-range" class="mm-link ease ">Sheriffs Shooting Range</a></li><li><a href="/support-services" class="mm-link ease ">Support Services</a></li><li><a href="/training" class="mm-link ease ">Training</a></li></ul></div>
+        <div class="mobile-menu-socials">
+            
+                                <a aria-label="Go to Facebook" href="https://www.facebook.com/StMarySO" class="zoom ease noUnderline socialLink facebookLink" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
+                
+            
+            
+            
+                    </div>
+    
+<script>
+                var activeMenu = null;
+            $(document).ready(function(){
+
+        menus = $("ul[id^='mm-nav-']");
+
+        document.addEventListener("keyup",function(event){
+            if(event.code == "Escape"){
+                
+                var subMenuClosed = false;
+
+                menus.each(function(){
+                    if($(this).is(":visible")){
+                        var elementID = this.id.split("mm-nav-").pop();
+                        $('#mm-back-button-'+elementID).click();
+                        subMenuClosed = true;
+                        return false;
+                    }
+                })
+
+                if((subMenuClosed === false) && $('#mm-nav').is(":visible")){
+                    closeMenu();
+                }                
+            }
+        })
+
+        //CLOSE MOBILE MENU IF VIEWPORT SIZED UP
+        $(window).resize(function(event) {
+            if($(window).width() > 991) {
+                displayed = false;
+                if ($("#mobile-menu").hasClass("show")){
+                    $('.mobile-menu-element').collapse('toggle');
+                    $("body").removeClass("menu-open");
+                    $(".logo").focus();
+                    $("ul[id^='mm-nav-']").removeClass('show').addClass('collapse');
+                    $('#mm-nav').addClass('show');
+                }
+            }
+        });
+
+        //NAV TOGGLER
+        $(".nav-toggler").click(function(event) {
+            var body = $("html, body");
+            body.stop().animate({scrollTop:0}, 0, 'linear', function() { 
+                $('.mobile-menu-element').collapse('toggle');
+                $("#mobile-sticky-top").css("display", "none");
+                $('body').addClass("menu-open");
+                $('.menu-trigger').attr('aria-expanded',true);
+                if(activeMenu && activeMenu != null){
+                    $('#mm-nav').removeClass('show');
+                    $('#'+activeMenu).addClass('show');
+                }else{
+                    $('#mm-nav').addClass('show');
+                }
+                setTimeout(() => {
+                    $(".mm-close").focus();
+                }, 500);
+            });
+        });
+
+        $(".nav-toggler").keypress(function(e){
+            if(13 === e.keyCode){
+                e.target.click();
+            }
+        });
+
+        $('.mm-close').keypress(function(e) {
+            if(13 === e.keyCode){
+                e.target.click();
+            }
+        });
+
+        //MOBILE MENU MASK CLICK TO CLOSE
+        $($('.mask')).click(function() {
+            closeMenu();
+        });
+
+});
+</script>
+
+</div>
+			</div>
+
+			<div id="wrapper">
+
+				<div class="col-auto body-col">
+					<div id="maskElement" class="mask collapse collapse-horizontal mobile-menu-element"></div>
+
+					<header>
+    <div class="sticky-header">
+
+    <div class="menu-trigger nav-toggler d-lg-none m-0" role="button" tabindex="0" aria-label="Open the navigation menu for more options.">
+            <div>
+                <div class="menu-bar"></div>
+                <div class="menu-bar"></div>
+                <div class="menu-bar"></div>
+            </div>
+            <div>
+                menu
+            </div>
+        </div>
+
+    <a href="/" class="d-flex flex-row align-items-center">
+                    <img id="stickyHeaderLogo" src="/templates/stmaryso.com/images/badge.png" alt="St. Mary Parish Sheriff's Office Patch" class="noModal">
+                <div>
+        <strong>
+        St. Mary Parish <br>Sheriff's Office         </strong></div>
+    </a>
+
+</div>
+    <div id="header-top" class="d-flex justify-content-center justify-content-lg-between align-items-center">
+        <div class="menu-trigger nav-toggler d-lg-none" role="button" tabindex="0">
+            <div>
+                <div class="menu-bar"></div>
+                <div class="menu-bar"></div>
+                <div class="menu-bar"></div>
+            </div>
+            <div class="size18">
+                menu
+            </div>
+        </div>
+        <div id="header-top-left" class="d-none d-lg-flex justify-self-start col-4 col-lg-auto">
+            <a href="/" class="d-flex flex-row noUnderline zoom ease justify-content-center align-items-center">
+                                    <img src="/templates/stmaryso.com/images/badge.png" class="col-3" alt="">
+                                <div class="col-auto lh-sm" style="padding-right: 0;">
+                    <strong class="size18" style="white-space: nowrap;">
+                    St. Mary Parish <br>Sheriff's Office                     </strong><br>
+                    Franklin, Louisiana                </div>
+                                    <img src="/templates/stmaryso.com/images/patch.png" class="col-3" alt="">
+                            </a>
+        </div>
+        <div id="header-right" class="d-none d-lg-flex justify-content-end col-8 col-lg-auto">
+            <nav id="desktop-nav" class="nav-links">
+                <div class="d-flex flex-row h-100 align-items-center gap-2 gap-xl-4">
+                    <div class="nav-link">
+                                                                        <div tabindex="0" role="button" class="pages-expander" id="headerPagesExpander" aria-label="Expand to view our Divisions & Services pages" aria-expanded="false">Services <i class="fas fa-arrow-right header-pages" aria-hidden="true"></i></div> <!-- expandable header secion -->
+
+                    </div>
+                                                                <div class="nav-link">
+                            <a tabindex="0" href="/press-releases">Press Releases</a>
+                        </div>
+                    
+                    <div class="nav-link">
+                        <a tabindex="0" href="#" role="button" class="header-expander" aria-label="Toggle More Links" aria-expanded="false">
+                            More <i class="fas fa-arrow-right header-more" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div class="nav-link">
+                        <div tabindex="0" role="button" class="search-toggler" aria-label="Expand menu to show search bar" aria-expanded="false">
+                            <i class="fas fa-search size20 zoom ease" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                                            <div class="nav-link">
+                            <a tabindex="0" href="/app" class="headerAppLink zoom ease">
+                                                                <svg class="headerAppIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                    viewBox="0 0 80 70.9" xml:space="preserve">
+                                    <path class="st0 appIcon" d="M68.1,0H11.9C5.4,0,0,5.4,0,11.9v59h5.6v-49h68.6v49H80V12.1C80,5.5,74.7,0,68.1,0z M50,13.9H30.2
+                                        c-0.9,0-1.5-1.1-1.5-2.7s0.6-2.7,1.5-2.7H50c0.9,0,1.5,1.1,1.5,2.7S50.9,13.9,50,13.9z"/>
+                                </svg>
+                                <span>GET APP</span>
+                            </a>
+                        </div>
+                                    </div>
+            </nav>
+            <div id="header-top-call-box" class="d-flex flex-column justify-content-center header-call-box">
+                <a href="tel:911" class="call911"><strong>Emergency 911</strong></a>
+                <span>Non-Emergency<br>
+                    <a href="tel:+13378281960"><strong>337.828.1960</strong></a><br>
+                    <a href="tel:+19853841622"><strong>985.384.1622</strong></a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="pages-drop row">
+        <div class="container-fluid pages-drop-links">
+            <!-- <div class="row d-flex align-items-center text-center pages-drop-links-row"> -->
+                <div class="d-flex align-items-center text-center pages-drop-links-col">
+                        <ul class="list-group header-pages-list-group col-4"><li class="list-group-item header-pages-list-group-item"><a href="/administration" class="header-page-link">Administration</a></li><li class="list-group-item header-pages-list-group-item"><a href="/civil" class="header-page-link">Civil</a></li><li class="list-group-item header-pages-list-group-item"><a href="/crime-prevention" class="header-page-link">Crime Prevention</a></li><li class="list-group-item header-pages-list-group-item"><a href="/fallen-officers" class="header-page-link">Fallen Officers</a></li><li class="list-group-item header-pages-list-group-item"><a href="/harassment-policy" class="header-page-link">Harassment Policy</a></li><li class="list-group-item header-pages-list-group-item"><a href="/investigations" class="header-page-link">Investigations</a></li><li class="list-group-item header-pages-list-group-item"><a href="/jail" class="header-page-link">Jail</a></li><li class="list-group-item header-pages-list-group-item"><a href="/links-resources" class="header-page-link">Links & Resources</a></li></ul>
+                            <ul class="list-group header-pages-list-group col-4"><li class="list-group-item header-pages-list-group-item"><a href="/marine-section" class="header-page-link">Marine Section</a></li><li class="list-group-item header-pages-list-group-item"><a href="/new-branch-office-project" class="header-page-link">New Branch Office Project</a></li><li class="list-group-item header-pages-list-group-item"><a href="/parish-statistics" class="header-page-link">Parish Statistics</a></li><li class="list-group-item header-pages-list-group-item"><a href="/patrol" class="header-page-link">Patrol</a></li><li class="list-group-item header-pages-list-group-item"><a href="/pay-taxes-fines-online" class="header-page-link">Pay Taxes & Fines Online</a></li><li class="list-group-item header-pages-list-group-item"><a href="/public-information-office" class="header-page-link">Public Information Office</a></li><li class="list-group-item header-pages-list-group-item"><a href="/public-notices" class="header-page-link">Public Notices</a></li><li class="list-group-item header-pages-list-group-item"><a href="/reports" class="header-page-link">Reports</a></li></ul>
+                            <ul class="list-group header-pages-list-group col-4"><li class="list-group-item header-pages-list-group-item"><a href="/reserves" class="header-page-link">Reserves</a></li><li class="list-group-item header-pages-list-group-item"><a href="/sex-offenders" class="header-page-link">Sex Offenders</a></li><li class="list-group-item header-pages-list-group-item"><a href="/sheriffs-sale" class="header-page-link">Sheriffs Sale</a></li><li class="list-group-item header-pages-list-group-item"><a href="/sheriffs-shooting-range" class="header-page-link">Sheriffs Shooting Range</a></li><li class="list-group-item header-pages-list-group-item"><a href="/support-services" class="header-page-link">Support Services</a></li><li class="list-group-item header-pages-list-group-item"><a href="/training" class="header-page-link">Training</a></li></ul></div>
+            <!-- </div> -->
+        </div>
+    </div>
+
+    <div class="mega-menu row">
+
+        <div class="desktop-menu-search">
+            <form action="/search.php" class="search-form" name="tablet_form_search" title="Search This Site">
+                <input type="hidden" name="search" value="1">
+                <input type="text" id="search-input" class="search-input query" name="query" placeholder="Search" onFocus="$('.query').val(''); $('.search-submit').removeAttr('disabled');" title="Enter Terms to Search For" aria-label="Search this Site">
+                <button type="submit" name="submit" value="1" class="search-button pointer search-submit" onclick="if($('.query').val() == '') { return false; }" aria-label="Activate to Search This Site"><i class="fas fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+
+        
+        <div class="container-fluid mega-menu-links">
+
+            <div class="row d-flex align-items-center text-center mega-menu-links-row"><a id="first-more-link" href="/contact" class="col-4">Contact</a><a href="/employment" class="col-4">Employment</a><a href="/faq" class="col-4">FAQs</a></div><div class="row d-flex align-items-center text-center mega-menu-links-row"><a href="/forms" class="col-4">Forms</a><a href="/history" class="col-4">History</a><a href="/inmate-roster/disclaim" class="col-4">Inmate Roster</a></div><div class="row d-flex align-items-center text-center mega-menu-links-row"><a href="/most-wanted/disclaim" class="col-4">Most Wanted</a><a href="/sex-offenders" class="col-4">Sex Offenders</a><a href="/sheriffs-message" class="col-4">Sheriff's Message</a></div>
+            <div class="row d-flex align-items-center justify-content-center text-center mega-menu-links-row">
+                <div class="col-6">
+                    <a href="/crime-tip" class="mega-menu-button noUnderline zoom ease"><strong>Submit Crime Tip</strong></a>
+                </div>
+                                    <div class="col-6">
+                        <a href="/alerts-signup" class="mega-menu-button noUnderline zoom ease"><strong>Sign Up for Alerts</strong></a>
+                    </div>
+                            </div>
+        </div>
+
+
+                    <div class="mega-menu-socials container-fluid">
+                
+                                    <a aria-label="Go to Facebook" href="https://www.facebook.com/StMarySO" class="zoom ease noUnderline socialLink facebookLink" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
+                
+                
+                
+                
+                            </div>
+            </div>
+    <div id="header-bottom" class="d-flex d-lg-none flex-column flex-sm-row align-items-center justify-content-between gap-1">
+        <div id="header-bottom-left" class="d-flex justify-content-center align-items-center justify-content-sm-start col-12 col-sm-auto">
+            <a href="/" class="noUnderline">
+                <div class="d-flex flex-row align-items-center justify-content-center justify-content-sm-start">
+                                            <img src="/templates/stmaryso.com/images/badge.png" class="col-6" alt="">
+                                        <div class="lh-sm">
+                        <strong class="size18">
+                        St. Mary Parish <br>Sheriff's Office                         </strong><br>
+                        Franklin, Louisiana                    </div>
+                                            <img src="/templates/stmaryso.com/images/patch.png" class="col-6" alt="">
+                                    </div>
+            </a>
+        </div>
+        <div id="header-bottom-call-box" class="d-flex flex-column header-call-box">
+            <strong><a href="tel:911" class="call911">Emergency 911</a></strong>
+            <span class="d-flex flex-column justify-content-center gap-sm-1">
+                <span>Non-Emergency</span>
+                <div>
+                    <a href="tel:+13378281960"><strong>337.828.1960</strong></a>
+                     or 
+                    <a href="tel:+19853841622"><strong>985.384.1622</strong></a>
+                </div>
+            </span>
+        </div>
+    </div>
+</header>
+					<main>
+					<section id="interior" class="siteWidth center column-padding">
+
+					
+					<section id="page-content" class="container-fluid">
+	<h1 class="ptitles">Inmate Roster (243)</h1>
+	<div id="body-content">
+	            <div class="d-block d-lg-flex align-items-center">
+                        <div class="col-lg-6"  id="options_div">
+            <div class="options-box">
+                <div class="options-title">Options</div>
+                <div class="option-row">
+                    <a href="/inmate-roster/filters/current/name=asc/1">Name</a>
+                    |
+                    <a href="/inmate-roster/filters/current/booking_time=desc/1">Date</a>
+                    |
+                    <a href="/inmate-roster/filters/current/booking_time=desc/1">Current</a>
+                    |
+                    <a href="/inmate-roster/filters/released/release_time=desc/1">Released</a>
+                                                        </div>
+                <div class="option-row">
+                                                    <a href="/inmate-roster/filters/current/booking_time=desc/1">Sort Newest to Oldest</a>                        |
+                                <a href="/inmate-roster/filters/current/booking_time=asc/1">Sort Oldest to Newest</a>
+                                                                </div>
+            </div>
+        </div>
+                                <div class="col-lg-6" id="search_div">
+            <div class="search-box">
+                <div class="search-title">Search By Name</div>
+                <div id="roster-input">
+                    <input id="terms" type="text" class="roster-search-input" name="terms" aria-label="Search by either first or last name" placeholder="Enter first OR last name">
+                </div>
+                <div id="search_buttons">
+                    <button id="search_button" onclick="doSearch()" name="search" value="Y">Search</button>
+                    <button onclick="showAll()" name="show_all" value="Y">Show All</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            function doSearch()
+            {
+                console.log("In roster.js doSearch");
+                var el = document.getElementById("terms");
+                var terms = el.value;
+                window.location.href= "/inmate-roster/search/"+terms+"/1";
+            }
+
+            function showAll()
+            {
+                console.log("In roster.js showAll");
+                window.location.href = "/inmate-roster/search//1";
+            }
+        </script>
+                    </div>
+            <div id="newsItems">
+            
+            <div id='paginationArea' data-pagepagination="1" data-paginationCheck="1" data-numofitems="20" data-paginationCount="20" data-start="0" data-amountOfPages="13" data-end="19">
+                    <nav aria-label="Page navigation">
+        <ul class="pagination">
+         
+        							<li class="page-item active">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/1">1</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/2">2</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/3">3</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/4">4</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/5">5</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/6">6</a>
+				</li>
+					         
+            <li class="page-item">
+                <a class="page-link pagination-arrow" href="/inmate-roster/filters/current/booking_time=desc/2">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link pagination-arrow" href="/inmate-roster/filters/current/booking_time=desc/13">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                    <span class="sr-only">Last</span>
+                </a>
+            </li>
+         
+        </ul>
+    </nav>
+                <div class="row" style="margin-left: 12px; margin-right: 12px;">
+                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260283.jpg?alt=media" alt="DRUILHET, CHRISTIAN A" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">DRUILHET, CHRISTIAN A</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260283                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        27                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-09-2026 2:27 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        VIOLATION OF PROTECTIVE ORDERS<br>RESISTING ARREST OR OFFICER<br>ROBBERY - SIMPLE<br>UNAUTHORIZED ENTRY OF INHABITED DWELLING<br>BATTERY OF DATING PARTNER CHILD ENDANGERMENT                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $0.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile DRUILHET, CHRISTIAN A - LEC0020260283" class="text2" href="/inmate-roster/69af3a335eb665e0de0bd438">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260282.jpg?alt=media" alt="BROUSSARD, BENJAMIN A" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">BROUSSARD, BENJAMIN A</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260282                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        39                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-09-2026 1:07 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        VIOLATION OF PROTECTIVE ORDERS                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $0.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile BROUSSARD, BENJAMIN A - LEC0020260282" class="text2" href="/inmate-roster/69af1588403380cc4c0c5699">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260281.jpg?alt=media" alt="OLIVA- ARGUETA, DELMER G" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">OLIVA- ARGUETA, DELMER G</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260281                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        21                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-09-2026 12:21 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        OPEN CONTAINER<br>NO HEAD LIGHTS<br>POSSESSION OF SYNTHETIC CANNABINOIDS (SCH. I)<br>POSSESSION OF SCHEDULE II DRUGS                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $4,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile OLIVA- ARGUETA, DELMER G - LEC0020260281" class="text2" href="/inmate-roster/69af076fa55053f3820ba4ab">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260279.jpg?alt=media" alt="DUHON, TRENT H" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">DUHON, TRENT H</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260279                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        31                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-09-2026 12:04 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        BURGLARY - SIMPLE                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $20,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile DUHON, TRENT H - LEC0020260279" class="text2" href="/inmate-roster/69af076fa55053f3820ba4a9">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260278.jpg?alt=media" alt="LEWIS, RASHAN J" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">LEWIS, RASHAN J</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260278                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        40                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-09-2026 9:38 AM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        POSSESSION OF MARIJUANA<br>POSSESSION OF SCHEDULE II DRUGS<br>POSS. OF FIREARM IN PRESENCE OF CDS<br>POSSESSION OF DRUG PARAPHERNALIA<br>POSSESSION OF LEGEND DRUG W/O  PRESCRIPTION                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $0.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile LEWIS, RASHAN J - LEC0020260278" class="text2" href="/inmate-roster/69aeeb5b46ccde8ca60d8aa9">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260275.jpg?alt=media" alt="WASHINGTON, DEJUAN Q" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">WASHINGTON, DEJUAN Q</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260275                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        39                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-08-2026 5:14 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        CRIMINAL TRESPASS<br>CRIMINAL DAMAGE TO PROPERTY-SIMPLE<br>BURGLARY OF AN INHABITED DWELLING<br>POSSESSION OF MARIJUANA                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $21,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile WASHINGTON, DEJUAN Q - LEC0020260275" class="text2" href="/inmate-roster/69ae03421bee7b63e1098282">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260274.jpg?alt=media" alt="THOMPKINS, SHERMAN D" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">THOMPKINS, SHERMAN D</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260274                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        41                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-08-2026 1:20 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        FAILURE TO APPEAR                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $0.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile THOMPKINS, SHERMAN D - LEC0020260274" class="text2" href="/inmate-roster/69adcb01c997342d43000732">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260269.jpg?alt=media" alt="ESTAY, WALLACE" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">ESTAY, WALLACE</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260269                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        63                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-07-2026 12:53 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        THEFT                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $1,500.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile ESTAY, WALLACE - LEC0020260269" class="text2" href="/inmate-roster/69ac80926803d860e8001652">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260267.jpg?alt=media" alt="DIAZ, JOHN" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">DIAZ, JOHN</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260267                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        33                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-06-2026 9:17 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        RECKLESS OPERATION NO ACCIDENT<br>HIT AND RUN<br>OPEN CONTAINER<br>NO CHILD RESTRAINT<br>ALTERATION/REMOVAL OF VIN NUMBERS PROHIBITED<br>FAILURE/OWNER SECURE REGISTRATION<br>DRIVER MUST BE LICENSED<br>FALSE ACCOUNTING<br>CRUELTY TO A JUVENILE(S)-NON-VIOLENT<br>NEGLIGENT INJURING                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $14,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile DIAZ, JOHN - LEC0020260267" class="text2" href="/inmate-roster/69aba68e6eaabc37f40a8459">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260266.jpg?alt=media" alt="STORE, BILLY W" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">STORE, BILLY W</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260266                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        42                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-06-2026 8:20 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        BURGLARY - SIMPLE<br>CRIMINAL TRESPASS                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $16,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile STORE, BILLY W - LEC0020260266" class="text2" href="/inmate-roster/69ab987e1424ca79bb0ed9a5">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260265.jpg?alt=media" alt="POLIDORE, NOLAN" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">POLIDORE, NOLAN</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260265                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        45                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-06-2026 4:19 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        IMPROPER LANE USAGE<br>OPEN CONTAINER<br>SWITCHED LICENSE PLATE/STOLEN LICENSE PLATE<br>NO SEAT BELT<br>DRIVING WHILE INTOXICATED - 2ND OFFENSE<br>Operating A Vehicle Under Suspension For Certain Prior Offenses<br>NO INSURANCE<br>RESISTING ARREST OR OFFICER                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $12,500.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile POLIDORE, NOLAN - LEC0020260265" class="text2" href="/inmate-roster/69ab6047b8174c486601e406">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260263.jpg?alt=media" alt="LODRIGUE, PHILLIP K" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">LODRIGUE, PHILLIP K</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260263                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        46                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-05-2026 10:39 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        BATTERY - SIMPLE<br>BURGLARY - ATTEMPTED<br>CRIMINAL DAMAGE TO PROPERTY-SIMPLE<br>RESISTING AN OFFICER BY GIVING FALSE INFORMATION<br>POSSESSION OF SCHEDULE I DRUGS<br>POSSESSION OF SCHEDULE II DRUGS<br>POSSESSION OF SCHEDULE IV DRUGS<br>POSSESSION OF DRUG PARAPHERNALIA                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $36,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile LODRIGUE, PHILLIP K - LEC0020260263" class="text2" href="/inmate-roster/69aa712f6b9432777703c264">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260261.jpg?alt=media" alt="STEADMAN, MICHAEL R" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">STEADMAN, MICHAEL R</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260261                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        41                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-05-2026 3:25 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        INDECENT BEHAVIOR WITH JUVENILE(S)                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $150,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile STEADMAN, MICHAEL R - LEC0020260261" class="text2" href="/inmate-roster/69aa00bfd6b9f8804d0847c5">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260260.jpg?alt=media" alt="CENAC, BRENNAN P" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">CENAC, BRENNAN P</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260260                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        37                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-05-2026 2:46 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        PROBATION VIOLATION-FELONY                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $0.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile CENAC, BRENNAN P - LEC0020260260" class="text2" href="/inmate-roster/69aa07bdfaea986e7a0ecb75">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260258.jpg?alt=media" alt="HAWKINS, CAMERON T" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">HAWKINS, CAMERON T</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260258                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        21                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-05-2026 12:35 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        FAILURE TO APPEAR<br>FAILURE TO APPEAR<br>FAILURE TO APPEAR<br>FAILURE TO APPEAR                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $60,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile HAWKINS, CAMERON T - LEC0020260258" class="text2" href="/inmate-roster/69a9dd8a856e581f0e0e7af7">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260252.jpg?alt=media" alt="BRYAN, MATTHEW" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">BRYAN, MATTHEW</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260252                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        39                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-04-2026 9:56 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        CRIME AGAINST NATURE<br>THIRD DEGREE RAPE/ORAL                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $350,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile BRYAN, MATTHEW - LEC0020260252" class="text2" href="/inmate-roster/69a90ab03546ffa47a01705a">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260251.jpg?alt=media" alt="BIAS, HAKEEMIA D" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">BIAS, HAKEEMIA D</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260251                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        32                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-04-2026 6:53 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        FAILURE TO APPEAR                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $250,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile BIAS, HAKEEMIA D - LEC0020260251" class="text2" href="/inmate-roster/69a8e07920e2c75fb0032d02">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260250.jpg?alt=media" alt="THIBEAUX, VONTRAVEN D" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">THIBEAUX, VONTRAVEN D</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260250                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        28                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-04-2026 6:12 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        FAILURE TO APPEAR                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $35,000.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile THIBEAUX, VONTRAVEN D - LEC0020260250" class="text2" href="/inmate-roster/69a8d96b933a72ecd408ea65">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                            <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                            <hr class="d-none mt-2 d-lg-block" style="margin-top: 8px !important;"><!-- Only show on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260249.jpg?alt=media" alt="BURDEN, DEVANTE J" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">BURDEN, DEVANTE J</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260249                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        33                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-04-2026 2:56 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        RESISTING ARREST OR OFFICER<br>POSSESSION OF DRUG PARAPHERNALIA<br>POSSESSION OF SCHEDULE II DRUGS<br>POSSESSION OF COCAINE<br>POSSESSION OF MARIJUANA<br>RESISTING ARREST OR OFFICER<br>POSSESSION OF DRUG PARAPHERNALIA                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $3,500.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile BURDEN, DEVANTE J - LEC0020260249" class="text2" href="/inmate-roster/69a8a8329b87b90208037556">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                <hr class="d-lg-none mt-2" style="margin-top: 8px !important;"> <!-- Hide on large and above -->
+                                                        <!--  -->
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4 inmate_mugshot has_image">
+                        <img class="noModal" src="https://storage.googleapis.com/g-green-backend-bucket-1/smpsla/roster/LEC0020260248.jpg?alt=media" alt="OBANDO-NAVARRO, JESUS E" draggable="false" onerror="this.src='/libs/images/pna.gif'">
+                    </div>
+                    <div class="col-lg-8 inmate_data">
+                    <div class="roster_name">OBANDO-NAVARRO, JESUS E</div>
+                        <div>
+                                                    <div class="inmate_data_bold"><strong>Booking #: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        LEC0020260248                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Age: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        27                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Booking Date: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        03-04-2026 12:59 PM                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Charges: </strong></div>
+                                                <div class="inmate_data_content">
+                                                                                        DOMESTIC ABUSE BATTERY BY STRANGULATION<br>DOMESTIC ABUSE CHILD ENDANGERMENT LAW<br>FAILURE TO APPEAR                                                                                </div>
+                </div>
+                            <div>
+                                                    <div class="inmate_data_bold"><strong>Bond: </strong></div>
+                                                <div class="inmate_data_content">
+                                                    $51,500.00
+                                            </div>
+                </div>
+                    <em>
+            <a aria-label="View Profile OBANDO-NAVARRO, JESUS E - LEC0020260248" class="text2" href="/inmate-roster/69a88c0ac2d78363840b6486">
+                <strong>View Profile &gt;&gt;&gt;</strong>
+            </a>
+        </em>
+        </div></div></div>
+                                                                                                </div>
+                    <nav aria-label="Page navigation">
+        <ul class="pagination">
+         
+        							<li class="page-item active">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/1">1</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/2">2</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/3">3</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/4">4</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/5">5</a>
+				</li>
+							<li class="page-item ">
+					<a class="page-link pagination-number" href="/inmate-roster/filters/current/booking_time=desc/6">6</a>
+				</li>
+					         
+            <li class="page-item">
+                <a class="page-link pagination-arrow" href="/inmate-roster/filters/current/booking_time=desc/2">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link pagination-arrow" href="/inmate-roster/filters/current/booking_time=desc/13">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                    <span class="sr-only">Last</span>
+                </a>
+            </li>
+         
+        </ul>
+    </nav>
+                </div>
+            </div>
+            </div>
+</section>
+
+					</section>
+					<div class="clearfix"></div>
+					</main>
+
+					<footer>
+
+	<div id="stickyFooter" >
+    <div id="stickyFooterWidthContainer" class="sticky-bottom d-flex flex-row justify-content-center text-center mx-auto">
+            <a href="/alerts-signup" class="sticky-footer-item zoom ease col-4" aria-label="Sign up for alerts"> 
+            <strong>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 70.87">
+                <g>
+                    <polygon class="st0 alertsIcon" points="62.82 46.08 72.87 44.51 80 2.54 77.56 0 59.21 2.54 57.45 4.88 60.77 44.12 62.82 46.08"/>
+                    <path class="st0 alertsIcon" d="M66.82,56a9.73,9.73,0,0,0-7.27,2.73,10.15,10.15,0,0,0-2.69,7.42q0,4.5,2.35,6.88T66,75.44a9.56,9.56,0,0,0,7.22-2.74,10.22,10.22,0,0,0,2.64-7.42,9.36,9.36,0,0,0-2.39-6.83A8.94,8.94,0,0,0,66.82,56Z" transform="translate(0 -4.56)"/>
+                    <path class="st0 alertsIcon" d="M50.34,10.05c0-.15,0-.29,0-.43A51.1,51.1,0,0,0,37.6,8,50,50,0,0,0,23,10.14a40.75,40.75,0,0,0-12,5.73,28.61,28.61,0,0,0-8,8.58A19.93,19.93,0,0,0,0,34.87,20.35,20.35,0,0,0,3.8,46.66,30.76,30.76,0,0,0,14.18,55.9a26.37,26.37,0,0,1-1.09,3.18c-.42,1-.8,1.84-1.13,2.48a16.93,16.93,0,0,1-1.37,2.14c-.57.78-1,1.33-1.3,1.66L7.85,67c-.68.74-1.11,1.22-1.3,1.45-.06.06-.17.18-.34.38a3.06,3.06,0,0,0-.29.35s-.12.17-.25.38-.21.34-.19.4a1.26,1.26,0,0,1-.09.42.56.56,0,0,0,0,.5v0a2.09,2.09,0,0,0,.74,1.22,1.65,1.65,0,0,0,1.28.38,31.27,31.27,0,0,0,4.78-.92,45.88,45.88,0,0,0,19.3-10.16,55.92,55.92,0,0,0,6.09.34,50.79,50.79,0,0,0,13.06-1.68,16,16,0,0,1,3.8-6.31c.21-.21.44-.44.69-.66a7.12,7.12,0,0,1-1.49-3.79Z" transform="translate(0 -4.56)"/>
+                </g>
+            </svg>
+                <span class="sticky-footer-text" aria-hidden="true">Alerts</span>
+            </strong>
+        </a>
+        <a href="/contact" class="sticky-footer-item zoom ease col-4" aria-label="Contact us">
+        <strong>
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    viewBox="0 0 80 62.9" xml:space="preserve">
+                <path class="st0 contactIcon" d="M58.7,11.4c5.6,6.6,5.6,16.4,0,23c-3.1,3.7-7,6.6-11.5,8.3c-5,2.1-10.4,3.1-15.8,3.1s-5.3-0.2-7.9-0.7
+                    c-3.8,2.6-8,4.6-12.4,5.7c-1.3,0.3-2.6,0.5-3.8,0.6l0,0c-0.3,0-0.7,0-0.9-0.4c-0.3-0.2-0.5-0.6-0.5-0.9v-0.9V49c0,0,0-0.2,0.2-0.2
+                    l0.2-0.2c0,0,0,0,0.2-0.2l0.2-0.2c0.2-0.2,0.5-0.5,1-1.1s0.9-1,1.2-1.3l1-1.3c0.4-0.5,0.8-1.1,1.2-1.7c0.3-0.6,0.6-1.2,0.9-2
+                    c-3.5-1.9-6.4-4.6-8.7-7.9c-2.1-3-3.3-6.5-3.3-10s1.5-8.2,4.2-11.4c3.1-3.7,7-6.6,11.4-8.3C20.6,1,26,0,31.4,0
+                    c5.4-0.1,10.8,1,15.8,3.1C51.7,4.8,55.6,7.7,58.7,11.4z M80,34.3c0,3.6-1.1,7.1-3.2,10c-2.3,3.3-5.2,5.9-8.7,7.9
+                    c0.3,0.7,0.6,1.4,0.9,2s0.7,1.2,1.1,1.7c0.4,0.6,0.8,1,1,1.3s0.6,0.8,1.2,1.3s0.9,0.9,1,1.1c0,0,0,0,0.2,0.2c0,0,0,0.2,0.2,0.2
+                    l0.2,0.2c0,0,0,0.2,0.2,0.2v0.2c0,0,0.2,0.2,0.2,0.3v0.6c0,0.4-0.3,0.7-0.6,1c-0.3,0.2-0.6,0.4-1,0.3c-5.8-0.8-11.4-3-16.2-6.5
+                    c-2.6,0.5-5.2,0.7-7.9,0.7c-7.5,0.2-14.8-1.9-21.1-5.9c1.7,0,3,0.2,3.9,0.2c4.7,0,9.3-0.7,13.8-2c4.2-1.3,8.2-3.2,11.8-5.8
+                    c3.5-2.5,6.4-5.7,8.6-9.5c3.1-5.5,3.9-12.1,2-18.1c3.6,1.9,6.7,4.7,9.1,8C78.9,27,80.1,30.6,80,34.3L80,34.3L80,34.3z"/>
+            </svg>
+
+            <span class="sticky-footer-text" aria-hidden="true">Contact</span>
+        </strong>
+    </a>
+    <a href="/crime-tip" class="sticky-footer-item zoom ease col-4" aria-label="Submit crime tip">
+        <strong>
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                viewBox="0 0 1792 1152" xml:space="preserve">
+                <path class="st0 crimeTipIcon" d="M1664,576c-101.3-157.3-228.3-275-381-353c40.7,69.3,61,144.3,61,225c0,123.3-43.8,228.8-131.5,316.5
+                    S1019.3,896,896,896s-228.8-43.8-316.5-131.5S448,571.3,448,448s20.3-155.7,61-225c-152.7,78-279.7,195.7-381,353
+                    c88.7,136.7,199.8,245.5,333.5,326.5S740,1024,896,1024s300.8-40.5,434.5-121.5S1575.3,712.7,1664,576z M944,192
+                    c0-13.3-4.7-24.7-14-34s-20.7-14-34-14c-83.3,0-154.8,29.8-214.5,89.5S592,364.7,592,448s4.7,24.7,14,34s20.7,14,34,14
+                    s24.7-4.7,34-14s14-20.7,14-34c0-57.3,20.3-106.3,61-147s89.7-61,147-61s24.7-4.7,34-14S944,205.3,944,192z M1792,576
+                    c0,22.7-6.7,45.7-20,69c-93.3,153.3-218.8,276.2-376.5,368.5S1071.3,1152,896,1152s-341.8-46.3-499.5-139S113.3,797.7,20,645
+                    C6.7,621.7,0,598.7,0,576s6.7-45.7,20-69c93.3-152.7,218.8-275.3,376.5-368S720.7,0,896,0s341.8,46.3,499.5,139
+                    s283.2,215.3,376.5,368C1785.3,530.3,1792,553.3,1792,576z"/>
+            </svg>
+            <span class="sticky-footer-text" aria-hidden="true">Crime Tip</span>
+        </strong>
+    </a>
+    </div>
+</div>
+
+	<div id="preFooter">
+		<div id="preFooterBox" class="size18">
+				<div class="row justify-content-center align-items-center m-0">
+					<div id="footerOfficeText" class="footerColumn col-sm-7 col-lg-6 d-flex flex-row align-items-center justify-content-center mx-auto">
+						<a href="/" class="zoom ease noUnderline d-flex flex-row align-items-center justify-content-center">
+							<img id="footerOfficeBadge" src="/templates/stmaryso.com/images/badge.png" draggable="false" alt="" aria-hidden="true">							<div class="text-start ms-3">
+																<span class="size24 lh-1"><strong>St. Mary Parish <br>Sheriff's Office </strong></span><br>
+								<span class="size18">Franklin, Louisiana</span>
+							</div>
+						</a>
+					</div>
+					<div id="footerCrimeTip" class="footerColumn col-sm-7 col-lg-6 mx-auto">
+						<svg version="1.1" id="crimetip_icon" class="footer-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								viewBox="0 0 18.8 8.3" xml:space="preserve" aria-hidden="true">
+							<g>
+								<path class="icon-fill" d="M9.4,0.1C8.5,0.1,7.6,0.5,6.9,1c0.1,0,0.3-0.1,0.4-0.1c1,0,1.9,0.8,1.9,1.9c0,1-0.8,1.9-1.9,1.9
+									C6.4,4.7,5.6,4,5.5,3.1C5.4,3.4,5.3,3.8,5.3,4.2c0,2.2,1.8,4.1,4.1,4.1h0c2.2,0,4.1-1.8,4.1-4.1v0C13.4,2,11.6,0.1,9.4,0.1z"/>
+							</g>
+							<path class="icon-stroke" d="M0.4,4.9c0-0.1,0-0.3,0.1-0.3c1.7-2.5,5-4.2,8.9-4.2s7.2,1.7,8.9,4.2c0.1,0.1,0.1,0.2,0.1,0.3"/>
+						</svg>
+						<h2 class="size28">Submit Crime Tip</h2>
+						
+						<a href="tel:+13378281960" aria-label="Crime Tip phone: 337.828.1960"><strong>337.828.1960</strong></a><br>
+												or <a href="tel:+19853841622" aria-label="Crime Tip phone: 985.384.1622"><strong>985.384.1622</strong></a><br>
+
+						or Submit via 
+						<a href="/crime-tip" aria-label="Submit crime tip via email">Email</a>
+					</div>
+					<div class="d-none d-lg-block d-xxl-none col-5" aria-hidden="true"><div class="largeFooterSepearator" aria-hidden="true"></div></div>
+					<div class="d-none d-lg-block d-xxl-none col-5" style="margin-left: 100px" aria-hidden="true"><div class="largeFooterSepearator" aria-hidden="true"></div></div>
+
+					<div id="footerEmergencyPhone" class="footerColumn col-sm-7 col-lg-6 mx-auto">
+						<svg version="1.1" id="phone_icon" class="footer-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								viewBox="0 0 90 90" xml:space="preserve" aria-hidden="true">
+							<path class="icon-fill" d="M52.4,10.6c14.9,0,27,12.1,27,27c0,1.4,1.1,2.5,2.5,2.5c1.4,0,2.5-1.1,2.5-2.5c0-17.7-14.3-32-32-32
+								c-1.4,0-2.5,1.1-2.5,2.5C49.9,9.4,51,10.6,52.4,10.6z"/>
+							<path class="icon-fill" d="M52.4,23.6c7.7,0,14,6.3,14,14c0,1.4,1.1,2.5,2.5,2.5c1.4,0,2.5-1.1,2.5-2.5c0,0,0,0,0,0c0-10.5-8.5-19-19-19
+								c-1.4,0-2.5,1.1-2.5,2.5C49.9,22.4,51,23.6,52.4,23.6C52.4,23.6,52.4,23.6,52.4,23.6z"/>
+							<path class="icon-fill" d="M74.9,57.1C72.4,54.5,69,53,65.4,53c-2.4,0-4.7,1-6.3,2.8l-6.6,7.4c-11.1-5.7-20.1-14.7-25.8-25.8l7.4-6.6
+								c1.8-1.6,2.8-3.9,2.8-6.3c0-3.6-1.5-7-4.1-9.5l-11-11c-2.7-2.9-6.6-4.4-10.5-4c-2.6,0.3-4.9,1.8-6.2,4c-4.6,8-6.1,17.7-4.6,28.2
+								c2,13.3,9,26.6,19.8,37.4c10.8,10.8,24,17.8,37.4,19.8c10.5,1.6,20.2,0,28.2-4.6c2.3-1.3,3.8-3.6,4-6.2c0.4-3.9-1.1-7.8-4-10.5
+								L74.9,57.1z M85,78c-0.1,1-0.7,2-1.6,2.5c-7,4-15.6,5.4-24.9,4c-12.3-1.8-24.5-8.4-34.6-18.4c-10-10-16.5-22.3-18.4-34.6
+								c-1.4-9.3,0-17.9,4-24.9C10,5.7,11,5.1,12,5c2.4-0.1,4.7,0.8,6.3,2.6l11,11c1.6,1.5,2.6,3.6,2.6,5.8c0,1-0.4,2-1.1,2.7l-10.2,9.1
+								l0.8,1.7c3.1,6.7,7.4,12.8,12.6,18c5.2,5.2,11.3,9.5,18,12.6l1.7,0.8l9.1-10.2c0.7-0.7,1.7-1.1,2.7-1.1c2.2,0.1,4.3,1,5.8,2.6l11,11
+								C84.1,73.2,85.1,75.6,85,78z"/>
+						</svg>
+						<h2 class="size28">Emergency <a href="tel:911">911</a></h2>
+												<strong>Non-Emergency (24 hours):</strong>
+						<br><a href="tel:+13378281960" aria-label="Main office phone: 337.828.1960">337.828.1960</a><br>
+						or <a href="tel:+19853841622" aria-label="Non-Emergency 24-hour phone: 985.384.1622">985.384.1622</a>
+						<br><strong>Jail:</strong> <a href="tel:+13378369509" aria-label="Jail phone: 337.836.9509">337.836.9509</a>
+					</div>
+					<div id="footerContact" class="footerColumn col-sm-7 col-lg-6 mx-auto">
+						<svg version="1.1" id="pin_icon" class="footer-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								viewBox="0 0 72.4 100" xml:space="preserve" aria-hidden="true">
+							<path class="icon-fill" d="M36.2,4C54,4,68.4,18.4,68.4,36.2c0,5.8-1.5,11.4-4.5,16.4l-0.1,0.2L63.8,53c-0.1,0.2-0.2,0.4-0.3,0.5L39.7,94
+								c-1.1,1.9-3.5,2.6-5.4,1.6c-0.7-0.4-1.2-0.9-1.6-1.6L8.9,53.5c-0.1-0.1-0.2-0.3-0.2-0.4l-0.1-0.3l-0.1-0.2
+								c-9-15.3-3.9-35.1,11.4-44.1C24.8,5.5,30.5,4,36.2,4 M36.2,54.5c10.5,0,19-8.5,19-19s-8.5-19-19-19s-19,8.5-19,19
+								S25.7,54.5,36.2,54.5 M36.2,0C16.2,0,0,16.2,0,36.3C0,42.7,1.7,49,5,54.6c0.1,0.3,0.3,0.6,0.5,0.9L29.3,96c2.3,3.8,7.2,5.1,11,2.8
+								c1.2-0.7,2.2-1.7,2.8-2.8L67,55.5c0.2-0.3,0.3-0.6,0.5-0.9C77.6,37.4,71.8,15.2,54.6,5C49,1.7,42.7,0,36.2,0z M36.2,50.5
+								c-8.3,0-15-6.7-15-15s6.7-15,15-15s15,6.7,15,15S44.5,50.5,36.2,50.5z"/>
+						</svg>
+						<h2><a href="/contact" class="size28">Contact</a></h2>
+						Administrative Office Hours:<br>
+						Monday – Friday: 8:30 am – 4:30 pm<br>
+						<strong>Headquarters: </strong><a href="https://maps.app.goo.gl/Xj14cGrzAA4j8nZL7" target="_blank" rel="noopener">500 Main St, 4th Floor<br>Franklin, LA 70538</a>
+						<br><strong>Branch Office: </strong><a href="https://maps.app.goo.gl/n7JPvyf7dKCWjeCK6" target="_blank" rel="noopener">1455 Railroad Ave<br>Morgan City, LA 70380</a>
+
+					</div>
+				</div>
+			</div>
+	</div>
+
+	<div class="sitewidth center">
+
+			<div class="footer-bottom">
+				<div class="copycred-address">
+					<span><a href="/copycred">&copy;2026 St. Mary Parish Sheriff's Office</a><span class="footerPipe"> | </span></span>
+					<br>
+					<div class="links">
+						<div><a href="/templates/stmaryso.com/images/Northeast_Map.jpg" target="_blank" rel="noopener">Northeast Parish Map</a><span> | </span></div>
+						<div><a href="/templates/stmaryso.com/images/Northwest_Map.jpg" target="_blank" rel="noopener">Northwest Parish Map</a><span> | </span></div>
+						<div><a href="/site-map">Site Map</a><span> | </span></div>
+						<div><a href="/copycred#accessibility">Accessibility</a><span> | </span></div>
+						<div><a href="https://translate.google.com/translate?hl=&sl=en&tl=es&u=https://www.stmaryso.com/site-map"  target="_blank" rel="noopener">Translate</a></div>
+					</div>
+                    
+				</div>
+
+				<div class="site-design">
+					<a href="https://www.mostwantedgovernmentwebsites.com/law-enforcement"  target="_blank" rel="noopener" class="bjm-logo zoom ease">
+						<img src="/templates/stmaryso.com/images/svgs/bjm-logo.svg" alt="Site Design and Hosting by BrooksJeffrey" width="300" height="16" loading="lazy" class="noModal">
+					</a>
+				</div>
+			</div>
+		
+	</div>
+
+</footer>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div id="imageModal" class="modal" tabindex="-1">
+  <div class="modal-dialog modal-xl w-fit">
+    <div class="modal-content w-auto">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+		<img alt="" src="/libs/images/modal-placeholder.png" class="modal-content w-auto center" id="imgPopupPlaceholder">
+      </div>
+      <div class="modal-footer text-center w-auto">
+		<div id="imgPopupCaption" class="w-auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function(event) { 
+		console.log("Loading image enlarger");
+		let modalImg = document.getElementById("imgPopupPlaceholder");
+		let captionText = document.getElementById("imgPopupCaption");
+		let imageModal = document.getElementById('imageModal');
+		document.querySelectorAll("a img:not(.noModal)").forEach(function(item){
+			item.classList.add("noModal");
+		});
+		document.querySelectorAll("#body-content img:not(.noModal), #page-content img:not(.noModal), #interior img:not(.noModal)").forEach(function(item){
+			//console.log("Found image: ",item);
+			item.setAttribute('data-bs-toggle','modal');
+			item.setAttribute('data-bs-target','#imageModal');
+			item.addEventListener('click',function(event){
+				modalImg.src = event.target.src;
+				captionText.innerHTML = event.target.alt;
+				imageModal.addEventListener('shown.bs.modal', function () {
+					modalImg.focus();
+				})
+			}); 
+		});
+	});
+</script>
+	</body>
+
+</html>

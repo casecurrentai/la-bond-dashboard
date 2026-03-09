@@ -1,0 +1,22 @@
+BondCurrent Verifier Log — St. Mary Parish
+Run at: 2026-03-09T23:22:41.317Z
+Duration: 3240ms
+
+HTTP Status: 200
+URL: https://www.stmaryso.com/inmate-roster/filters/current/booking_time=desc/1
+Platform: most_wanted_cms
+HTML snapshot saved: /home/ubuntu/la-bond-dashboard/outputs/st._mary_roster.html
+Total records parsed: 20
+Records with bond amount: 20
+
+Sample bond extractions (first 5):
+  DRUILHET, CHRISTIAN A | Booking: LEC0020260283 | Bond: $0.00
+  BROUSSARD, BENJAMIN A | Booking: LEC0020260282 | Bond: $0.00
+  OLIVA- ARGUETA, DELMER G | Booking: LEC0020260281 | Bond: $4,000.00
+  DUHON, TRENT H | Booking: LEC0020260279 | Bond: $20,000.00
+  LEWIS, RASHAN J | Booking: LEC0020260278 | Bond: $0.00
+
+Bond field present: true
+
+Result: PASS
+Bond Available: true

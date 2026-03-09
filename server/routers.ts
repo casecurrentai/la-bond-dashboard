@@ -19,7 +19,7 @@ import {
   upsertBooking,
   upsertSource,
 } from "./db";
-import { getAdapterList, scrapeParish, scrapeAllParishes } from "./adapters";
+import { getAdapterList, scrapeParish, scrapeAllParishes, scrapeOrleans, scrapeJefferson } from "./adapters";
 
 export const appRouter = router({
   system: systemRouter,
@@ -64,9 +64,17 @@ export const appRouter = router({
         return getBookings(input);
       }),
     search: publicProcedure
-      .input(z.object({ name: z.string().min(1) }))
+      .input(
+        z.object({
+          name: z.string().optional(),
+          charge: z.string().optional(),
+          parish: z.string().optional(),
+        })
+      )
       .query(async ({ input }) => {
-        return getBookings({ search: input.name, limit: 100 });
+        const searchTerm = input.name || input.charge || "";
+        if (!searchTerm) return { items: [], total: 0 };
+        return getBookings({ search: searchTerm, parish: input.parish, limit: 100 });
       }),
     byId: publicProcedure
       .input(z.object({ id: z.number() }))
@@ -102,14 +110,20 @@ export const appRouter = router({
       }),
     all: publicProcedure.mutation(async () => {
       const adapters = getAdapterList();
+      // Include Orleans and Jefferson as special adapters
+      const allParishes = [
+        ...adapters.map((a) => a.parish),
+        "Orleans",
+        "Jefferson",
+      ];
       const results = [];
-      for (const adapter of adapters) {
+      for (const parish of allParishes) {
         try {
-          const result = await runScrapeForParish(adapter.parish);
+          const result = await runScrapeForParish(parish);
           results.push(result);
         } catch (err: any) {
           results.push({
-            parish: adapter.parish,
+            parish,
             status: "error",
             error: err.message,
             newBookings: 0,
@@ -128,11 +142,19 @@ export const appRouter = router({
 async function runScrapeForParish(parish: string) {
   const startTime = Date.now();
 
+  // Special adapters for Orleans and Jefferson (not in the standard list)
+  const SPECIAL_ADAPTERS: Record<string, { baseUrl: string; bondAvailable: boolean }> = {
+    Orleans: { baseUrl: "https://www.opso.gov/", bondAvailable: false },
+    Jefferson: { baseUrl: "https://apps.jpso.com/inmatesearch2/", bondAvailable: true },
+  };
+
   // Ensure source exists
   const adapterList = getAdapterList();
-  const adapterInfo = adapterList.find(
-    (a) => a.parish.toLowerCase() === parish.toLowerCase()
-  );
+  const adapterInfo =
+    adapterList.find((a) => a.parish.toLowerCase() === parish.toLowerCase()) ??
+    (SPECIAL_ADAPTERS[parish]
+      ? { parish, baseUrl: SPECIAL_ADAPTERS[parish].baseUrl, bondAvailable: SPECIAL_ADAPTERS[parish].bondAvailable, sourcePlatform: "special", maxPages: 1 }
+      : null);
   if (!adapterInfo) {
     throw new Error(`No adapter for parish: ${parish}`);
   }

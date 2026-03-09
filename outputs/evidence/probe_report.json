@@ -1,0 +1,183 @@
+[
+  {
+    "name": "jefferson",
+    "label": "Jefferson Parish",
+    "url": "https://apps.jpso.com/inmatesearch2",
+    "type": "custom_spa",
+    "httpStatus": null,
+    "bondFieldPresent": false,
+    "fieldsDetected": [],
+    "inmateCount": 0,
+    "sampleInmates": [],
+    "apiEndpoints": [],
+    "extractionMethod": "playwright",
+    "accessFriction": "blocked",
+    "htmlPath": null,
+    "screenshotPath": null,
+    "error": "page.goto: net::ERR_CONNECTION_CLOSED at https://apps.jpso.com/inmatesearch2\nCall log:\n\u001b[2m  - navigating to \"https://apps.jpso.com/inmatesearch2\", waiting until \"domcontentloaded\"\u001b[22m\n",
+    "notes": "JPSO custom inmate search app"
+  },
+  {
+    "name": "orleans",
+    "label": "Orleans Parish",
+    "url": "https://www.opso.gov/246/Detainee-Search",
+    "type": "cms",
+    "httpStatus": 200,
+    "bondFieldPresent": false,
+    "fieldsDetected": [],
+    "inmateCount": 0,
+    "sampleInmates": [],
+    "apiEndpoints": [
+      {
+        "url": "https://content.civicplus.com/api/assets/c8722818-1457-46ba-9664-3e62773f4b5f?cache=1800&width=919&mode=min",
+        "method": "GET"
+      },
+      {
+        "url": "https://content.civicplus.com/api/assets/33ff540f-36d9-480a-960e-7fd5fa44d56d?cache=1800&width=1320&mode=min",
+        "method": "GET"
+      },
+      {
+        "url": "https://docaccess.com/domains/opso.gov/domain.json?cb=2955163",
+        "method": "GET"
+      },
+      {
+        "url": "https://www.opso.gov/api/pages/1/menuItems?liveEdit=false&preview=false",
+        "method": "GET"
+      },
+      {
+        "url": "https://www.opso.gov/api/siteproperties/public",
+        "method": "GET"
+      },
+      {
+        "url": "https://engage6-api.civicplus.pro/api/layout/optionsets/getlist",
+        "method": "GET"
+      },
+      {
+        "url": "https://content.civicplus.com/api/apps/la-orleansparishsheriff/content-types?includeDetails=true",
+        "method": "GET"
+      },
+      {
+        "url": "https://content.civicplus.com/api/apps/la-orleansparishsheriff/categories",
+        "method": "GET"
+      },
+      {
+        "url": "https://content.civicplus.com/api/content/la-orleansparishsheriff/article?$top=3&$skip=0&$orderby=lastModified%20asc&$filter=(tags/any(t:%20t%20eq%20%27Footer%27%20or%20t%20eq%20%27Contact%20Us%27))",
+        "method": "GET"
+      },
+      {
+        "url": "https://content.civicplus.com/api/content/la-orleansparishsheriff/link?$top=6&$skip=0&$orderby=lastModified%20asc&$filter=(tags/any(t:%20t%20eq%20%27Footer%27%20or%20t%20eq%20%27Site%20Links%27))",
+        "method": "GET"
+      }
+    ],
+    "extractionMethod": "playwright",
+    "accessFriction": "heavy_js",
+    "htmlPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/orleans_roster.html",
+    "screenshotPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/orleans_screenshot.png",
+    "error": null,
+    "notes": "Orleans Parish Sheriff detainee search"
+  },
+  {
+    "name": "stbernard",
+    "label": "St. Bernard Parish",
+    "url": "http://stbernard.lavns.org/roster.aspx",
+    "type": "lavine",
+    "httpStatus": 200,
+    "bondFieldPresent": false,
+    "fieldsDetected": [],
+    "inmateCount": 0,
+    "sampleInmates": [],
+    "apiEndpoints": [
+      {
+        "url": "http://stbernard.lavns.org/roster.aspx",
+        "method": "GET"
+      }
+    ],
+    "extractionMethod": "playwright",
+    "accessFriction": "heavy_js",
+    "htmlPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/stbernard_roster.html",
+    "screenshotPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/stbernard_screenshot.png",
+    "error": null,
+    "notes": "LA VINE ASP.NET roster"
+  },
+  {
+    "name": "plaquemines",
+    "label": "Plaquemines Parish",
+    "url": "http://plaquemines.lavns.org/roster.aspx",
+    "type": "lavine",
+    "httpStatus": 200,
+    "bondFieldPresent": false,
+    "fieldsDetected": [
+      "name",
+      "booking_date",
+      "dob",
+      "race",
+      "gender"
+    ],
+    "inmateCount": 619,
+    "sampleInmates": [
+      {
+        "name": "ADAMS, GEOFFREY"
+      },
+      {
+        "name": "ADAMS, TRUSTIN"
+      },
+      {
+        "name": "ADDISON, ANTIONE"
+      },
+      {
+        "name": "ALEXANDER, BRANDON"
+      },
+      {
+        "name": "ALEXANDER, ERROL"
+      }
+    ],
+    "apiEndpoints": [
+      {
+        "url": "http://plaquemines.lavns.org/roster.aspx",
+        "method": "GET"
+      }
+    ],
+    "extractionMethod": "playwright",
+    "accessFriction": "heavy_js",
+    "htmlPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/plaquemines_roster.html",
+    "screenshotPath": "/home/ubuntu/la-bond-dashboard/outputs/evidence/plaquemines_screenshot.png",
+    "error": null,
+    "notes": "LA VINE ASP.NET roster"
+  },
+  {
+    "name": "stjohn",
+    "label": "St. John the Baptist Parish",
+    "url": "https://stjohn-so-la.zuercherportal.com/inmates",
+    "type": "zuercher",
+    "httpStatus": null,
+    "bondFieldPresent": false,
+    "fieldsDetected": [],
+    "inmateCount": 0,
+    "sampleInmates": [],
+    "apiEndpoints": [],
+    "extractionMethod": "playwright",
+    "accessFriction": "blocked",
+    "htmlPath": null,
+    "screenshotPath": null,
+    "error": "page.goto: net::ERR_CONNECTION_CLOSED at https://stjohn-so-la.zuercherportal.com/inmates\nCall log:\n\u001b[2m  - navigating to \"https://stjohn-so-la.zuercherportal.com/inmates\", waiting until \"domcontentloaded\"\u001b[22m\n",
+    "notes": "Zuercher Portal SPA"
+  },
+  {
+    "name": "stjames",
+    "label": "St. James Parish",
+    "url": "https://stjamesso.org/inmate-roster/filters/current/booking_time=desc/1",
+    "type": "most_wanted_cms",
+    "httpStatus": null,
+    "bondFieldPresent": false,
+    "fieldsDetected": [],
+    "inmateCount": 0,
+    "sampleInmates": [],
+    "apiEndpoints": [],
+    "extractionMethod": "playwright",
+    "accessFriction": "blocked",
+    "htmlPath": null,
+    "screenshotPath": null,
+    "error": "page.goto: Navigation to \"https://stjamessheriff.com/inmate-roster/filters/current/booking_time=desc/1\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n\u001b[2m  - navigating to \"https://stjamessheriff.com/inmate-roster/filters/current/booking_time=desc/1\", waiting until \"domcontentloaded\"\u001b[22m\n",
+    "notes": "Most Wanted Government Websites CMS (same as St. Mary, Allen, Evangeline)"
+  }
+]

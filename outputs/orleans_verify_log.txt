@@ -1,0 +1,18 @@
+BondCurrent Verifier Log — Orleans Parish
+Run at: 2026-03-09T23:22:54.662Z
+Duration: 157ms
+
+URL: https://yiqvcldlxa.execute-api.us-east-1.amazonaws.com/dev/apprissSearch/a27970119?q=
+Platform: appriss_ocv (AWS API Gateway -> Appriss OCV)
+Bond Available: FALSE (Appriss public API does not expose bond amounts)
+Method: JSON API (axios)
+HTTP Status: 200
+Total records returned: 0
+API response saved: /home/ubuntu/la-bond-dashboard/outputs/orleans_api_sample.json
+Sample records (first 3):
+
+NOTE: Orleans Parish uses Appriss/OCV API. Bond amounts are not in the public API response.
+Fields available: Name, InmateID, Custody Status, Booking Date, Charges
+
+Result: PASS
+Bond Available: false
