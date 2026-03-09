@@ -3,708 +3,447 @@ import { trpc } from "@/lib/trpc";
 import {
   Mic,
   Search,
-  AlertCircle,
   Shield,
   Zap,
   Radio,
-  CheckCircle,
-  XCircle,
+  CheckCircle2,
+  AlertTriangle,
   Clock,
   DollarSign,
   User,
   FileText,
   MapPin,
   RefreshCw,
+  ChevronRight,
+  Hash,
 } from "lucide-react";
 import { toast } from "sonner";
 
-const PARISH_META: Record<
-  string,
-  { bondAvailable: boolean; platform: string; color: string }
-> = {
-  "St. Mary": {
-    bondAvailable: true,
-    platform: "Most Wanted CMS",
-    color: "#00d9ff",
-  },
-  Allen: {
-    bondAvailable: true,
-    platform: "Most Wanted CMS",
-    color: "#00d9ff",
-  },
-  Evangeline: {
-    bondAvailable: true,
-    platform: "Most Wanted CMS",
-    color: "#00d9ff",
-  },
-  Plaquemines: {
-    bondAvailable: false,
-    platform: "LA VINE / Appriss",
-    color: "#f59e0b",
-  },
-  "St. Bernard": {
-    bondAvailable: false,
-    platform: "LA VINE / Appriss",
-    color: "#f59e0b",
-  },
-  Orleans: {
-    bondAvailable: false,
-    platform: "Appriss OCV API",
-    color: "#f59e0b",
-  },
-  Jefferson: {
-    bondAvailable: true,
-    platform: "JPSO Custom SPA",
-    color: "#00d9ff",
-  },
-};
+/* ── Parish metadata ─────────────────────────────────────── */
+const PARISHES = [
+  { name: "St. Mary",     bond: true,  platform: "Most Wanted CMS" },
+  { name: "Allen",        bond: true,  platform: "Most Wanted CMS" },
+  { name: "Evangeline",   bond: true,  platform: "Most Wanted CMS" },
+  { name: "Plaquemines",  bond: false, platform: "LA VINE / Appriss" },
+  { name: "St. Bernard",  bond: false, platform: "LA VINE / Appriss" },
+  { name: "Orleans",      bond: false, platform: "Appriss OCV API" },
+  { name: "Jefferson",    bond: true,  platform: "JPSO Custom (Playwright)" },
+];
+
+/* ── Helpers ─────────────────────────────────────────────── */
+function fmt(n: number) {
+  return n.toLocaleString("en-US");
+}
+function fmtUSD(n: number) {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000)     return `$${(n / 1_000).toFixed(0)}K`;
+  return `$${n}`;
+}
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
-  const [searchType, setSearchType] = useState<"name" | "charge">("name");
-  const [isListening, setIsListening] = useState(false);
-  const [isScraping, setIsScraping] = useState(false);
+  const [query, setQuery]           = useState("");
+  const [submitted, setSubmitted]   = useState("");
+  const [mode, setMode]             = useState<"name" | "charge">("name");
+  const [listening, setListening]   = useState(false);
+  const [scraping, setScraping]     = useState(false);
 
-  const searchResults = trpc.bookings.search.useQuery(
-    {
-      name: searchType === "name" ? submittedQuery : undefined,
-      charge: searchType === "charge" ? submittedQuery : undefined,
-    },
-    { enabled: submittedQuery.length >= 2 }
+  /* ── tRPC ── */
+  const stats    = trpc.dashboard.stats.useQuery();
+  const search   = trpc.bookings.search.useQuery(
+    { name: mode === "name" ? submitted : undefined,
+      charge: mode === "charge" ? submitted : undefined },
+    { enabled: submitted.length >= 2 }
   );
-
-  const stats = trpc.dashboard.stats.useQuery();
-  const adapters = trpc.sources.adapters.useQuery();
   const scrapeAll = trpc.scrape.all.useMutation({
-    onSuccess: (results) => {
-      const ok = results.filter((r: any) => r.status === "success").length;
-      const total = results.length;
-      toast.success(`Refreshed ${ok}/${total} sources`);
+    onSuccess: (res) => {
+      const ok = res.filter((r: any) => r.status === "success").length;
+      toast.success(`Refreshed ${ok} / ${res.length} sources`);
       stats.refetch();
-      setIsScraping(false);
+      setScraping(false);
     },
-    onError: (err) => {
-      toast.error(`Refresh failed: ${err.message}`);
-      setIsScraping(false);
-    },
+    onError: (e) => { toast.error(e.message); setScraping(false); },
   });
 
-  const handleSearch = useCallback(() => {
-    if (searchQuery.trim().length >= 2) {
-      setSubmittedQuery(searchQuery.trim().toUpperCase());
-    }
-  }, [searchQuery]);
+  /* ── Handlers ── */
+  const submit = useCallback(() => {
+    const q = query.trim().toUpperCase();
+    if (q.length >= 2) setSubmitted(q);
+  }, [query]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch();
-  };
+  const onKey = (e: React.KeyboardEvent) => { if (e.key === "Enter") submit(); };
 
-  const handleVoiceSearch = () => {
-    setIsListening(true);
-    const SpeechRecognitionClass =
-      (window as any).webkitSpeechRecognition ||
-      (window as any).SpeechRecognition;
-    if (!SpeechRecognitionClass) {
-      toast.error("Voice search not supported in this browser");
-      setIsListening(false);
-      return;
-    }
-    const recognition = new SpeechRecognitionClass();
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript.toUpperCase();
-      setSearchQuery(transcript);
-      setSubmittedQuery(transcript);
+  const voiceSearch = () => {
+    const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    if (!SR) { toast.error("Voice search not supported in this browser"); return; }
+    setListening(true);
+    const r = new SR();
+    r.onresult = (e: any) => {
+      const t = e.results[0][0].transcript.toUpperCase();
+      setQuery(t);
+      setSubmitted(t);
     };
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
-    recognition.start();
+    r.onerror = r.onend = () => setListening(false);
+    r.start();
   };
 
-  const handleRefresh = () => {
-    setIsScraping(true);
-    scrapeAll.mutate();
-  };
-
-  const results = searchResults.data?.items ?? [];
+  const results       = search.data?.items ?? [];
   const totalBookings = stats.data?.totalBookings ?? 0;
-  const totalBond = stats.data?.totalBondValue ?? 0;
-  const activeSources = stats.data?.parishBreakdown?.length ?? 0;
+  const totalBond     = stats.data?.totalBondValue ?? 0;
+  const parishes      = stats.data?.parishBreakdown ?? [];
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "var(--color-bg)" }}
-    >
-      {/* ── Top Nav ── */}
-      <nav
-        className="sticky top-0 z-50 border-b backdrop-blur-md"
-        style={{
-          backgroundColor: "rgba(5, 10, 20, 0.85)",
-          borderColor: "var(--color-border)",
-        }}
-      >
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: "var(--color-primary)" }}
-            >
-              <Shield size={16} color="#fff" />
+    <div style={{ backgroundColor: "var(--bc-bg)", minHeight: "100vh" }}>
+
+      {/* ═══ NAV ════════════════════════════════════════════ */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 50,
+        backgroundColor: "rgba(8, 13, 20, 0.9)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--bc-border)",
+      }}>
+        <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.85rem 1.25rem" }}>
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: "linear-gradient(135deg, var(--bc-blue), #7c3aed)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <Shield size={15} color="#fff" />
             </div>
-            <span
-              className="text-xl font-bold gradient-text"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              BondCurrent
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.1rem", color: "var(--bc-text)" }}>
+              Bond<span style={{ color: "var(--bc-cyan)" }}>Current</span>
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: "var(--color-success)" }}
-              />
-              <span
-                className="text-xs"
-                style={{ color: "var(--color-text-tertiary)" }}
-              >
-                {activeSources} sources live
+
+          {/* Right controls */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "var(--bc-green)", animation: "pulse 2s infinite" }} />
+              <span style={{ fontSize: "0.75rem", color: "var(--bc-text-3)" }}>
+                {parishes.length} sources live
               </span>
             </div>
             <button
-              onClick={handleRefresh}
-              disabled={isScraping}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
-              style={{
-                backgroundColor: "var(--color-bg-tertiary)",
-                color: "var(--color-text-secondary)",
-                border: "1px solid var(--color-border)",
-              }}
+              onClick={() => { setScraping(true); scrapeAll.mutate(); }}
+              disabled={scraping}
+              className="bc-btn bc-btn-ghost"
+              style={{ fontSize: "0.75rem", padding: "0.35rem 0.75rem" }}
             >
-              <RefreshCw
-                size={12}
-                className={isScraping ? "animate-spin" : ""}
-              />
-              {isScraping ? "Refreshing..." : "Refresh All"}
+              <RefreshCw size={12} style={{ animation: scraping ? "spin 1s linear infinite" : "none" }} />
+              {scraping ? "Refreshing…" : "Refresh"}
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden py-16 sm:py-20">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-primary), transparent)",
-          }}
-        />
-        <div className="container relative text-center">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-6"
-            style={{
-              backgroundColor: "rgba(0, 217, 255, 0.1)",
-              border: "1px solid rgba(0, 217, 255, 0.3)",
-              color: "var(--color-accent)",
-            }}
-          >
-            <Radio size={10} className="animate-pulse" />
-            AI-Powered Bond Intelligence
+      {/* ═══ HERO ═══════════════════════════════════════════ */}
+      <section style={{ padding: "4rem 0 2.5rem", position: "relative", overflow: "hidden" }}>
+        {/* Subtle radial glow */}
+        <div style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
+          background: "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(37,99,235,0.18), transparent)",
+        }} />
+        <div className="container" style={{ textAlign: "center", position: "relative" }}>
+          <div className="bc-badge bc-badge-cyan" style={{ marginBottom: "1.25rem", display: "inline-flex" }}>
+            <Radio size={9} style={{ animation: "pulse 2s infinite" }} />
+            Louisiana River Parishes · Real-Time
           </div>
-          <h1
-            className="text-5xl sm:text-6xl font-bold mb-4"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            <span className="gradient-text">BondCurrent</span>
+
+          <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", marginBottom: "0.75rem" }}>
+            <span className="bc-gradient-text">BondCurrent</span>
           </h1>
-          <p
-            className="text-lg sm:text-xl mb-3"
-            style={{ color: "var(--color-text-secondary)" }}
-          >
-            Real-time inmate bond search across Louisiana river parishes
+
+          <p style={{ fontSize: "1.05rem", color: "var(--bc-text-2)", maxWidth: 520, margin: "0 auto 0.5rem" }}>
+            Search inmate bond records across Louisiana parishes by name or charge.
           </p>
-          <p
-            className="text-sm"
-            style={{ color: "var(--color-text-tertiary)" }}
-          >
-            Search by inmate name or charge/offense · Voice-enabled · Updated
-            every 30 minutes
+          <p style={{ fontSize: "0.8rem", color: "var(--bc-text-3)" }}>
+            Voice-enabled · Updated every 30 minutes · 7 parishes indexed
           </p>
         </div>
       </section>
 
-      {/* ── Stats Bar ── */}
-      <section className="container mb-8">
-        <div
-          className="grid grid-cols-3 gap-4 p-4 rounded-xl"
-          style={{
-            backgroundColor: "var(--color-bg-secondary)",
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          {[
-            {
-              icon: User,
-              label: "Active Bookings",
-              value: totalBookings.toLocaleString(),
-            },
-            {
-              icon: DollarSign,
-              label: "Total Bond Value",
-              value: `$${(totalBond / 1_000_000).toFixed(1)}M`,
-            },
-            {
-              icon: Zap,
-              label: "Live Sources",
-              value: `${activeSources} parishes`,
-            },
-          ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="text-center">
-              <Icon
-                size={16}
-                className="mx-auto mb-1"
-                style={{ color: "var(--color-accent)" }}
-              />
-              <p
-                className="text-xl font-bold"
-                style={{ color: "var(--color-text)" }}
-              >
-                {value}
-              </p>
-              <p
-                className="text-xs"
-                style={{ color: "var(--color-text-tertiary)" }}
-              >
-                {label}
-              </p>
+      {/* ═══ STATS ══════════════════════════════════════════ */}
+      <section className="container" style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem" }}>
+          <div className="bc-stat">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
+              <User size={13} style={{ color: "var(--bc-cyan)" }} />
+              <span className="bc-stat-label">Active Bookings</span>
             </div>
-          ))}
+            <span className="bc-stat-value">{fmt(totalBookings)}</span>
+          </div>
+          <div className="bc-stat">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
+              <DollarSign size={13} style={{ color: "var(--bc-cyan)" }} />
+              <span className="bc-stat-label">Total Bond Value</span>
+            </div>
+            <span className="bc-stat-value">{fmtUSD(totalBond)}</span>
+          </div>
+          <div className="bc-stat">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
+              <Zap size={13} style={{ color: "var(--bc-cyan)" }} />
+              <span className="bc-stat-label">Parishes Indexed</span>
+            </div>
+            <span className="bc-stat-value">{PARISHES.length}</span>
+          </div>
         </div>
       </section>
 
-      {/* ── Search ── */}
-      <section className="container mb-12">
-        <div className="card-glass glow-border p-8">
-          {/* Search type toggle */}
-          <div className="flex gap-2 mb-5">
-            {(["name", "charge"] as const).map((type) => (
+      {/* ═══ SEARCH ═════════════════════════════════════════ */}
+      <section className="container" style={{ marginBottom: "2.5rem" }}>
+        <div className="bc-card" style={{ padding: "1.75rem" }}>
+
+          {/* Mode toggle */}
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem" }}>
+            {(["name", "charge"] as const).map((m) => (
               <button
-                key={type}
-                onClick={() => setSearchType(type)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                key={m}
+                onClick={() => setMode(m)}
+                className="bc-btn"
                 style={{
-                  backgroundColor:
-                    searchType === type
-                      ? "var(--color-primary)"
-                      : "var(--color-bg-tertiary)",
-                  color:
-                    searchType === type
-                      ? "#fff"
-                      : "var(--color-text-secondary)",
-                  border: "1px solid var(--color-border)",
+                  background: mode === m ? "var(--bc-blue)" : "var(--bc-surface2)",
+                  color: mode === m ? "#fff" : "var(--bc-text-2)",
+                  border: `1px solid ${mode === m ? "var(--bc-blue)" : "var(--bc-border)"}`,
+                  fontSize: "0.8rem",
+                  padding: "0.4rem 0.9rem",
                 }}
               >
-                {type === "name" ? (
-                  <User size={14} />
-                ) : (
-                  <FileText size={14} />
-                )}
-                {type === "name" ? "Search by Name" : "Search by Charge"}
+                {m === "name" ? <User size={13} /> : <FileText size={13} />}
+                {m === "name" ? "By Name" : "By Charge"}
               </button>
             ))}
           </div>
 
-          {/* Search input */}
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <Search
-                size={16}
-                className="absolute left-4 top-1/2 -translate-y-1/2"
-                style={{ color: "var(--color-text-tertiary)" }}
-              />
+          {/* Input row */}
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ position: "relative", flex: 1 }}>
+              <Search size={15} style={{
+                position: "absolute", left: "0.85rem", top: "50%",
+                transform: "translateY(-50%)", color: "var(--bc-text-3)",
+                pointerEvents: "none",
+              }} />
               <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  searchType === "name"
-                    ? "SMITH, JOHN  or  JOHN SMITH"
-                    : "DWI  or  THEFT  or  POSSESSION"
-                }
-                className="tech-input w-full pl-10"
-                style={{
-                  backgroundColor: "var(--color-bg-tertiary)",
-                  borderColor: "var(--color-border)",
-                  color: "var(--color-text)",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.05em",
-                }}
+                className="bc-input"
+                style={{ paddingLeft: "2.5rem" }}
+                value={query}
+                onChange={(e) => setQuery(e.target.value.toUpperCase())}
+                onKeyDown={onKey}
+                placeholder={mode === "name" ? "SMITH, JOHN  or  JOHN SMITH" : "DWI  or  THEFT  or  POSSESSION"}
               />
             </div>
             <button
-              onClick={handleVoiceSearch}
-              disabled={isListening}
-              className="btn-primary px-4"
-              style={{
-                backgroundColor: isListening
-                  ? "var(--color-accent)"
-                  : "var(--color-bg-tertiary)",
-                border: "1px solid var(--color-border)",
-              }}
+              onClick={voiceSearch}
+              disabled={listening}
+              className={`bc-btn-icon${listening ? " active" : ""}`}
               title="Voice search"
+              style={{ flexShrink: 0 }}
             >
-              <Mic
-                size={18}
-                style={{
-                  color: isListening
-                    ? "#fff"
-                    : "var(--color-text-secondary)",
-                }}
-                className={isListening ? "animate-pulse" : ""}
-              />
+              <Mic size={15} style={{ animation: listening ? "pulse 1s infinite" : "none" }} />
             </button>
             <button
-              onClick={handleSearch}
-              className="btn-primary px-6 font-semibold"
-              style={{ backgroundColor: "var(--color-primary)" }}
+              onClick={submit}
+              className="bc-btn bc-btn-primary"
+              style={{ flexShrink: 0, padding: "0.55rem 1.4rem" }}
             >
               Search
             </button>
           </div>
 
-          {isListening && (
-            <div
-              className="mt-4 p-3 rounded-lg animate-pulse"
-              style={{
-                backgroundColor: "rgba(0, 217, 255, 0.08)",
-                border: "1px solid rgba(0, 217, 255, 0.3)",
-              }}
-            >
-              <p
-                className="text-sm flex items-center gap-2"
-                style={{ color: "var(--color-accent)" }}
-              >
-                <Radio size={12} className="animate-pulse" />
-                Listening… speak the name or charge
-              </p>
+          {listening && (
+            <div style={{
+              marginTop: "0.75rem", padding: "0.6rem 0.9rem",
+              background: "var(--bc-cyan-dim)", border: "1px solid var(--bc-cyan-border)",
+              borderRadius: "var(--radius-md)", display: "flex", alignItems: "center", gap: "0.5rem",
+            }}>
+              <Radio size={12} style={{ color: "var(--bc-cyan)", animation: "pulse 1s infinite" }} />
+              <span style={{ fontSize: "0.8rem", color: "var(--bc-cyan)" }}>Listening… speak a name or charge</span>
             </div>
           )}
         </div>
       </section>
 
-      {/* ── Results ── */}
-      <section className="container mb-16">
-        {submittedQuery && (
-          <>
-            <div className="flex items-center justify-between mb-6">
-              <h2
-                className="text-xl font-bold"
-                style={{ color: "var(--color-text)" }}
-              >
-                Results for &ldquo;{submittedQuery}&rdquo;
-              </h2>
-              {!searchResults.isLoading && (
-                <span
-                  className="text-sm"
-                  style={{ color: "var(--color-text-tertiary)" }}
-                >
-                  {results.length} record{results.length !== 1 ? "s" : ""}{" "}
-                  found
-                </span>
-              )}
-            </div>
+      {/* ═══ RESULTS ════════════════════════════════════════ */}
+      <section className="container" style={{ marginBottom: "3rem" }}>
 
-            {searchResults.isLoading && (
-              <div className="card-glass p-12 text-center">
-                <div
-                  className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4"
-                  style={{ borderColor: "var(--color-primary)" }}
-                />
-                <p style={{ color: "var(--color-text-secondary)" }}>
-                  Searching across all parishes…
-                </p>
-              </div>
-            )}
-
-            {!searchResults.isLoading && results.length === 0 && (
-              <div className="card-glass p-12 text-center">
-                <AlertCircle
-                  className="mx-auto mb-4"
-                  size={36}
-                  style={{ color: "var(--color-warning)" }}
-                />
-                <p
-                  className="font-semibold mb-2"
-                  style={{ color: "var(--color-text)" }}
-                >
-                  No records found
-                </p>
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--color-text-secondary)" }}
-                >
-                  No inmates matching &ldquo;{submittedQuery}&rdquo; in the
-                  current roster. Try refreshing data or check the spelling.
-                </p>
-              </div>
-            )}
-
-            {results.length > 0 && (
-              <div className="grid gap-4">
-                {results.map((inmate: any, idx: number) => {
-                  const bond = inmate.bondAmount
-                    ? parseFloat(inmate.bondAmount)
-                    : null;
-                  const hasBond = bond !== null;
-                  return (
-                    <div
-                      key={idx}
-                      className="card-glass p-6"
-                      style={{
-                        borderLeft: `3px solid ${hasBond ? "var(--color-accent)" : "var(--color-warning)"}`,
-                      }}
-                    >
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3
-                              className="text-lg font-bold truncate"
-                              style={{
-                                color: "var(--color-text)",
-                                fontFamily: "var(--font-mono)",
-                              }}
-                            >
-                              {inmate.name}
-                            </h3>
-                            <span
-                              className="text-xs px-2 py-0.5 rounded-full shrink-0"
-                              style={{
-                                backgroundColor: hasBond
-                                  ? "rgba(0, 217, 255, 0.1)"
-                                  : "rgba(245, 158, 11, 0.1)",
-                                color: hasBond
-                                  ? "var(--color-accent)"
-                                  : "var(--color-warning)",
-                                border: `1px solid ${hasBond ? "rgba(0, 217, 255, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
-                              }}
-                            >
-                              {hasBond ? "Bond Set" : "No Bond"}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm mb-3">
-                            <span
-                              className="flex items-center gap-1"
-                              style={{ color: "var(--color-text-tertiary)" }}
-                            >
-                              <MapPin size={12} />
-                              {inmate.parish} Parish
-                            </span>
-                            <span
-                              className="flex items-center gap-1"
-                              style={{ color: "var(--color-text-tertiary)" }}
-                            >
-                              <Clock size={12} />
-                              {inmate.bookingTime
-                                ? new Date(
-                                    inmate.bookingTime
-                                  ).toLocaleDateString()
-                                : "Unknown"}
-                            </span>
-                            {inmate.externalBookingId && (
-                              <span
-                                className="font-mono"
-                                style={{
-                                  color: "var(--color-text-tertiary)",
-                                  fontSize: "11px",
-                                }}
-                              >
-                                #{inmate.externalBookingId}
-                              </span>
-                            )}
-                          </div>
-                          {inmate.chargesText && (
-                            <p
-                              className="text-xs truncate"
-                              style={{ color: "var(--color-text-secondary)" }}
-                            >
-                              <span
-                                style={{
-                                  color: "var(--color-text-tertiary)",
-                                }}
-                              >
-                                Charges:{" "}
-                              </span>
-                              {inmate.chargesText}
-                            </p>
-                          )}
-                        </div>
-                        <div className="text-right shrink-0">
-                          {hasBond ? (
-                            <>
-                              <p
-                                className="text-2xl font-bold gradient-text"
-                                style={{ fontFamily: "var(--font-mono)" }}
-                              >
-                                ${bond!.toLocaleString()}
-                              </p>
-                              <p
-                                className="text-xs"
-                                style={{
-                                  color: "var(--color-text-tertiary)",
-                                }}
-                              >
-                                Bond Amount
-                              </p>
-                            </>
-                          ) : (
-                            <p
-                              className="text-sm"
-                              style={{ color: "var(--color-warning)" }}
-                            >
-                              Bond N/A
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Feature cards when no search */}
-        {!submittedQuery && (
-          <div className="grid md:grid-cols-3 gap-6">
+        {/* ── No query: feature cards ── */}
+        {!submitted && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.75rem" }}>
             {[
-              {
-                icon: Search,
-                title: "Name Search",
-                desc: 'Enter "LAST, FIRST" or any partial name to find inmates across all parishes',
-              },
-              {
-                icon: FileText,
-                title: "Charge Search",
-                desc: 'Search by offense type — "DWI", "THEFT", "POSSESSION" — across all parishes',
-              },
-              {
-                icon: Mic,
-                title: "Voice Search",
-                desc: "Tap the mic and speak a name or charge for hands-free lookup",
-              },
+              { icon: Search,   title: "Name Search",   desc: 'Enter "LAST, FIRST" or any partial name to find inmates across all parishes.' },
+              { icon: FileText, title: "Charge Search",  desc: 'Search by offense — "DWI", "THEFT", "POSSESSION" — across all parishes.' },
+              { icon: Mic,      title: "Voice Search",   desc: "Tap the mic and speak a name or charge for hands-free lookup." },
             ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="card-glass p-6">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "rgba(0, 217, 255, 0.1)" }}
-                >
-                  <Icon size={20} style={{ color: "var(--color-accent)" }} />
+              <div key={title} className="bc-card" style={{ padding: "1.25rem" }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 8,
+                  background: "var(--bc-cyan-dim)", border: "1px solid var(--bc-cyan-border)",
+                  display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem",
+                }}>
+                  <Icon size={16} style={{ color: "var(--bc-cyan)" }} />
                 </div>
-                <h3
-                  className="font-bold mb-2"
-                  style={{ color: "var(--color-text)" }}
-                >
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "0.9rem", color: "var(--bc-text)", marginBottom: "0.35rem" }}>
                   {title}
-                </h3>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "var(--color-text-secondary)" }}
-                >
-                  {desc}
                 </p>
+                <p style={{ fontSize: "0.8rem", color: "var(--bc-text-2)", lineHeight: 1.55 }}>{desc}</p>
               </div>
             ))}
           </div>
         )}
+
+        {/* ── Loading ── */}
+        {submitted && search.isLoading && (
+          <div className="bc-card" style={{ padding: "3rem", textAlign: "center" }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: "50%",
+              border: "2px solid var(--bc-blue)", borderTopColor: "transparent",
+              animation: "spin 0.7s linear infinite", margin: "0 auto 0.75rem",
+            }} />
+            <p style={{ color: "var(--bc-text-2)", fontSize: "0.875rem" }}>Searching across all parishes…</p>
+          </div>
+        )}
+
+        {/* ── Empty ── */}
+        {submitted && !search.isLoading && results.length === 0 && (
+          <div className="bc-card" style={{ padding: "3rem", textAlign: "center" }}>
+            <AlertTriangle size={32} style={{ color: "var(--bc-amber)", margin: "0 auto 0.75rem" }} />
+            <p style={{ fontWeight: 600, color: "var(--bc-text)", marginBottom: "0.35rem" }}>No records found</p>
+            <p style={{ fontSize: "0.85rem", color: "var(--bc-text-2)" }}>
+              No inmates matching &ldquo;{submitted}&rdquo; in the current roster. Try refreshing data or check the spelling.
+            </p>
+          </div>
+        )}
+
+        {/* ── Results ── */}
+        {results.length > 0 && (
+          <>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.05rem", color: "var(--bc-text)" }}>
+                {results.length} record{results.length !== 1 ? "s" : ""} for &ldquo;{submitted}&rdquo;
+              </p>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {results.map((inmate: any, idx: number) => {
+                const bond = inmate.bondAmount ? parseFloat(inmate.bondAmount) : null;
+                return (
+                  <div
+                    key={idx}
+                    className="bc-card bc-fade-up"
+                    style={{
+                      padding: "1.1rem 1.25rem",
+                      borderLeft: `3px solid ${bond ? "var(--bc-cyan)" : "var(--bc-amber)"}`,
+                      animationDelay: `${idx * 40}ms`,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+                      {/* Left: name + meta */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.4rem", flexWrap: "wrap" }}>
+                          <span style={{
+                            fontFamily: "var(--font-mono)", fontWeight: 500, fontSize: "0.95rem",
+                            color: "var(--bc-text)", letterSpacing: "0.03em",
+                          }}>
+                            {inmate.name}
+                          </span>
+                          <span className={`bc-badge ${bond ? "bc-badge-cyan" : "bc-badge-amber"}`}>
+                            {bond ? <CheckCircle2 size={9} /> : <AlertTriangle size={9} />}
+                            {bond ? "Bond Set" : "No Bond"}
+                          </span>
+                        </div>
+
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
+                          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                            <MapPin size={11} />
+                            {inmate.parish} Parish
+                          </span>
+                          {inmate.bookingTime && (
+                            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                              <Clock size={11} />
+                              {new Date(inmate.bookingTime).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </span>
+                          )}
+                          {inmate.externalBookingId && (
+                            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontFamily: "var(--font-mono)", fontSize: "0.72rem" }}>
+                              <Hash size={10} />
+                              {inmate.externalBookingId}
+                            </span>
+                          )}
+                        </div>
+
+                        {inmate.chargesText && (
+                          <p style={{ marginTop: "0.45rem", fontSize: "0.78rem", color: "var(--bc-text-2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "40ch" }}>
+                            <span style={{ color: "var(--bc-text-3)" }}>Charges: </span>
+                            {inmate.chargesText}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Right: bond amount */}
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        {bond ? (
+                          <>
+                            <p style={{ fontFamily: "var(--font-display)", fontSize: "1.35rem", fontWeight: 700, color: "var(--bc-cyan)", letterSpacing: "-0.02em" }}>
+                              ${bond.toLocaleString()}
+                            </p>
+                            <p style={{ fontSize: "0.7rem", color: "var(--bc-text-3)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Bond</p>
+                          </>
+                        ) : (
+                          <p style={{ fontSize: "0.8rem", color: "var(--bc-amber)" }}>N/A</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </section>
 
-      {/* ── Parish Source Status ── */}
-      <section className="container mb-16">
-        <h2
-          className="text-lg font-bold mb-4"
-          style={{ color: "var(--color-text)" }}
-        >
-          Parish Source Status
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {Object.entries(PARISH_META).map(([parish, meta]) => (
+      {/* ═══ PARISH STATUS ══════════════════════════════════ */}
+      <section className="container" style={{ marginBottom: "4rem" }}>
+        <p className="bc-section-title">Parish Source Index</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "0.5rem" }}>
+          {PARISHES.map((p) => (
             <div
-              key={parish}
-              className="card-glass p-4 flex items-center justify-between"
+              key={p.name}
+              className="bc-card"
+              style={{ padding: "0.85rem 1rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}
             >
-              <div>
-                <p
-                  className="font-semibold text-sm"
-                  style={{ color: "var(--color-text)" }}
-                >
-                  {parish} Parish
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontWeight: 500, fontSize: "0.85rem", color: "var(--bc-text)", marginBottom: "0.15rem" }}>
+                  {p.name} Parish
                 </p>
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--color-text-tertiary)" }}
-                >
-                  {meta.platform}
+                <p style={{ fontSize: "0.7rem", color: "var(--bc-text-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {p.platform}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                {meta.bondAvailable ? (
-                  <span
-                    className="flex items-center gap-1 text-xs px-2 py-1 rounded-full"
-                    style={{
-                      backgroundColor: "rgba(0, 217, 255, 0.1)",
-                      color: "var(--color-accent)",
-                    }}
-                  >
-                    <CheckCircle size={10} />
-                    Bond
-                  </span>
-                ) : (
-                  <span
-                    className="flex items-center gap-1 text-xs px-2 py-1 rounded-full"
-                    style={{
-                      backgroundColor: "rgba(245, 158, 11, 0.1)",
-                      color: "var(--color-warning)",
-                    }}
-                  >
-                    <XCircle size={10} />
-                    No Bond
-                  </span>
-                )}
-              </div>
+              <span className={`bc-badge ${p.bond ? "bc-badge-cyan" : "bc-badge-amber"}`} style={{ flexShrink: 0 }}>
+                {p.bond ? <CheckCircle2 size={9} /> : <AlertTriangle size={9} />}
+                {p.bond ? "Bond" : "No Bond"}
+              </span>
             </div>
           ))}
         </div>
-        <p
-          className="text-xs mt-3"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          * Plaquemines, St. Bernard, and Orleans use the LA VINE / Appriss
-          platform which does not expose bond amounts on public rosters.
-          Jefferson Parish bond data confirmed but requires Playwright in
-          production.
+        <p style={{ marginTop: "0.6rem", fontSize: "0.72rem", color: "var(--bc-text-3)", lineHeight: 1.5 }}>
+          Plaquemines, St. Bernard, and Orleans use the LA VINE / Appriss platform which does not expose bond amounts on public rosters.
+          Jefferson Parish bond data is confirmed but requires Playwright in production.
         </p>
       </section>
 
-      {/* ── Footer ── */}
-      <footer
-        className="border-t"
-        style={{ borderColor: "var(--color-border)" }}
-      >
-        <div
-          className="container py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
-          style={{ color: "var(--color-text-tertiary)" }}
-        >
-          <p>BondCurrent &copy; 2026 &mdash; AI-Powered Bond Intelligence</p>
-          <p>
-            Data sourced from official Louisiana parish sheriff rosters &amp;
-            LA VINE
+      {/* ═══ FOOTER ═════════════════════════════════════════ */}
+      <footer style={{ borderTop: "1px solid var(--bc-border)", padding: "1.5rem 0" }}>
+        <div className="container" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
+          <p style={{ fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
+            BondCurrent &copy; 2026 &mdash; AI-Powered Bond Intelligence
+          </p>
+          <p style={{ fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
+            Data sourced from official Louisiana parish sheriff rosters &amp; LA VINE
           </p>
         </div>
       </footer>
+
     </div>
   );
 }

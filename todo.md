@@ -28,3 +28,15 @@
 - [ ] Jefferson Parish Playwright adapter (blocked in sandbox, works in production)
 - [ ] St. John Baptist Parish adapter (Zuercher portal)
 - [ ] St. James Parish adapter (domain not resolving)
+
+## Frontend Design Cleanup
+- [x] Audit and fix CSS theme — tighten color palette, fix inconsistencies
+- [x] Improve typography hierarchy — Syne display, DM Sans body, DM Mono data
+- [x] Fix navbar — cleaner layout, better logo treatment
+- [x] Fix hero section — remove clutter, stronger headline
+- [x] Fix stats bar — better card design, cleaner numbers
+- [x] Fix search section — cleaner input, better toggle buttons
+- [x] Fix results cards — better information hierarchy
+- [x] Fix parish status panel — cleaner grid layout
+- [x] Fix footer — minimal and clean
+- [x] Ensure no invisible text or color mismatches
