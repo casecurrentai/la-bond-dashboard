@@ -63,6 +63,11 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return getBookings(input);
       }),
+    search: publicProcedure
+      .input(z.object({ name: z.string().min(1) }))
+      .query(async ({ input }) => {
+        return getBookings({ search: input.name, limit: 100 });
+      }),
     byId: publicProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {
