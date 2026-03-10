@@ -26,7 +26,12 @@
 - [ ] Build email/SMS notification system for bond alerts
 - [ ] Bond detail view with charge history
 - [ ] Jefferson Parish Playwright adapter (blocked in sandbox, works in production)
-- [ ] St. John Baptist Parish adapter (Zuercher portal)
+- [x] St. John Baptist Parish adapter (Zuercher Portal REST API — 206 records, no bond field on public API)
+- [x] Voice-agent REST API (GET /api/voice/search, GET /api/voice/inmate/:id, GET /api/voice/parishes, GET /api/voice/stats, GET /api/voice/schema)
+- [x] OpenAPI JSON schema for voice agent endpoints
+- [x] CORS headers for voice agent external access
+- [x] Tests for St. John adapter and voice API (43/43 passing)
+- [x] Checkpoint and publish live
 - [ ] St. James Parish adapter (domain not resolving)
 
 ## Frontend Design Cleanup
