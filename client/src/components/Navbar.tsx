@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Shield, BarChart3, Activity, Menu, X } from "lucide-react";
+import { Shield, BarChart3, Activity, Menu, X, FileText } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: BarChart3 },
   { href: "/bookings", label: "Bookings", icon: Shield },
   { href: "/activity", label: "Activity", icon: Activity },
+  { href: "/handoff", label: "Handoff", icon: FileText },
 ];
 
 export default function Navbar() {
