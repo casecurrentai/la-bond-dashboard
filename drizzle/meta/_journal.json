@@ -15,6 +15,13 @@
       "when": 1772057694371,
       "tag": "0001_smart_sunspot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1773725566701,
+      "tag": "0002_swift_morlocks",
+      "breakpoints": true
     }
   ]
 }

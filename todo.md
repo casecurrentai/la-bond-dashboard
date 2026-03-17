@@ -26,12 +26,7 @@
 - [ ] Build email/SMS notification system for bond alerts
 - [ ] Bond detail view with charge history
 - [ ] Jefferson Parish Playwright adapter (blocked in sandbox, works in production)
-- [x] St. John Baptist Parish adapter (Zuercher Portal REST API — 206 records, no bond field on public API)
-- [x] Voice-agent REST API (GET /api/voice/search, GET /api/voice/inmate/:id, GET /api/voice/parishes, GET /api/voice/stats, GET /api/voice/schema)
-- [x] OpenAPI JSON schema for voice agent endpoints
-- [x] CORS headers for voice agent external access
-- [x] Tests for St. John adapter and voice API (43/43 passing)
-- [x] Checkpoint and publish live
+- [ ] St. John Baptist Parish adapter (Zuercher portal)
 - [ ] St. James Parish adapter (domain not resolving)
 
 ## Frontend Design Cleanup
@@ -45,3 +40,29 @@
 - [x] Fix parish status panel — cleaner grid layout
 - [x] Fix footer — minimal and clean
 - [x] Ensure no invisible text or color mismatches
+
+## B2B SaaS Pivot (Voice Screener Platform)
+- [x] Extend DB schema: voice_api_calls, voice_calls, companies, voice_agent_configs, api_usage, roster_cache
+- [x] POST /api/v1/voice-screener endpoint with premium calc and qualification logic
+- [ ] GET /api/v1/parishes endpoint
+- [x] Marketing landing page: hero, features, how-it-works, pricing, CTA, footer
+- [ ] /pricing page with feature comparison table
+- [ ] /how-it-works page
+- [ ] /parishes page with coverage map
+- [ ] Dashboard layout with sidebar nav
+- [ ] Dashboard home: metrics cards, recent calls table, call volume chart, parish activity
+- [ ] Call logs page: filters, sortable table, CSV export
+- [ ] Call detail page: caller info, inmate info, recording player, transcript, AI summary
+- [ ] Configuration page: voice settings, financial settings, parish coverage, API key
+- [ ] Billing page: subscription info, usage meter, billing history
+- [ ] Mock data: realistic call logs, transcripts, recordings
+- [x] Auth guard: redirect unauthenticated users to login
+- [ ] Tests for voice screener API
+- [x] Checkpoint and publish
+
+## CaseCurrent Branding Match
+- [x] Capture CaseCurrent.co colors, fonts, nav, hero, sections
+- [x] Update CSS design system to match CaseCurrent branding
+- [x] Rebuild marketing landing page matching CaseCurrent layout
+- [x] Build authenticated SaaS dashboard with call logs
+- [x] Checkpoint and publish

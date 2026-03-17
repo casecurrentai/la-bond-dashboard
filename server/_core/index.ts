@@ -7,7 +7,8 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import voiceApiRouter from "../voice-api";
+import { voiceScreenerRouter } from "../voice-screener";
+import { voiceApiRouter } from "../voice-api";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -36,9 +37,10 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
-  // Voice Agent REST API
+  // Voice Screener API (for Vapi, Retell, Bland)
+  app.use("/api/v1/voice-screener", voiceScreenerRouter);
+  // Voice REST API (public endpoints)
   app.use("/api/voice", voiceApiRouter);
-
   // tRPC API
   app.use(
     "/api/trpc",

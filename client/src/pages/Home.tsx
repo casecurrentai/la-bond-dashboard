@@ -1,449 +1,1274 @@
-import { useState, useCallback } from "react";
-import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import {
-  Mic,
-  Search,
-  Shield,
-  Zap,
-  Radio,
+  ArrowRight,
   CheckCircle2,
-  AlertTriangle,
+  ChevronRight,
   Clock,
   DollarSign,
-  User,
   FileText,
   MapPin,
-  RefreshCw,
-  ChevronRight,
-  Hash,
+  Mic,
+  Phone,
+  PhoneCall,
+  Radio,
+  Search,
+  Shield,
+  Sparkles,
+  Zap,
 } from "lucide-react";
-import { toast } from "sonner";
+import { useLocation } from "wouter";
 
-/* ── Parish metadata ─────────────────────────────────────── */
-const PARISHES = [
-  { name: "St. Mary",     bond: true,  platform: "Most Wanted CMS" },
-  { name: "Allen",        bond: true,  platform: "Most Wanted CMS" },
-  { name: "Evangeline",   bond: true,  platform: "Most Wanted CMS" },
-  { name: "Plaquemines",  bond: false, platform: "LA VINE / Appriss" },
-  { name: "St. Bernard",  bond: false, platform: "LA VINE / Appriss" },
-  { name: "Orleans",      bond: false, platform: "Appriss OCV API" },
-  { name: "Jefferson",    bond: true,  platform: "JPSO Custom (Playwright)" },
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+const FEATURES = [
+  {
+    icon: PhoneCall,
+    title: "Voice Agent Screener",
+    desc: "Plug BondCurrent into Vapi, Retell, or Bland. Your AI agent looks up the inmate, calculates the premium, and qualifies the caller — all before a human picks up.",
+    badge: "Core Feature",
+    badgeColor: "bc-badge-indigo",
+  },
+  {
+    icon: Search,
+    title: "Real-Time Inmate Lookup",
+    desc: "Live data from 7 Louisiana parishes including St. John the Baptist via the Zuercher Portal. No stale PDFs — every lookup hits the source.",
+    badge: "7 Parishes",
+    badgeColor: "bc-badge-cyan",
+  },
+  {
+    icon: DollarSign,
+    title: "Instant Bond Calculation",
+    desc: "Bond amounts, 10% premium, payment plan eligibility — computed in milliseconds and returned as TTS-ready sentences your voice agent can speak directly.",
+    badge: "TTS-Ready",
+    badgeColor: "bc-badge-green",
+  },
+  {
+    icon: FileText,
+    title: "Call Logs & Audit Trail",
+    desc: "Every screener call is logged with inmate name, bond amount, decision, and response time. Full history for compliance and performance review.",
+    badge: "Compliance",
+    badgeColor: "bc-badge-amber",
+  },
+  {
+    icon: Zap,
+    title: "Sub-Second Response",
+    desc: "Cached roster data means most lookups return in under 200ms. Even live scrapes complete in under 3 seconds — fast enough for real-time call flow.",
+    badge: "< 200ms",
+    badgeColor: "bc-badge-indigo",
+  },
+  {
+    icon: Shield,
+    title: "API Key Auth",
+    desc: "Each agency gets a unique API key. Rotate keys, track usage per billing period, and set per-agency premium rates and minimum thresholds.",
+    badge: "Secure",
+    badgeColor: "bc-badge-cyan",
+  },
 ];
 
-/* ── Helpers ─────────────────────────────────────────────── */
-function fmt(n: number) {
-  return n.toLocaleString("en-US");
-}
-function fmtUSD(n: number) {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000)     return `$${(n / 1_000).toFixed(0)}K`;
-  return `$${n}`;
-}
+const HOW_IT_WORKS = [
+  {
+    step: "01",
+    title: "Caller dials your bondsman line",
+    desc: "Your Vapi or Retell voice agent answers the call and greets the caller.",
+  },
+  {
+    step: "02",
+    title: "Agent collects inmate details",
+    desc: "The voice agent asks for the inmate name and parish, then calls the BondCurrent screener API.",
+  },
+  {
+    step: "03",
+    title: "BondCurrent looks up the inmate",
+    desc: "We hit the live parish roster, find the inmate, pull the bond amount and charges.",
+  },
+  {
+    step: "04",
+    title: "Decision returned in real-time",
+    desc: "QUALIFIED, PAYMENT_PLAN_ELIGIBLE, or UNQUALIFIED — with a TTS-ready voice prompt your agent speaks immediately.",
+  },
+  {
+    step: "05",
+    title: "Qualified callers get transferred",
+    desc: "Your agent transfers the call to a licensed bondsman. Unqualified callers hear a polite close. Everything is logged.",
+  },
+];
 
-export default function Home() {
-  const [query, setQuery]           = useState("");
-  const [submitted, setSubmitted]   = useState("");
-  const [mode, setMode]             = useState<"name" | "charge">("name");
-  const [listening, setListening]   = useState(false);
-  const [scraping, setScraping]     = useState(false);
+const PARISHES = [
+  { name: "St. John the Baptist", bond: true,  note: "206 live records · Zuercher Portal" },
+  { name: "St. Mary",             bond: true,  note: "Bond amounts · Most Wanted CMS" },
+  { name: "Allen",                bond: true,  note: "Bond amounts · Most Wanted CMS" },
+  { name: "Evangeline",           bond: true,  note: "Bond amounts · Most Wanted CMS" },
+  { name: "Jefferson",            bond: true,  note: "Bond amounts · Zuercher Portal" },
+  { name: "Plaquemines",          bond: false, note: "Custody status · LA VINE" },
+  { name: "St. Bernard",          bond: false, note: "Custody status · LA VINE" },
+  { name: "Orleans",              bond: false, note: "Custody status · Appriss OCV" },
+];
 
-  /* ── tRPC ── */
-  const stats    = trpc.dashboard.stats.useQuery();
-  const search   = trpc.bookings.search.useQuery(
-    { name: mode === "name" ? submitted : undefined,
-      charge: mode === "charge" ? submitted : undefined },
-    { enabled: submitted.length >= 2 }
-  );
-  const scrapeAll = trpc.scrape.all.useMutation({
-    onSuccess: (res) => {
-      const ok = res.filter((r: any) => r.status === "success").length;
-      toast.success(`Refreshed ${ok} / ${res.length} sources`);
-      stats.refetch();
-      setScraping(false);
-    },
-    onError: (e) => { toast.error(e.message); setScraping(false); },
-  });
+const PLANS = [
+  {
+    name: "Starter",
+    price: "$149",
+    period: "/mo",
+    desc: "Perfect for solo bondsmen getting started with voice screening.",
+    features: [
+      "500 screener API calls/mo",
+      "3 parishes covered",
+      "Call log dashboard",
+      "Email support",
+      "1 API key",
+    ],
+    cta: "Start Free Trial",
+    highlight: false,
+  },
+  {
+    name: "Pro",
+    price: "$349",
+    period: "/mo",
+    desc: "For active agencies handling 20+ calls per day.",
+    features: [
+      "5,000 screener API calls/mo",
+      "All 7 parishes",
+      "Real-time call logs",
+      "Payment plan qualification",
+      "Priority support",
+      "3 API keys",
+    ],
+    cta: "Start Free Trial",
+    highlight: true,
+  },
+  {
+    name: "Agency",
+    price: "$799",
+    period: "/mo",
+    desc: "Multi-agent operations with custom configuration.",
+    features: [
+      "Unlimited API calls",
+      "All 7 parishes",
+      "Custom premium rates",
+      "Webhook integrations",
+      "Dedicated onboarding",
+      "Unlimited API keys",
+    ],
+    cta: "Contact Sales",
+    highlight: false,
+  },
+];
 
-  /* ── Handlers ── */
-  const submit = useCallback(() => {
-    const q = query.trim().toUpperCase();
-    if (q.length >= 2) setSubmitted(q);
-  }, [query]);
+// ── Nav ────────────────────────────────────────────────────────────────────────
 
-  const onKey = (e: React.KeyboardEvent) => { if (e.key === "Enter") submit(); };
-
-  const voiceSearch = () => {
-    const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    if (!SR) { toast.error("Voice search not supported in this browser"); return; }
-    setListening(true);
-    const r = new SR();
-    r.onresult = (e: any) => {
-      const t = e.results[0][0].transcript.toUpperCase();
-      setQuery(t);
-      setSubmitted(t);
-    };
-    r.onerror = r.onend = () => setListening(false);
-    r.start();
-  };
-
-  const results       = search.data?.items ?? [];
-  const totalBookings = stats.data?.totalBookings ?? 0;
-  const totalBond     = stats.data?.totalBondValue ?? 0;
-  const parishes      = stats.data?.parishBreakdown ?? [];
+function Nav() {
+  const { user, logout } = useAuth();
+  const [, setLocation] = useLocation();
 
   return (
-    <div style={{ backgroundColor: "var(--bc-bg)", minHeight: "100vh" }}>
-
-      {/* ═══ NAV ════════════════════════════════════════════ */}
-      <header style={{
-        position: "sticky", top: 0, zIndex: 50,
-        backgroundColor: "rgba(8, 13, 20, 0.9)",
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        backgroundColor: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--bc-border)",
-      }}>
-        <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.85rem 1.25rem" }}>
-          {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 8,
-              background: "linear-gradient(135deg, var(--bc-blue), #7c3aed)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <Shield size={15} color="#fff" />
-            </div>
-            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.1rem", color: "var(--bc-text)" }}>
-              Bond<span style={{ color: "var(--bc-cyan)" }}>Current</span>
-            </span>
+        borderBottom: "1px solid hsl(var(--border))",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          height: 64,
+        }}
+      >
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 9,
+              background: "linear-gradient(135deg, #6366f1, #818cf8)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(99,102,241,0.35)",
+            }}
+          >
+            <Shield size={16} color="#fff" />
           </div>
-
-          {/* Right controls */}
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "var(--bc-green)", animation: "pulse 2s infinite" }} />
-              <span style={{ fontSize: "0.75rem", color: "var(--bc-text-3)" }}>
-                {parishes.length} sources live
-              </span>
-            </div>
-            <button
-              onClick={() => { setScraping(true); scrapeAll.mutate(); }}
-              disabled={scraping}
-              className="bc-btn bc-btn-ghost"
-              style={{ fontSize: "0.75rem", padding: "0.35rem 0.75rem" }}
-            >
-              <RefreshCw size={12} style={{ animation: scraping ? "spin 1s linear infinite" : "none" }} />
-              {scraping ? "Refreshing…" : "Refresh"}
-            </button>
-          </div>
+          <span
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              color: "hsl(var(--foreground))",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Bond<span style={{ color: "var(--bc-indigo)" }}>Current</span>
+          </span>
         </div>
-      </header>
 
-      {/* ═══ HERO ═══════════════════════════════════════════ */}
-      <section style={{ padding: "4rem 0 2.5rem", position: "relative", overflow: "hidden" }}>
-        {/* Subtle radial glow */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(37,99,235,0.18), transparent)",
-        }} />
-        <div className="container" style={{ textAlign: "center", position: "relative" }}>
-          <div className="bc-badge bc-badge-cyan" style={{ marginBottom: "1.25rem", display: "inline-flex" }}>
-            <Radio size={9} style={{ animation: "pulse 2s infinite" }} />
-            Louisiana River Parishes · Real-Time
-          </div>
+        {/* Nav links */}
+        <nav
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1.75rem",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            color: "hsl(var(--muted-foreground))",
+          }}
+          className="hidden md:flex"
+        >
+          <a href="#features" style={{ textDecoration: "none", color: "inherit" }}>
+            Features
+          </a>
+          <a href="#how-it-works" style={{ textDecoration: "none", color: "inherit" }}>
+            How It Works
+          </a>
+          <a href="#parishes" style={{ textDecoration: "none", color: "inherit" }}>
+            Coverage
+          </a>
+          <a href="#pricing" style={{ textDecoration: "none", color: "inherit" }}>
+            Pricing
+          </a>
+        </nav>
 
-          <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", marginBottom: "0.75rem" }}>
-            <span className="bc-gradient-text">BondCurrent</span>
-          </h1>
-
-          <p style={{ fontSize: "1.05rem", color: "var(--bc-text-2)", maxWidth: 520, margin: "0 auto 0.5rem" }}>
-            Search inmate bond records across Louisiana parishes by name or charge.
-          </p>
-          <p style={{ fontSize: "0.8rem", color: "var(--bc-text-3)" }}>
-            Voice-enabled · Updated every 30 minutes · 7 parishes indexed
-          </p>
-        </div>
-      </section>
-
-      {/* ═══ STATS ══════════════════════════════════════════ */}
-      <section className="container" style={{ marginBottom: "2rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem" }}>
-          <div className="bc-stat">
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
-              <User size={13} style={{ color: "var(--bc-cyan)" }} />
-              <span className="bc-stat-label">Active Bookings</span>
-            </div>
-            <span className="bc-stat-value">{fmt(totalBookings)}</span>
-          </div>
-          <div className="bc-stat">
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
-              <DollarSign size={13} style={{ color: "var(--bc-cyan)" }} />
-              <span className="bc-stat-label">Total Bond Value</span>
-            </div>
-            <span className="bc-stat-value">{fmtUSD(totalBond)}</span>
-          </div>
-          <div className="bc-stat">
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
-              <Zap size={13} style={{ color: "var(--bc-cyan)" }} />
-              <span className="bc-stat-label">Parishes Indexed</span>
-            </div>
-            <span className="bc-stat-value">{PARISHES.length}</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ SEARCH ═════════════════════════════════════════ */}
-      <section className="container" style={{ marginBottom: "2.5rem" }}>
-        <div className="bc-card" style={{ padding: "1.75rem" }}>
-
-          {/* Mode toggle */}
-          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem" }}>
-            {(["name", "charge"] as const).map((m) => (
+        {/* Auth buttons */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          {user ? (
+            <>
               <button
-                key={m}
-                onClick={() => setMode(m)}
-                className="bc-btn"
+                onClick={() => setLocation("/dashboard")}
+                className="bc-btn-primary"
+                style={{ fontSize: "0.875rem", padding: "0.5rem 1rem" }}
+              >
+                Dashboard
+                <ChevronRight size={14} />
+              </button>
+            </>
+          ) : (
+            <>
+              <a
+                href={getLoginUrl()}
                 style={{
-                  background: mode === m ? "var(--bc-blue)" : "var(--bc-surface2)",
-                  color: mode === m ? "#fff" : "var(--bc-text-2)",
-                  border: `1px solid ${mode === m ? "var(--bc-blue)" : "var(--bc-border)"}`,
-                  fontSize: "0.8rem",
-                  padding: "0.4rem 0.9rem",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                  color: "hsl(var(--foreground))",
+                  textDecoration: "none",
                 }}
               >
-                {m === "name" ? <User size={13} /> : <FileText size={13} />}
-                {m === "name" ? "By Name" : "By Charge"}
-              </button>
-            ))}
-          </div>
-
-          {/* Input row */}
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <Search size={15} style={{
-                position: "absolute", left: "0.85rem", top: "50%",
-                transform: "translateY(-50%)", color: "var(--bc-text-3)",
-                pointerEvents: "none",
-              }} />
-              <input
-                className="bc-input"
-                style={{ paddingLeft: "2.5rem" }}
-                value={query}
-                onChange={(e) => setQuery(e.target.value.toUpperCase())}
-                onKeyDown={onKey}
-                placeholder={mode === "name" ? "SMITH, JOHN  or  JOHN SMITH" : "DWI  or  THEFT  or  POSSESSION"}
-              />
-            </div>
-            <button
-              onClick={voiceSearch}
-              disabled={listening}
-              className={`bc-btn-icon${listening ? " active" : ""}`}
-              title="Voice search"
-              style={{ flexShrink: 0 }}
-            >
-              <Mic size={15} style={{ animation: listening ? "pulse 1s infinite" : "none" }} />
-            </button>
-            <button
-              onClick={submit}
-              className="bc-btn bc-btn-primary"
-              style={{ flexShrink: 0, padding: "0.55rem 1.4rem" }}
-            >
-              Search
-            </button>
-          </div>
-
-          {listening && (
-            <div style={{
-              marginTop: "0.75rem", padding: "0.6rem 0.9rem",
-              background: "var(--bc-cyan-dim)", border: "1px solid var(--bc-cyan-border)",
-              borderRadius: "var(--radius-md)", display: "flex", alignItems: "center", gap: "0.5rem",
-            }}>
-              <Radio size={12} style={{ color: "var(--bc-cyan)", animation: "pulse 1s infinite" }} />
-              <span style={{ fontSize: "0.8rem", color: "var(--bc-cyan)" }}>Listening… speak a name or charge</span>
-            </div>
+                Sign in
+              </a>
+              <a
+                href={getLoginUrl()}
+                className="bc-btn-primary"
+                style={{
+                  fontSize: "0.875rem",
+                  padding: "0.5rem 1rem",
+                  textDecoration: "none",
+                }}
+              >
+                Get Started Free
+              </a>
+            </>
           )}
         </div>
-      </section>
+      </div>
+    </header>
+  );
+}
 
-      {/* ═══ RESULTS ════════════════════════════════════════ */}
-      <section className="container" style={{ marginBottom: "3rem" }}>
+// ── Hero ───────────────────────────────────────────────────────────────────────
 
-        {/* ── No query: feature cards ── */}
-        {!submitted && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.75rem" }}>
-            {[
-              { icon: Search,   title: "Name Search",   desc: 'Enter "LAST, FIRST" or any partial name to find inmates across all parishes.' },
-              { icon: FileText, title: "Charge Search",  desc: 'Search by offense — "DWI", "THEFT", "POSSESSION" — across all parishes.' },
-              { icon: Mic,      title: "Voice Search",   desc: "Tap the mic and speak a name or charge for hands-free lookup." },
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bc-card" style={{ padding: "1.25rem" }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: 8,
-                  background: "var(--bc-cyan-dim)", border: "1px solid var(--bc-cyan-border)",
-                  display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem",
-                }}>
-                  <Icon size={16} style={{ color: "var(--bc-cyan)" }} />
-                </div>
-                <p style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "0.9rem", color: "var(--bc-text)", marginBottom: "0.35rem" }}>
-                  {title}
-                </p>
-                <p style={{ fontSize: "0.8rem", color: "var(--bc-text-2)", lineHeight: 1.55 }}>{desc}</p>
-              </div>
-            ))}
-          </div>
-        )}
+function Hero() {
+  const { user } = useAuth();
 
-        {/* ── Loading ── */}
-        {submitted && search.isLoading && (
-          <div className="bc-card" style={{ padding: "3rem", textAlign: "center" }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: "50%",
-              border: "2px solid var(--bc-blue)", borderTopColor: "transparent",
-              animation: "spin 0.7s linear infinite", margin: "0 auto 0.75rem",
-            }} />
-            <p style={{ color: "var(--bc-text-2)", fontSize: "0.875rem" }}>Searching across all parishes…</p>
-          </div>
-        )}
+  return (
+    <section
+      style={{
+        padding: "6rem 0 5rem",
+        position: "relative",
+        overflow: "hidden",
+        background: "linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%)",
+      }}
+    >
+      {/* Background grid */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage:
+            "linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          opacity: 0.4,
+          pointerEvents: "none",
+        }}
+      />
+      {/* Indigo glow */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "80vw",
+          height: "60vh",
+          background:
+            "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)",
+          pointerEvents: "none",
+        }}
+      />
 
-        {/* ── Empty ── */}
-        {submitted && !search.isLoading && results.length === 0 && (
-          <div className="bc-card" style={{ padding: "3rem", textAlign: "center" }}>
-            <AlertTriangle size={32} style={{ color: "var(--bc-amber)", margin: "0 auto 0.75rem" }} />
-            <p style={{ fontWeight: 600, color: "var(--bc-text)", marginBottom: "0.35rem" }}>No records found</p>
-            <p style={{ fontSize: "0.85rem", color: "var(--bc-text-2)" }}>
-              No inmates matching &ldquo;{submitted}&rdquo; in the current roster. Try refreshing data or check the spelling.
-            </p>
-          </div>
-        )}
+      <div
+        className="container"
+        style={{ textAlign: "center", position: "relative" }}
+      >
+        {/* Eyebrow badge */}
+        <div
+          className="bc-badge bc-badge-indigo"
+          style={{ marginBottom: "1.5rem", display: "inline-flex" }}
+        >
+          <Radio size={10} className="bc-pulse" />
+          Louisiana River Parishes · Live Data
+        </div>
 
-        {/* ── Results ── */}
-        {results.length > 0 && (
-          <>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
-              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.05rem", color: "var(--bc-text)" }}>
-                {results.length} record{results.length !== 1 ? "s" : ""} for &ldquo;{submitted}&rdquo;
-              </p>
-            </div>
+        {/* Headline */}
+        <h1
+          style={{
+            fontSize: "clamp(2.5rem, 6vw, 4rem)",
+            marginBottom: "1.25rem",
+            maxWidth: 780,
+            margin: "0 auto 1.25rem",
+          }}
+        >
+          Screen bail bond calls{" "}
+          <span className="bc-gradient-text">in real-time</span>
+          <br />
+          with AI + live inmate data
+        </h1>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-              {results.map((inmate: any, idx: number) => {
-                const bond = inmate.bondAmount ? parseFloat(inmate.bondAmount) : null;
-                return (
-                  <div
-                    key={idx}
-                    className="bc-card bc-fade-up"
-                    style={{
-                      padding: "1.1rem 1.25rem",
-                      borderLeft: `3px solid ${bond ? "var(--bc-cyan)" : "var(--bc-amber)"}`,
-                      animationDelay: `${idx * 40}ms`,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
-                      {/* Left: name + meta */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.4rem", flexWrap: "wrap" }}>
-                          <span style={{
-                            fontFamily: "var(--font-mono)", fontWeight: 500, fontSize: "0.95rem",
-                            color: "var(--bc-text)", letterSpacing: "0.03em",
-                          }}>
-                            {inmate.name}
-                          </span>
-                          <span className={`bc-badge ${bond ? "bc-badge-cyan" : "bc-badge-amber"}`}>
-                            {bond ? <CheckCircle2 size={9} /> : <AlertTriangle size={9} />}
-                            {bond ? "Bond Set" : "No Bond"}
-                          </span>
-                        </div>
+        {/* Sub-headline */}
+        <p
+          style={{
+            fontSize: "1.125rem",
+            color: "hsl(var(--muted-foreground))",
+            maxWidth: 560,
+            margin: "0 auto 2.5rem",
+            lineHeight: 1.7,
+          }}
+        >
+          BondCurrent connects your voice agent to live Louisiana parish rosters.
+          Qualify callers, calculate premiums, and transfer ready clients — all
+          before a human picks up.
+        </p>
 
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
-                          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                            <MapPin size={11} />
-                            {inmate.parish} Parish
-                          </span>
-                          {inmate.bookingTime && (
-                            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                              <Clock size={11} />
-                              {new Date(inmate.bookingTime).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                            </span>
-                          )}
-                          {inmate.externalBookingId && (
-                            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontFamily: "var(--font-mono)", fontSize: "0.72rem" }}>
-                              <Hash size={10} />
-                              {inmate.externalBookingId}
-                            </span>
-                          )}
-                        </div>
+        {/* CTAs */}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <a
+            href={user ? "/dashboard" : getLoginUrl()}
+            className="bc-btn-primary"
+            style={{
+              fontSize: "1rem",
+              padding: "0.75rem 1.75rem",
+              textDecoration: "none",
+            }}
+          >
+            Start Free Trial
+            <ArrowRight size={16} />
+          </a>
+          <a
+            href="#how-it-works"
+            className="bc-btn-outline"
+            style={{
+              fontSize: "1rem",
+              padding: "0.75rem 1.75rem",
+              textDecoration: "none",
+            }}
+          >
+            See How It Works
+          </a>
+        </div>
 
-                        {inmate.chargesText && (
-                          <p style={{ marginTop: "0.45rem", fontSize: "0.78rem", color: "var(--bc-text-2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "40ch" }}>
-                            <span style={{ color: "var(--bc-text-3)" }}>Charges: </span>
-                            {inmate.chargesText}
-                          </p>
-                        )}
-                      </div>
+        {/* Trust line */}
+        <p
+          style={{
+            marginTop: "1.5rem",
+            fontSize: "0.8125rem",
+            color: "hsl(var(--muted-foreground))",
+          }}
+        >
+          No credit card required · 14-day free trial · Cancel anytime
+        </p>
 
-                      {/* Right: bond amount */}
-                      <div style={{ textAlign: "right", flexShrink: 0 }}>
-                        {bond ? (
-                          <>
-                            <p style={{ fontFamily: "var(--font-display)", fontSize: "1.35rem", fontWeight: 700, color: "var(--bc-cyan)", letterSpacing: "-0.02em" }}>
-                              ${bond.toLocaleString()}
-                            </p>
-                            <p style={{ fontSize: "0.7rem", color: "var(--bc-text-3)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Bond</p>
-                          </>
-                        ) : (
-                          <p style={{ fontSize: "0.8rem", color: "var(--bc-amber)" }}>N/A</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </section>
-
-      {/* ═══ PARISH STATUS ══════════════════════════════════ */}
-      <section className="container" style={{ marginBottom: "4rem" }}>
-        <p className="bc-section-title">Parish Source Index</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "0.5rem" }}>
-          {PARISHES.map((p) => (
+        {/* Hero visual — API response preview */}
+        <div
+          style={{
+            marginTop: "4rem",
+            maxWidth: 680,
+            margin: "4rem auto 0",
+            borderRadius: 16,
+            border: "1px solid hsl(var(--border))",
+            overflow: "hidden",
+            boxShadow:
+              "0 4px 6px rgba(0,0,0,0.04), 0 20px 40px rgba(99,102,241,0.08)",
+            background: "hsl(var(--card))",
+          }}
+        >
+          {/* Window chrome */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.875rem 1.25rem",
+              borderBottom: "1px solid hsl(var(--border))",
+              background: "hsl(var(--secondary))",
+            }}
+          >
             <div
-              key={p.name}
-              className="bc-card"
-              style={{ padding: "0.85rem 1rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: "#ef4444",
+              }}
+            />
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: "#f59e0b",
+              }}
+            />
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: "#10b981",
+              }}
+            />
+            <span
+              style={{
+                marginLeft: "0.5rem",
+                fontSize: "0.75rem",
+                color: "hsl(var(--muted-foreground))",
+                fontFamily: "var(--font-mono)",
+              }}
             >
-              <div style={{ minWidth: 0 }}>
-                <p style={{ fontWeight: 500, fontSize: "0.85rem", color: "var(--bc-text)", marginBottom: "0.15rem" }}>
-                  {p.name} Parish
-                </p>
-                <p style={{ fontSize: "0.7rem", color: "var(--bc-text-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {p.platform}
-                </p>
-              </div>
-              <span className={`bc-badge ${p.bond ? "bc-badge-cyan" : "bc-badge-amber"}`} style={{ flexShrink: 0 }}>
-                {p.bond ? <CheckCircle2 size={9} /> : <AlertTriangle size={9} />}
-                {p.bond ? "Bond" : "No Bond"}
+              POST /api/v1/voice-screener
+            </span>
+          </div>
+          {/* Code block */}
+          <div
+            style={{
+              padding: "1.25rem 1.5rem",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.8125rem",
+              lineHeight: 1.75,
+              textAlign: "left",
+              background: "#0f1117",
+              color: "#e2e8f0",
+            }}
+          >
+            <div style={{ color: "#94a3b8" }}>{"// Response (187ms)"}</div>
+            <div>{"{"}</div>
+            <div style={{ paddingLeft: "1.5rem" }}>
+              <span style={{ color: "#818cf8" }}>"success"</span>
+              <span style={{ color: "#94a3b8" }}>: </span>
+              <span style={{ color: "#34d399" }}>true</span>
+              <span style={{ color: "#94a3b8" }}>,</span>
+            </div>
+            <div style={{ paddingLeft: "1.5rem" }}>
+              <span style={{ color: "#818cf8" }}>"decision"</span>
+              <span style={{ color: "#94a3b8" }}>: </span>
+              <span style={{ color: "#fbbf24" }}>"QUALIFIED"</span>
+              <span style={{ color: "#94a3b8" }}>,</span>
+            </div>
+            <div style={{ paddingLeft: "1.5rem" }}>
+              <span style={{ color: "#818cf8" }}>"bond_amount"</span>
+              <span style={{ color: "#94a3b8" }}>: </span>
+              <span style={{ color: "#34d399" }}>25000</span>
+              <span style={{ color: "#94a3b8" }}>,</span>
+            </div>
+            <div style={{ paddingLeft: "1.5rem" }}>
+              <span style={{ color: "#818cf8" }}>"calculated_premium"</span>
+              <span style={{ color: "#94a3b8" }}>: </span>
+              <span style={{ color: "#34d399" }}>2500</span>
+              <span style={{ color: "#94a3b8" }}>,</span>
+            </div>
+            <div style={{ paddingLeft: "1.5rem" }}>
+              <span style={{ color: "#818cf8" }}>"voice_prompt"</span>
+              <span style={{ color: "#94a3b8" }}>: </span>
+              <span style={{ color: "#fb7185" }}>
+                "Great news! The bond is $25,000 — the 10% premium is $2,500.
+                Since you have that available, I can transfer you to a licensed
+                bondsman right now. Would you like that?"
               </span>
+            </div>
+            <div>{"}"}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Features ───────────────────────────────────────────────────────────────────
+
+function Features() {
+  return (
+    <section id="features" className="bc-section" style={{ background: "#fff" }}>
+      <div className="container">
+        {/* Section header */}
+        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          <div
+            className="bc-badge bc-badge-indigo"
+            style={{ marginBottom: "1rem", display: "inline-flex" }}
+          >
+            <Sparkles size={10} />
+            Platform Features
+          </div>
+          <h2 style={{ marginBottom: "0.75rem" }}>
+            Everything your agency needs
+          </h2>
+          <p
+            style={{
+              color: "hsl(var(--muted-foreground))",
+              maxWidth: 480,
+              margin: "0 auto",
+              fontSize: "1rem",
+            }}
+          >
+            Built specifically for Louisiana bail bondsmen who want to stop
+            wasting time on unqualified callers.
+          </p>
+        </div>
+
+        {/* Feature grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "1.25rem",
+          }}
+        >
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="bc-card-elevated"
+              style={{ transition: "box-shadow 0.15s ease, transform 0.15s ease" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.boxShadow =
+                  "0 4px 20px rgba(99,102,241,0.12), 0 1px 3px rgba(0,0,0,0.06)";
+                (e.currentTarget as HTMLDivElement).style.transform =
+                  "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.boxShadow =
+                  "0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04)";
+                (e.currentTarget as HTMLDivElement).style.transform = "none";
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  marginBottom: "1rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: 10,
+                    background: "var(--bc-indigo-dim)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <f.icon size={20} color="var(--bc-indigo)" />
+                </div>
+                <span className={`bc-badge ${f.badgeColor}`}>{f.badge}</span>
+              </div>
+              <h3
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  marginBottom: "0.5rem",
+                  color: "hsl(var(--foreground))",
+                }}
+              >
+                {f.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "hsl(var(--muted-foreground))",
+                  lineHeight: 1.65,
+                }}
+              >
+                {f.desc}
+              </p>
             </div>
           ))}
         </div>
-        <p style={{ marginTop: "0.6rem", fontSize: "0.72rem", color: "var(--bc-text-3)", lineHeight: 1.5 }}>
-          Plaquemines, St. Bernard, and Orleans use the LA VINE / Appriss platform which does not expose bond amounts on public rosters.
-          Jefferson Parish bond data is confirmed but requires Playwright in production.
-        </p>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ═══ FOOTER ═════════════════════════════════════════ */}
-      <footer style={{ borderTop: "1px solid var(--bc-border)", padding: "1.5rem 0" }}>
-        <div className="container" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
-          <p style={{ fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
-            BondCurrent &copy; 2026 &mdash; AI-Powered Bond Intelligence
-          </p>
-          <p style={{ fontSize: "0.78rem", color: "var(--bc-text-3)" }}>
-            Data sourced from official Louisiana parish sheriff rosters &amp; LA VINE
+// ── How It Works ───────────────────────────────────────────────────────────────
+
+function HowItWorks() {
+  return (
+    <section
+      id="how-it-works"
+      className="bc-section"
+      style={{ background: "#f8f9ff" }}
+    >
+      <div className="container">
+        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          <div
+            className="bc-badge bc-badge-cyan"
+            style={{ marginBottom: "1rem", display: "inline-flex" }}
+          >
+            <Phone size={10} />
+            Call Flow
+          </div>
+          <h2 style={{ marginBottom: "0.75rem" }}>How a screener call works</h2>
+          <p
+            style={{
+              color: "hsl(var(--muted-foreground))",
+              maxWidth: 480,
+              margin: "0 auto",
+              fontSize: "1rem",
+            }}
+          >
+            From first ring to qualified transfer in under 90 seconds.
           </p>
         </div>
-      </footer>
 
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: "1.25rem",
+            position: "relative",
+          }}
+        >
+          {HOW_IT_WORKS.map((step, i) => (
+            <div
+              key={step.step}
+              className="bc-card"
+              style={{ position: "relative" }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                  color: "var(--bc-indigo)",
+                  letterSpacing: "0.08em",
+                  marginBottom: "0.75rem",
+                  background: "var(--bc-indigo-dim)",
+                  display: "inline-block",
+                  padding: "0.2rem 0.5rem",
+                  borderRadius: 4,
+                }}
+              >
+                STEP {step.step}
+              </div>
+              <h3
+                style={{
+                  fontSize: "0.9375rem",
+                  fontWeight: 700,
+                  marginBottom: "0.5rem",
+                  color: "hsl(var(--foreground))",
+                }}
+              >
+                {step.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "hsl(var(--muted-foreground))",
+                  lineHeight: 1.65,
+                }}
+              >
+                {step.desc}
+              </p>
+              {i < HOW_IT_WORKS.length - 1 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: -18,
+                    transform: "translateY(-50%)",
+                    color: "hsl(var(--muted-foreground))",
+                    display: "none",
+                  }}
+                  className="hidden lg:block"
+                >
+                  <ChevronRight size={18} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Parish Coverage ────────────────────────────────────────────────────────────
+
+function ParishCoverage() {
+  return (
+    <section id="parishes" className="bc-section" style={{ background: "#fff" }}>
+      <div className="container">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "4rem",
+            alignItems: "center",
+          }}
+        >
+          {/* Left: copy */}
+          <div>
+            <div
+              className="bc-badge bc-badge-green"
+              style={{ marginBottom: "1rem", display: "inline-flex" }}
+            >
+              <MapPin size={10} />
+              Coverage Map
+            </div>
+            <h2 style={{ marginBottom: "1rem" }}>
+              River Parishes first,
+              <br />
+              expanding statewide
+            </h2>
+            <p
+              style={{
+                color: "hsl(var(--muted-foreground))",
+                fontSize: "1rem",
+                lineHeight: 1.7,
+                marginBottom: "1.5rem",
+              }}
+            >
+              We built BondCurrent specifically for the Louisiana River Parishes
+              market. St. John the Baptist is our flagship integration — 206
+              live records via the Zuercher Portal REST API, updated every 30
+              minutes.
+            </p>
+            <p
+              style={{
+                color: "hsl(var(--muted-foreground))",
+                fontSize: "0.875rem",
+                lineHeight: 1.7,
+              }}
+            >
+              <strong style={{ color: "hsl(var(--foreground))" }}>
+                Honest about data availability:
+              </strong>{" "}
+              5 parishes return bond amounts. 3 parishes (Plaquemines, St.
+              Bernard, Orleans) provide custody status only — their systems
+              don't expose bond data publicly. We never claim bond data we
+              don't have.
+            </p>
+          </div>
+
+          {/* Right: parish list */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.625rem",
+            }}
+          >
+            {PARISHES.map((p) => (
+              <div
+                key={p.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0.875rem 1rem",
+                  borderRadius: 10,
+                  border: "1px solid hsl(var(--border))",
+                  background: p.bond ? "hsl(var(--card))" : "hsl(var(--secondary))",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: p.bond ? "var(--bc-green)" : "hsl(var(--muted-foreground))",
+                      flexShrink: 0,
+                    }}
+                    className={p.bond ? "bc-pulse" : ""}
+                  />
+                  <div>
+                    <div
+                      style={{
+                        fontSize: "0.875rem",
+                        fontWeight: 600,
+                        color: "hsl(var(--foreground))",
+                      }}
+                    >
+                      {p.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "hsl(var(--muted-foreground))",
+                      }}
+                    >
+                      {p.note}
+                    </div>
+                  </div>
+                </div>
+                <span
+                  className={`bc-badge ${p.bond ? "bc-badge-green" : "bc-badge-amber"}`}
+                >
+                  {p.bond ? "Bond Data" : "Custody Only"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Pricing ────────────────────────────────────────────────────────────────────
+
+function Pricing() {
+  return (
+    <section id="pricing" className="bc-section" style={{ background: "#f8f9ff" }}>
+      <div className="container">
+        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          <div
+            className="bc-badge bc-badge-indigo"
+            style={{ marginBottom: "1rem", display: "inline-flex" }}
+          >
+            <DollarSign size={10} />
+            Pricing
+          </div>
+          <h2 style={{ marginBottom: "0.75rem" }}>Simple, transparent pricing</h2>
+          <p
+            style={{
+              color: "hsl(var(--muted-foreground))",
+              maxWidth: 440,
+              margin: "0 auto",
+              fontSize: "1rem",
+            }}
+          >
+            Start with a 14-day free trial. No credit card required.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "1.25rem",
+            maxWidth: 960,
+            margin: "0 auto",
+          }}
+        >
+          {PLANS.map((plan) => (
+            <div
+              key={plan.name}
+              style={{
+                borderRadius: 16,
+                border: plan.highlight
+                  ? "2px solid var(--bc-indigo)"
+                  : "1px solid hsl(var(--border))",
+                background: plan.highlight ? "#fff" : "hsl(var(--card))",
+                padding: "1.75rem",
+                position: "relative",
+                boxShadow: plan.highlight
+                  ? "0 8px 30px rgba(99,102,241,0.15)"
+                  : "0 1px 3px rgba(0,0,0,0.06)",
+              }}
+            >
+              {plan.highlight && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -13,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
+                >
+                  <span className="bc-badge bc-badge-indigo">Most Popular</span>
+                </div>
+              )}
+
+              <div style={{ marginBottom: "1.25rem" }}>
+                <div
+                  style={{
+                    fontSize: "0.875rem",
+                    fontWeight: 700,
+                    color: "hsl(var(--muted-foreground))",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {plan.name}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "0.25rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: "2.5rem",
+                      fontWeight: 800,
+                      letterSpacing: "-0.03em",
+                      color: "hsl(var(--foreground))",
+                    }}
+                  >
+                    {plan.price}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "hsl(var(--muted-foreground))",
+                    }}
+                  >
+                    {plan.period}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "hsl(var(--muted-foreground))",
+                    lineHeight: 1.55,
+                  }}
+                >
+                  {plan.desc}
+                </p>
+              </div>
+
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: "0 0 1.5rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.625rem",
+                }}
+              >
+                {plan.features.map((f) => (
+                  <li
+                    key={f}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      fontSize: "0.875rem",
+                      color: "hsl(var(--foreground))",
+                    }}
+                  >
+                    <CheckCircle2
+                      size={15}
+                      style={{ color: "var(--bc-green)", flexShrink: 0 }}
+                    />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={getLoginUrl()}
+                className={plan.highlight ? "bc-btn-primary" : "bc-btn-outline"}
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  padding: "0.625rem 1rem",
+                  width: "100%",
+                  fontSize: "0.9375rem",
+                }}
+              >
+                {plan.cta}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CTA Banner ─────────────────────────────────────────────────────────────────
+
+function CTABanner() {
+  return (
+    <section
+      style={{
+        padding: "5rem 0",
+        background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Decorative circles */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-40%",
+          right: "-10%",
+          width: "50vw",
+          height: "50vw",
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.06)",
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-30%",
+          left: "-5%",
+          width: "35vw",
+          height: "35vw",
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.04)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div className="container" style={{ textAlign: "center", position: "relative" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.4rem",
+            background: "rgba(255,255,255,0.15)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            borderRadius: 999,
+            padding: "0.3rem 0.8rem",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            color: "#fff",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <Mic size={10} />
+          Ready for Vapi · Retell · Bland
+        </div>
+
+        <h2
+          style={{
+            color: "#fff",
+            marginBottom: "1rem",
+            fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
+          }}
+        >
+          Stop losing qualified callers
+          <br />
+          to slow manual lookups
+        </h2>
+        <p
+          style={{
+            color: "rgba(255,255,255,0.8)",
+            fontSize: "1.0625rem",
+            maxWidth: 480,
+            margin: "0 auto 2.5rem",
+            lineHeight: 1.7,
+          }}
+        >
+          Set up BondCurrent in under 30 minutes. Connect your voice agent,
+          add your API key, and start screening calls today.
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <a
+            href={getLoginUrl()}
+            style={{
+              background: "#fff",
+              color: "var(--bc-indigo)",
+              borderRadius: "var(--radius)",
+              padding: "0.75rem 1.75rem",
+              fontWeight: 700,
+              fontSize: "1rem",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "transform 0.15s ease, box-shadow 0.15s ease",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.transform = "none";
+              (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none";
+            }}
+          >
+            Start Free Trial
+            <ArrowRight size={16} />
+          </a>
+          <a
+            href="mailto:hello@bondcurrent.com"
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.3)",
+              borderRadius: "var(--radius)",
+              padding: "0.75rem 1.75rem",
+              fontWeight: 600,
+              fontSize: "1rem",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            Talk to Sales
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────────────
+
+function Footer() {
+  return (
+    <footer
+      style={{
+        padding: "2.5rem 0",
+        borderTop: "1px solid hsl(var(--border))",
+        background: "#fff",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "1rem",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 7,
+              background: "linear-gradient(135deg, #6366f1, #818cf8)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Shield size={13} color="#fff" />
+          </div>
+          <span
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800,
+              fontSize: "0.9375rem",
+              color: "hsl(var(--foreground))",
+            }}
+          >
+            Bond<span style={{ color: "var(--bc-indigo)" }}>Current</span>
+          </span>
+        </div>
+
+        {/* Links */}
+        <div
+          style={{
+            display: "flex",
+            gap: "1.5rem",
+            fontSize: "0.8125rem",
+            color: "hsl(var(--muted-foreground))",
+          }}
+        >
+          <a href="#features" style={{ textDecoration: "none", color: "inherit" }}>
+            Features
+          </a>
+          <a href="#pricing" style={{ textDecoration: "none", color: "inherit" }}>
+            Pricing
+          </a>
+          <a href="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
+            Dashboard
+          </a>
+          <a
+            href="mailto:hello@bondcurrent.com"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Contact
+          </a>
+        </div>
+
+        {/* Copyright */}
+        <p
+          style={{
+            fontSize: "0.75rem",
+            color: "hsl(var(--muted-foreground))",
+          }}
+        >
+          © 2026 BondCurrent. Built for Louisiana bail bondsmen.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────────
+
+export default function Home() {
+  return (
+    <div style={{ background: "#fff", minHeight: "100vh" }}>
+      <Nav />
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <ParishCoverage />
+      <Pricing />
+      <CTABanner />
+      <Footer />
     </div>
   );
 }

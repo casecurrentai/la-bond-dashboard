@@ -12,11 +12,10 @@
  * Plaquemines     LA VINE ASP.NET       ❌ NO BOND    HTTP/cheerio
  * St. Bernard     LA VINE ASP.NET       ❌ NO BOND    HTTP/cheerio
  * Orleans         Appriss/OCV API       ❌ NO BOND    axios JSON API
- * St. John Bap.   Zuercher Portal       ❌ NO BOND    axios JSON API (LIVE)
+ * St. John Bap.   Zuercher Portal       ⚠️  UNKNOWN   Playwright (prod)
  * St. James       Domain unresolved     ⚠️  UNKNOWN   TBD
  * ─────────────────────────────────────────────────────────────
  * LA VINE / Appriss deliberately omits bond amounts from public APIs.
- * Zuercher Portal (St. John Baptist) confirmed: no bond field in public API.
  * Jefferson Parish bond data confirmed via search snippet evidence.
  */
 
@@ -555,35 +554,6 @@ export async function scrapeParish(parish: string): Promise<ScrapeResult> {
       }
     }
 
-    if (parish.toLowerCase() === "st. john the baptist" || parish.toLowerCase() === "stjohn") {
-      const startTime = Date.now();
-      try {
-        const bookings = await scrapeStJohnBaptist();
-        const hash = crypto.createHash("sha256")
-          .update(JSON.stringify(bookings))
-          .digest("hex")
-          .slice(0, 16);
-        return {
-          parish: "St. John the Baptist",
-          bookings,
-          hash,
-          fetchedAt: new Date().toISOString(),
-          durationMs: Date.now() - startTime,
-          bondAvailable: false,
-        };
-      } catch (err) {
-        return {
-          parish: "St. John the Baptist",
-          bookings: [],
-          hash: "",
-          fetchedAt: new Date().toISOString(),
-          durationMs: Date.now() - startTime,
-          bondAvailable: false,
-          error: (err as Error).message,
-        };
-      }
-    }
-
     if (parish.toLowerCase() === "jefferson") {
       const startTime = Date.now();
       try {
@@ -649,79 +619,11 @@ export async function scrapeParish(parish: string): Promise<ScrapeResult> {
   };
 }
 
-// ─── St. John the Baptist Adapter (Zuercher Portal REST API) ────────────────
-// Confirmed live via Playwright probe (Mar 2026):
-//   GET /api/portal/inmates/init  -> available_columns (no bond field)
-//   GET /api/portal/inmates/load  -> 206 records with name/race/sex/cell_block/arrest_date
-// Bond field is NOT exposed in the public Zuercher API.
-
-interface ZuercherRecord {
-  name: string;
-  race?: string;
-  sex?: string;
-  cell_block?: string;
-  arrest_date?: string;
-  held_for_agency?: string;
-  release_date?: string;
-  mugshot?: string;
-  charges?: string[];
-}
-
-interface ZuercherResponse {
-  total_record_count: number;
-  records: ZuercherRecord[];
-}
-
-export async function scrapeStJohnBaptist(): Promise<ScrapedBooking[]> {
-  const BASE = "https://stjohn-so-la.zuercherportal.com";
-  const bookings: ScrapedBooking[] = [];
-
-  // Fetch all records — Zuercher paginates at 25 per page by default
-  // We request a large page size to get all records in one call
-  const url = `${BASE}/api/portal/inmates/load`;
-
-  const res = await axios.get<ZuercherResponse>(url, {
-    params: {
-      offset: 0,
-      limit: 500,
-      in_custody: "true",
-    },
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      Referer: `${BASE}/`,
-      Accept: "application/json, text/plain, */*",
-    },
-    timeout: 30000,
-  });
-
-  const data = res.data;
-  const records: ZuercherRecord[] = data.records || [];
-
-  records.forEach((rec, idx) => {
-    const charges = rec.charges || [];
-    bookings.push({
-      name: rec.name || "Unknown",
-      bookingId: `stjohn_${idx}_${(rec.arrest_date || "").replace(/\//g, "")}`,
-      bookingTime: rec.arrest_date || null,
-      parish: "St. John the Baptist",
-      age: null,
-      charges,
-      bondAmount: null,
-      bondText: null,
-      bondAvailable: false,
-      sourcePlatform: "zuercher_portal",
-    });
-  });
-
-  return bookings;
-}
-
 export async function scrapeAllParishes(): Promise<ScrapeResult[]> {
   const allParishes = [
     ...ADAPTERS.map((a) => a.parish),
     "Orleans",
     "Jefferson",
-    "St. John the Baptist",
   ];
 
   const results: ScrapeResult[] = [];

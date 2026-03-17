@@ -1,79 +1,119 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
 /* ─────────────────────────────────────────────────────────────
-   BondCurrent Design System
-   Dark intelligence aesthetic: deep navy base, electric blue
-   primary, cyan data accents, warm amber for warnings.
-   Fonts: Syne (display) · DM Sans (body) · DM Mono (data)
+   BondCurrent Design System — inspired by CaseCurrent.co
+   Primary: Indigo #6366f1  |  Dark navy bg  |  Inter + Plus Jakarta Sans
+   Light mode default with dark mode support
 ───────────────────────────────────────────────────────────── */
+
+@custom-variant dark (&:is(.dark *));
 
 @layer base {
   :root {
-    /* ── Brand ── */
-    --bc-blue:        #2563eb;   /* primary action */
-    --bc-blue-hover:  #1d4ed8;
-    --bc-blue-glow:   rgba(37, 99, 235, 0.25);
-    --bc-cyan:        #22d3ee;   /* data accent */
-    --bc-cyan-dim:    rgba(34, 211, 238, 0.15);
-    --bc-cyan-border: rgba(34, 211, 238, 0.25);
+    /* ── Brand colors (matching CaseCurrent indigo palette) ── */
+    --primary:             239 84% 67%;   /* #6366f1 indigo */
+    --primary-foreground:  0 0% 100%;
 
-    /* ── Status ── */
-    --bc-green:  #10b981;
-    --bc-green-dim: rgba(16, 185, 129, 0.12);
-    --bc-amber:  #f59e0b;
-    --bc-amber-dim: rgba(245, 158, 11, 0.12);
-    --bc-red:    #ef4444;
+    /* ── Light mode surfaces ── */
+    --background:          0 0% 100%;
+    --foreground:          222 47% 11%;
+    --card:                0 0% 100%;
+    --card-foreground:     222 47% 11%;
+    --card-border:         220 13% 91%;
+    --popover:             0 0% 100%;
+    --popover-foreground:  222 47% 11%;
+    --secondary:           220 14% 96%;
+    --secondary-foreground:222 47% 11%;
+    --muted:               220 14% 96%;
+    --muted-foreground:    220 9% 46%;
+    --accent:              239 6% 94%;
+    --accent-foreground:   222 47% 11%;
+    --destructive:         0 84% 42%;
+    --destructive-foreground: 0 84% 98%;
+    --border:              220 13% 91%;
+    --input:               220 13% 91%;
+    --ring:                239 84% 67%;
+    --radius:              0.75rem;
 
-    /* ── Surfaces ── */
-    --bc-bg:       #080d14;   /* page background */
-    --bc-surface:  #0f1623;   /* card / panel */
-    --bc-surface2: #162032;   /* elevated card */
-    --bc-border:   rgba(255, 255, 255, 0.07);
-    --bc-border-strong: rgba(255, 255, 255, 0.12);
+    /* ── Status colors ── */
+    --success:             142 71% 45%;
+    --success-foreground:  0 0% 100%;
+    --warning:             38 92% 50%;
+    --warning-foreground:  38 92% 14%;
+    --info:                217 91% 60%;
+    --info-foreground:     0 0% 100%;
 
-    /* ── Text ── */
-    --bc-text:    #f0f4ff;
-    --bc-text-2:  #8b9ab5;
-    --bc-text-3:  #4d5f7a;
+    /* ── Chart colors ── */
+    --chart-1:             239 84% 67%;
+    --chart-2:             224 76% 48%;
+    --chart-3:             201 96% 32%;
+    --chart-4:             199 89% 48%;
+    --chart-5:             186 75% 39%;
 
-    /* ── Fonts ── */
-    --font-display: "Syne", sans-serif;
-    --font-body:    "DM Sans", sans-serif;
-    --font-mono:    "DM Mono", monospace;
+    /* ── Sidebar ── */
+    --sidebar:             0 0% 98%;
+    --sidebar-foreground:  222 47% 11%;
+    --sidebar-border:      220 13% 91%;
+    --sidebar-primary:     239 84% 67%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent:      220 14% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-ring:        239 84% 67%;
 
-    /* ── Radius ── */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
+    /* ── Typography ── */
+    --font-sans:  "Inter", "Plus Jakarta Sans", sans-serif;
+    --font-mono:  "JetBrains Mono", "Menlo", monospace;
 
-    /* ── Shadcn semantic aliases ── */
-    --background:          var(--bc-bg);
-    --foreground:          var(--bc-text);
-    --card:                var(--bc-surface);
-    --card-foreground:     var(--bc-text);
-    --popover:             var(--bc-surface);
-    --popover-foreground:  var(--bc-text);
-    --primary:             var(--bc-blue);
-    --primary-foreground:  #ffffff;
-    --secondary:           var(--bc-surface2);
-    --secondary-foreground:var(--bc-text);
-    --muted:               var(--bc-surface2);
-    --muted-foreground:    var(--bc-text-2);
-    --accent:              var(--bc-surface2);
-    --accent-foreground:   var(--bc-text);
-    --destructive:         var(--bc-red);
-    --destructive-foreground: #ffffff;
-    --border:              var(--bc-border);
-    --input:               var(--bc-surface2);
-    --ring:                var(--bc-blue);
-    --radius:              var(--radius-md);
+    /* ── Elevation ── */
+    --elevate-1: rgba(0,0,0, .03);
+    --elevate-2: rgba(0,0,0, .08);
+
+    /* ── BondCurrent brand specifics ── */
+    --bc-indigo:       #6366f1;
+    --bc-indigo-light: #818cf8;
+    --bc-indigo-dim:   rgba(99, 102, 241, 0.12);
+    --bc-indigo-glow:  rgba(99, 102, 241, 0.25);
+    --bc-cyan:         #06b6d4;
+    --bc-cyan-dim:     rgba(6, 182, 212, 0.12);
+    --bc-green:        #10b981;
+    --bc-green-dim:    rgba(16, 185, 129, 0.12);
+    --bc-amber:        #f59e0b;
+    --bc-amber-dim:    rgba(245, 158, 11, 0.12);
+    --bc-red:          #ef4444;
+  }
+
+  .dark {
+    --background:          222 47% 6%;
+    --foreground:          210 40% 98%;
+    --card:                222 47% 8%;
+    --card-foreground:     210 40% 98%;
+    --card-border:         217 33% 14%;
+    --popover:             222 47% 11%;
+    --popover-foreground:  210 40% 98%;
+    --secondary:           217 33% 17%;
+    --secondary-foreground:210 40% 98%;
+    --muted:               217 33% 17%;
+    --muted-foreground:    215 20% 65%;
+    --accent:              239 6% 15%;
+    --accent-foreground:   210 40% 98%;
+    --destructive:         0 84% 42%;
+    --destructive-foreground: 0 84% 98%;
+    --border:              217 33% 17%;
+    --input:               217 33% 25%;
+    --ring:                239 84% 67%;
+    --sidebar:             222 47% 10%;
+    --sidebar-foreground:  210 40% 98%;
+    --sidebar-border:      217 33% 17%;
+    --sidebar-accent:      217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --elevate-1: rgba(255,255,255, .04);
+    --elevate-2: rgba(255,255,255, .09);
   }
 
   *, *::before, *::after {
     box-sizing: border-box;
-    border-color: var(--bc-border);
+    border-color: hsl(var(--border));
   }
 
   html {
@@ -83,222 +123,196 @@
   }
 
   body {
-    background-color: var(--bc-bg);
-    color: var(--bc-text);
-    font-family: var(--font-body);
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
     font-size: 15px;
     line-height: 1.6;
+    min-height: 100vh;
   }
 
+  /* ── Typography scale ── */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+    font-family: "Plus Jakarta Sans", "Inter", sans-serif;
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
-    color: var(--bc-text);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bc-surface); }
-  ::-webkit-scrollbar-thumb { background: var(--bc-border-strong); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--bc-text-3); }
-}
+  h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+  h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+  h3 { font-size: clamp(1.125rem, 2vw, 1.5rem); }
 
-@layer components {
-  /* ── Layout ── */
-  .container {
-    width: 100%;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-  @media (min-width: 640px) {
-    .container { padding-left: 2rem; padding-right: 2rem; }
-  }
-
-  /* Override Tailwind flex min-size reset */
-  .flex { display: flex; min-height: 0; min-width: 0; }
-
-  /* ── Cards ── */
-  .bc-card {
-    background: var(--bc-surface);
-    border: 1px solid var(--bc-border);
-    border-radius: var(--radius-lg);
-    transition: border-color 0.2s;
-  }
-  .bc-card:hover { border-color: var(--bc-border-strong); }
-
-  .bc-card-elevated {
-    background: var(--bc-surface2);
-    border: 1px solid var(--bc-border-strong);
-    border-radius: var(--radius-lg);
-  }
-
-  /* ── Buttons ── */
-  .bc-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    border-radius: var(--radius-md);
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.55rem 1.1rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    border: none;
-    outline: none;
-  }
-  .bc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .bc-btn-primary {
-    background: var(--bc-blue);
-    color: #fff;
-  }
-  .bc-btn-primary:hover:not(:disabled) { background: var(--bc-blue-hover); }
-
-  .bc-btn-ghost {
-    background: transparent;
-    color: var(--bc-text-2);
-    border: 1px solid var(--bc-border);
-  }
-  .bc-btn-ghost:hover:not(:disabled) {
-    background: var(--bc-surface2);
-    color: var(--bc-text);
-    border-color: var(--bc-border-strong);
-  }
-
-  .bc-btn-icon {
-    width: 2.25rem;
-    height: 2.25rem;
-    padding: 0;
-    border-radius: var(--radius-md);
-    background: var(--bc-surface2);
-    color: var(--bc-text-2);
-    border: 1px solid var(--bc-border);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .bc-btn-icon:hover { background: var(--bc-surface); color: var(--bc-cyan); border-color: var(--bc-cyan-border); }
-  .bc-btn-icon.active { background: var(--bc-cyan-dim); color: var(--bc-cyan); border-color: var(--bc-cyan-border); }
-
-  /* ── Input ── */
-  .bc-input {
-    width: 100%;
-    background: var(--bc-surface2);
-    border: 1px solid var(--bc-border-strong);
-    border-radius: var(--radius-md);
-    color: var(--bc-text);
+  code, pre, .font-mono {
     font-family: var(--font-mono);
-    font-size: 0.9rem;
-    letter-spacing: 0.04em;
-    padding: 0.65rem 1rem;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    outline: none;
-  }
-  .bc-input::placeholder { color: var(--bc-text-3); font-family: var(--font-body); letter-spacing: 0; }
-  .bc-input:focus {
-    border-color: var(--bc-blue);
-    box-shadow: 0 0 0 3px var(--bc-blue-glow);
   }
 
-  /* ── Pill / Badge ── */
-  .bc-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-  }
-  .bc-badge-cyan {
-    background: var(--bc-cyan-dim);
-    color: var(--bc-cyan);
-    border: 1px solid var(--bc-cyan-border);
-  }
-  .bc-badge-amber {
-    background: var(--bc-amber-dim);
-    color: var(--bc-amber);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-  }
-  .bc-badge-green {
-    background: var(--bc-green-dim);
-    color: var(--bc-green);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-  }
-
-  /* ── Gradient text ── */
-  .bc-gradient-text {
-    background: linear-gradient(135deg, #60a5fa 0%, var(--bc-cyan) 50%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* ── Divider ── */
-  .bc-divider {
-    border: none;
-    border-top: 1px solid var(--bc-border);
-  }
-
-  /* ── Stat card ── */
-  .bc-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1.25rem 1.5rem;
-    background: var(--bc-surface);
-    border: 1px solid var(--bc-border);
-    border-radius: var(--radius-lg);
-  }
-  .bc-stat-value {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--bc-text);
-    letter-spacing: -0.03em;
-  }
-  .bc-stat-label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--bc-text-3);
-  }
-
-  /* ── Section heading ── */
-  .bc-section-title {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--bc-text-3);
-    margin-bottom: 0.75rem;
+  /* ── Focus ring ── */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 }
 
-/* ── Animations ── */
-@keyframes bc-fade-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes bc-pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.5); }
-  70%  { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+/* ── Custom container ── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
-.bc-fade-up   { animation: bc-fade-up 0.3s ease-out both; }
-.bc-pulse-ring { animation: bc-pulse-ring 1.8s infinite; }
+@media (min-width: 640px) {
+  .container { padding-left: 2rem; padding-right: 2rem; }
+}
+
+/* ── BondCurrent utility classes ── */
+
+/* Indigo gradient text */
+.bc-gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Indigo glow button */
+.bc-btn-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: var(--radius);
+  padding: 0.625rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.15s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bc-btn-primary:hover {
+  background: hsl(239, 84%, 60%);
+  box-shadow: 0 0 0 3px var(--bc-indigo-glow);
+  transform: translateY(-1px);
+}
+
+.bc-btn-outline {
+  background: transparent;
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bc-btn-outline:hover {
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+  background: var(--bc-indigo-dim);
+}
+
+/* Cards */
+.bc-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--card-border));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.bc-card-elevated {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--card-border));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Badge */
+.bc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.bc-badge-indigo {
+  background: var(--bc-indigo-dim);
+  color: var(--bc-indigo);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.bc-badge-green {
+  background: var(--bc-green-dim);
+  color: var(--bc-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.bc-badge-amber {
+  background: var(--bc-amber-dim);
+  color: var(--bc-amber);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.bc-badge-cyan {
+  background: var(--bc-cyan-dim);
+  color: var(--bc-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+/* Section divider */
+.bc-section {
+  padding: 5rem 0;
+}
+
+.bc-section-sm {
+  padding: 3rem 0;
+}
+
+/* Stat number */
+.bc-stat-number {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: hsl(var(--foreground));
+}
+
+/* Animated pipeline dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.bc-pulse {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Spin animation for loading states */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+/* Flex min-width fix */
+.flex { min-width: 0; min-height: 0; }
