@@ -715,40 +715,67 @@ function NoBondWorkflow({ result }: { result: ScreenerResult }) {
 
 // ── Live Screener Panel ────────────────────────────────────────────────────────
 
+// Parishes with confirmed live data
+const ACTIVE_PARISHES = [
+  { name: "Allen",      status: "live" },
+  { name: "St. Mary",  status: "live" },
+  { name: "Evangeline", status: "live" },
+  { name: "Plaquemines", status: "limited" },
+  { name: "St. Bernard", status: "limited" },
+];
+
 function ScreenerPanel() {
   const [inmateName, setInmateName] = useState("");
-  const [parish, setParish] = useState("St. John the Baptist");
+  const [parish, setParish] = useState("Allen");
   const [budget, setBudget] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScreenerResult | null>(null);
   const [listening, setListening] = useState(false);
-
-  const PARISHES = [
-    "St. John the Baptist", "St. Mary", "Allen", "Evangeline",
-    "Jefferson", "Plaquemines", "St. Bernard", "Orleans",
-  ];
+  const [searchAll, setSearchAll] = useState(false);
 
   const runLookup = useCallback(async () => {
     if (!inmateName.trim()) { toast.error("Enter an inmate name"); return; }
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("/api/v1/voice-screener", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inmate_name: inmateName.trim(),
-          parish,
-          caller_budget_available: budget ? parseFloat(budget) : undefined,
-        }),
-      });
-      setResult(await res.json());
+      if (searchAll) {
+        // Search all active parishes in parallel, return first match
+        const liveParishes = ACTIVE_PARISHES.map((p) => p.name);
+        const results = await Promise.all(
+          liveParishes.map((p) =>
+            fetch("/api/v1/voice-screener", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                inmate_name: inmateName.trim(),
+                parish: p,
+                caller_budget_available: budget ? parseFloat(budget) : undefined,
+              }),
+            }).then((r) => r.json()).catch(() => null)
+          )
+        );
+        // Prefer a found result; fall back to first not-found with jail_contact
+        const found = results.find((r) => r && r.found);
+        const notFound = results.find((r) => r && !r.found && r.jail_contact);
+        setResult(found || notFound || results[0]);
+      } else {
+        const res = await fetch("/api/v1/voice-screener", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            inmate_name: inmateName.trim(),
+            parish,
+            caller_budget_available: budget ? parseFloat(budget) : undefined,
+          }),
+        });
+        setResult(await res.json());
+      }
     } catch (err: any) {
       toast.error("Lookup failed: " + err.message);
     } finally {
       setLoading(false);
     }
-  }, [inmateName, parish, budget]);
+  }, [inmateName, parish, budget, searchAll]);
 
   const voiceInput = () => {
     const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
@@ -850,13 +877,35 @@ function ScreenerPanel() {
           </div>
 
           {/* Parish */}
-          <div>
-            <label style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginBottom: "0.35rem" }}>
-              Parish
-            </label>
-            <select value={parish} onChange={(e) => setParish(e.target.value)} className="bc-select">
-              {PARISHES.map((p) => <option key={p} value={p}>{p}</option>)}
+          <div style={{ gridColumn: "1 / -1" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.35rem" }}>
+              <label style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>
+                Parish
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.375rem", cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={searchAll}
+                  onChange={(e) => setSearchAll(e.target.checked)}
+                  style={{ accentColor: "var(--bc-amber)", width: 13, height: 13 }}
+                />
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: searchAll ? "var(--bc-amber)" : "hsl(var(--muted-foreground))" }}>
+                  Search All Parishes
+                </span>
+              </label>
+            </div>
+            <select value={parish} onChange={(e) => setParish(e.target.value)} className="bc-select" disabled={searchAll} style={{ opacity: searchAll ? 0.4 : 1 }}>
+              {ACTIVE_PARISHES.map((p) => (
+                <option key={p.name} value={p.name}>
+                  {p.name}{p.status === "limited" ? " (custody only)" : ""}
+                </option>
+              ))}
             </select>
+            {searchAll && (
+              <div style={{ marginTop: "0.35rem", fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-amber)", letterSpacing: "0.04em" }}>
+                ▶ Searching Allen · St. Mary · Evangeline · Plaquemines · St. Bernard simultaneously
+              </div>
+            )}
           </div>
 
           {/* Budget */}

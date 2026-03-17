@@ -82,3 +82,7 @@
 - [x] Extend screener API to include jail_contact when bond is missing
 - [x] Build NoBondWorkflow UI: phone number, call script, guided steps
 - [x] Show workflow automatically when screener_decision is NEEDS_MANUAL_REVIEW or NOT_FOUND
+
+## Bug Fixes Round 2
+
+- [x] Fix screener search not returning results (regression)
