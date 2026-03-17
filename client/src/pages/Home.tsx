@@ -16,14 +16,17 @@ import {
   FileText,
   Lock,
   MapPin,
+  Menu,
   Mic,
   Phone,
   PhoneCall,
   Shield,
   ShieldCheck,
   Terminal,
+  X,
   Zap,
 } from "lucide-react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -146,6 +149,11 @@ function Navbar({ user, onLogin, onDashboard }: {
   onLogin: () => void;
   onDashboard: () => void;
 }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const NAV_ITEMS = ["Features", "How It Works", "Coverage", "Pricing"];
+
+  const closeMobile = () => setMobileOpen(false);
+
   return (
     <header
       style={{
@@ -154,11 +162,12 @@ function Navbar({ user, onLogin, onDashboard }: {
         left: 0,
         right: 0,
         zIndex: 100,
-        background: "rgba(10, 13, 20, 0.92)",
+        background: "rgba(10, 13, 20, 0.96)",
         backdropFilter: "blur(16px)",
         borderBottom: "1px solid rgba(255,255,255,0.06)",
       }}
     >
+      {/* ── Desktop / mobile top bar ── */}
       <div
         className="container"
         style={{
@@ -199,16 +208,12 @@ function Navbar({ user, onLogin, onDashboard }: {
           </span>
         </div>
 
-        {/* Nav links */}
+        {/* Desktop nav links */}
         <nav
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.25rem",
-          }}
+          style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
           className="hidden md:flex"
         >
-          {["Features", "How It Works", "Coverage", "Pricing"].map((item) => (
+          {NAV_ITEMS.map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
@@ -230,7 +235,7 @@ function Navbar({ user, onLogin, onDashboard }: {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* Desktop CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
           {user ? (
             <button onClick={onDashboard} className="bc-btn-primary" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
@@ -240,6 +245,7 @@ function Navbar({ user, onLogin, onDashboard }: {
             <>
               <button
                 onClick={onLogin}
+                className="hidden md:block"
                 style={{
                   fontSize: "0.8125rem",
                   fontWeight: 500,
@@ -252,13 +258,111 @@ function Navbar({ user, onLogin, onDashboard }: {
               >
                 Sign In
               </button>
-              <button onClick={onLogin} className="bc-btn-primary" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
+              <button onClick={onLogin} className="bc-btn-primary hidden md:flex" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
                 Get Access <ArrowRight size={13} />
               </button>
             </>
           )}
+
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setMobileOpen((v) => !v)}
+            className="flex md:hidden"
+            aria-label="Toggle menu"
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 6,
+              border: "1px solid rgba(255,255,255,0.1)",
+              background: mobileOpen ? "var(--bc-amber-dim)" : "transparent",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: mobileOpen ? "var(--bc-amber)" : "hsl(var(--foreground))",
+              transition: "all 0.15s",
+            }}
+          >
+            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </div>
+
+      {/* ── Mobile drawer ── */}
+      {mobileOpen && (
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(10, 13, 20, 0.98)",
+            padding: "1rem 1.5rem 1.5rem",
+          }}
+        >
+          {/* Nav links */}
+          <nav style={{ display: "flex", flexDirection: "column", gap: "0.125rem", marginBottom: "1.25rem" }}>
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={closeMobile}
+                style={{
+                  display: "block",
+                  padding: "0.75rem 0.875rem",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: "hsl(var(--foreground))",
+                  textDecoration: "none",
+                  borderRadius: 4,
+                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  transition: "background 0.1s, color 0.1s",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "var(--bc-amber-dim)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--bc-amber)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                  (e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground))";
+                }}
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+
+          {/* Mobile CTA buttons */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+            {user ? (
+              <button
+                onClick={() => { closeMobile(); onDashboard(); }}
+                className="bc-btn-primary"
+                style={{ justifyContent: "center", fontSize: "0.9375rem", padding: "0.75rem" }}
+              >
+                Go to Dashboard <ChevronRight size={15} />
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => { closeMobile(); onLogin(); }}
+                  className="bc-btn-primary"
+                  style={{ justifyContent: "center", fontSize: "0.9375rem", padding: "0.75rem" }}
+                >
+                  Get Access <ArrowRight size={15} />
+                </button>
+                <button
+                  onClick={() => { closeMobile(); onLogin(); }}
+                  className="bc-btn-outline"
+                  style={{ justifyContent: "center", fontSize: "0.9375rem", padding: "0.75rem" }}
+                >
+                  Sign In
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

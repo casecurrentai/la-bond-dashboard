@@ -66,3 +66,7 @@
 - [x] Rebuild marketing landing page matching CaseCurrent layout
 - [x] Build authenticated SaaS dashboard with call logs
 - [x] Checkpoint and publish
+
+## Mobile UX Fixes
+
+- [x] Add hamburger menu to landing page Navbar for mobile view
