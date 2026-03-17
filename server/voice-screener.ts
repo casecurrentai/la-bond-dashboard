@@ -15,6 +15,7 @@ import {
 } from "../drizzle/schema";
 import { scrapeParish, ScrapeResult, ScrapedBooking } from "./adapters";
 import { eq, and, gt, like, or } from "drizzle-orm";
+import { getJailContact } from "../shared/jailDirectory";
 
 export const voiceScreenerRouter = Router();
 
@@ -318,6 +319,7 @@ voiceScreenerRouter.post("/", async (req: Request, res: Response) => {
 
     // 3. Not found
     if (!inmate) {
+      const jailContact = getJailContact(parish);
       const payload = {
         success: true,
         found: false,
@@ -327,6 +329,19 @@ voiceScreenerRouter.post("/", async (req: Request, res: Response) => {
         data_freshness: dataSource,
         scraped_at: scrapedAt,
         response_time_ms: responseTimeMs,
+        // Fallback workflow: call the booking desk
+        jail_contact: jailContact ? {
+          facility_name: jailContact.facilityName,
+          booking_phone: jailContact.bookingPhone,
+          main_phone: jailContact.mainPhone,
+          address: `${jailContact.address}, ${jailContact.city}, ${jailContact.state} ${jailContact.zip}`,
+          hours: jailContact.hours,
+          notes: jailContact.notes,
+          call_script: jailContact.callScript
+            .replace(/\[INMATE NAME\]/g, body.inmate_name)
+            .replace(/\[BOOKING NUMBER\]/g, "N/A — not in online roster"),
+        } : null,
+        workflow_action: "CALL_BOOKING_DESK",
       };
 
       // Log the call
@@ -360,7 +375,9 @@ voiceScreenerRouter.post("/", async (req: Request, res: Response) => {
       minimumThreshold,
       enablePaymentPlans
     );
-
+    // Inject jail contact when bond is not yet set
+    const jailContact = getJailContact(parish);
+    const needsCall = decision === "NEEDS_MANUAL_REVIEW";
     const payload = {
       success: true,
       found: true,
@@ -382,6 +399,19 @@ voiceScreenerRouter.post("/", async (req: Request, res: Response) => {
       data_freshness: dataSource,
       scraped_at: scrapedAt,
       response_time_ms: responseTimeMs,
+      // Fallback workflow when bond is not yet set
+      jail_contact: needsCall && jailContact ? {
+        facility_name: jailContact.facilityName,
+        booking_phone: jailContact.bookingPhone,
+        main_phone: jailContact.mainPhone,
+        address: `${jailContact.address}, ${jailContact.city}, ${jailContact.state} ${jailContact.zip}`,
+        hours: jailContact.hours,
+        notes: jailContact.notes,
+        call_script: jailContact.callScript
+          .replace(/\[INMATE NAME\]/g, inmate.name)
+          .replace(/\[BOOKING NUMBER\]/g, inmate.bookingNumber || "N/A"),
+      } : null,
+      workflow_action: needsCall ? "CALL_BOOKING_DESK" : "PROCEED",
     };
 
     // Log the call

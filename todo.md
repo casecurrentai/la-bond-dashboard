@@ -74,3 +74,11 @@
 ## Bug Fixes
 
 - [x] Fix screener search: inmate name lookup returns no results
+
+## No-Bond Fallback Workflow
+
+- [x] Research booking desk phone numbers for all 8 parishes
+- [x] Add jail directory (phone, address, hours) to server-side data
+- [x] Extend screener API to include jail_contact when bond is missing
+- [x] Build NoBondWorkflow UI: phone number, call script, guided steps
+- [x] Show workflow automatically when screener_decision is NEEDS_MANUAL_REVIEW or NOT_FOUND

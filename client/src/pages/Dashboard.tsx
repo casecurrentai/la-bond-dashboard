@@ -12,6 +12,7 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronRight,
+  ClipboardList,
   Clock,
   Copy,
   DollarSign,
@@ -22,6 +23,7 @@ import {
   Mic,
   Phone,
   PhoneCall,
+  PhoneForwarded,
   RefreshCw,
   Search,
   Shield,
@@ -35,6 +37,16 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
+
+interface JailContact {
+  facility_name: string;
+  booking_phone: string;
+  main_phone: string;
+  address: string;
+  hours: string;
+  notes: string;
+  call_script: string;
+}
 
 interface ScreenerResult {
   success: boolean;
@@ -56,6 +68,9 @@ interface ScreenerResult {
   response_time_ms?: number;
   error?: string;
   message?: string;
+  inmate_name_searched?: string;
+  jail_contact?: JailContact | null;
+  workflow_action?: "CALL_BOOKING_DESK" | "PROCEED";
 }
 
 // ── Decision config ────────────────────────────────────────────────────────────
@@ -466,6 +481,238 @@ function StatCard({
   );
 }
 
+// ── No-Bond Fallback Workflow ─────────────────────────────────────────────────
+
+function NoBondWorkflow({ result }: { result: ScreenerResult }) {
+  const [scriptOpen, setScriptOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const jc = result.jail_contact;
+  const isNotFound = !result.found;
+
+  const copyScript = () => {
+    if (!jc) return;
+    navigator.clipboard.writeText(jc.call_script).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div>
+      {/* Status banner */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        marginBottom: jc ? "1rem" : 0,
+        padding: "0.625rem 0.75rem",
+        borderRadius: 4,
+        background: "rgba(245,158,11,0.08)",
+        border: "1px solid rgba(245,158,11,0.2)",
+      }}>
+        <AlertCircle size={14} color="var(--bc-amber)" style={{ flexShrink: 0 }} />
+        <span style={{ fontSize: "0.8125rem", color: "hsl(var(--foreground))" }}>
+          {isNotFound
+            ? `"${result.inmate_name_searched || "Inmate"}" was not found in the ${result.parish || ""} online roster.`
+            : `Inmate found but bond amount has not been set yet.`}
+          {jc && " Call the booking desk to inquire."}
+        </span>
+      </div>
+
+      {jc && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+
+          {/* Facility card */}
+          <div style={{
+            borderRadius: 4,
+            border: "1px solid hsl(var(--border))",
+            background: "hsl(var(--card))",
+            overflow: "hidden",
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: "0.625rem 0.875rem",
+              borderBottom: "1px solid hsl(var(--border))",
+              background: "rgba(0,0,0,0.2)",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}>
+              <Shield size={13} color="var(--bc-amber)" />
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
+                {jc.facility_name}
+              </span>
+            </div>
+
+            {/* Contact grid */}
+            <div style={{ padding: "0.875rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+              {/* Booking phone */}
+              <div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.5875rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginBottom: "0.2rem" }}>
+                  Booking Desk
+                </div>
+                <a
+                  href={`tel:${jc.booking_phone.replace(/[^0-9+]/g, "")}`}
+                  style={{ display: "flex", alignItems: "center", gap: "0.35rem", textDecoration: "none" }}
+                >
+                  <PhoneForwarded size={13} color="var(--bc-green)" />
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem", fontWeight: 700, color: "var(--bc-green)", letterSpacing: "0.04em" }}>
+                    {jc.booking_phone}
+                  </span>
+                </a>
+              </div>
+
+              {/* Main phone */}
+              <div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.5875rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginBottom: "0.2rem" }}>
+                  Main Line
+                </div>
+                <a
+                  href={`tel:${jc.main_phone.replace(/[^0-9+]/g, "")}`}
+                  style={{ display: "flex", alignItems: "center", gap: "0.35rem", textDecoration: "none" }}
+                >
+                  <Phone size={13} color="hsl(var(--muted-foreground))" />
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.875rem", color: "hsl(var(--foreground))", letterSpacing: "0.04em" }}>
+                    {jc.main_phone}
+                  </span>
+                </a>
+              </div>
+
+              {/* Address */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.5875rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginBottom: "0.2rem" }}>
+                  Address
+                </div>
+                <span style={{ fontSize: "0.8125rem", color: "hsl(var(--foreground))" }}>{jc.address}</span>
+              </div>
+
+              {/* Hours */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.5875rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginBottom: "0.2rem" }}>
+                  Hours
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                  <Clock size={11} color="var(--bc-amber)" />
+                  <span style={{ fontSize: "0.8125rem", color: "hsl(var(--foreground))" }}>{jc.hours}</span>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {jc.notes && (
+                <div style={{ gridColumn: "1 / -1", padding: "0.5rem 0.625rem", borderRadius: 3, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", color: "hsl(var(--muted-foreground))" }}>
+                    {jc.notes}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Call script */}
+          <div style={{
+            borderRadius: 4,
+            border: "1px solid hsl(var(--border))",
+            background: "hsl(var(--card))",
+            overflow: "hidden",
+          }}>
+            <button
+              onClick={() => setScriptOpen((v) => !v)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.625rem 0.875rem",
+                background: "rgba(0,0,0,0.2)",
+                border: "none",
+                borderBottom: scriptOpen ? "1px solid hsl(var(--border))" : "none",
+                cursor: "pointer",
+                color: "hsl(var(--foreground))",
+                textAlign: "left",
+              }}
+            >
+              <ClipboardList size={13} color="var(--bc-amber)" />
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase", flex: 1 }}>
+                Call Script
+              </span>
+              <ChevronRight
+                size={13}
+                color="hsl(var(--muted-foreground))"
+                style={{ transform: scriptOpen ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
+              />
+            </button>
+
+            {scriptOpen && (
+              <div style={{ padding: "0.875rem" }}>
+                <pre style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.75rem",
+                  color: "hsl(var(--foreground))",
+                  lineHeight: 1.7,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  margin: 0,
+                  marginBottom: "0.75rem",
+                }}>
+                  {jc.call_script}
+                </pre>
+                <button
+                  onClick={copyScript}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                    padding: "0.4rem 0.875rem",
+                    borderRadius: 3,
+                    border: "1px solid rgba(245,158,11,0.3)",
+                    background: copied ? "var(--bc-amber-dim)" : "transparent",
+                    color: copied ? "var(--bc-amber)" : "hsl(var(--muted-foreground))",
+                    fontSize: "0.75rem",
+                    fontFamily: "var(--font-mono)",
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <Copy size={11} />
+                  {copied ? "Copied!" : "Copy Script"}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Call now CTA */}
+          <a
+            href={`tel:${jc.booking_phone.replace(/[^0-9+]/g, "")}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              padding: "0.75rem",
+              borderRadius: 4,
+              background: "var(--bc-amber)",
+              color: "#000",
+              fontFamily: "var(--font-display)",
+              fontWeight: 800,
+              fontSize: "0.875rem",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              transition: "opacity 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            <PhoneCall size={15} />
+            Call Booking Desk — {jc.booking_phone}
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Live Screener Panel ────────────────────────────────────────────────────────
 
 function ScreenerPanel() {
@@ -716,12 +963,17 @@ function ScreenerPanel() {
                     </p>
                   </div>
                 )}
+
+                {/* No-bond fallback: show booking desk workflow when bond is not set */}
+                {result.workflow_action === "CALL_BOOKING_DESK" && result.jail_contact && (
+                  <div style={{ marginTop: "0.875rem" }}>
+                    <NoBondWorkflow result={result} />
+                  </div>
+                )}
               </>
             ) : (
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "hsl(var(--muted-foreground))", fontSize: "0.875rem" }}>
-                <Search size={14} />
-                {result.message || result.error || "Inmate not found in current roster."}
-              </div>
+              /* NOT FOUND — show booking desk workflow */
+              <NoBondWorkflow result={result} />
             )}
           </div>
         )}
