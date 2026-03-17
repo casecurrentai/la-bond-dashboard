@@ -210,8 +210,8 @@ function Navbar({ user, onLogin, onDashboard }: {
 
         {/* Desktop nav links */}
         <nav
-          style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
-          className="hidden md:flex"
+          style={{ alignItems: "center", gap: "0.25rem" }}
+          className="bc-desktop-only"
         >
           {NAV_ITEMS.map((item) => (
             <a
@@ -245,7 +245,7 @@ function Navbar({ user, onLogin, onDashboard }: {
             <>
               <button
                 onClick={onLogin}
-                className="hidden md:block"
+                className="bc-desktop-only"
                 style={{
                   fontSize: "0.8125rem",
                   fontWeight: 500,
@@ -258,7 +258,7 @@ function Navbar({ user, onLogin, onDashboard }: {
               >
                 Sign In
               </button>
-              <button onClick={onLogin} className="bc-btn-primary hidden md:flex" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
+              <button onClick={onLogin} className="bc-btn-primary bc-desktop-only" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
                 Get Access <ArrowRight size={13} />
               </button>
             </>
@@ -267,7 +267,6 @@ function Navbar({ user, onLogin, onDashboard }: {
           {/* Hamburger — mobile only */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex md:hidden"
             aria-label="Toggle menu"
             style={{
               width: 38,
@@ -275,13 +274,14 @@ function Navbar({ user, onLogin, onDashboard }: {
               borderRadius: 6,
               border: "1px solid rgba(255,255,255,0.1)",
               background: mobileOpen ? "var(--bc-amber-dim)" : "transparent",
-              display: "flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
               color: mobileOpen ? "var(--bc-amber)" : "hsl(var(--foreground))",
               transition: "all 0.15s",
+              display: "none",
             }}
+            className="bc-hamburger"
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -292,9 +292,15 @@ function Navbar({ user, onLogin, onDashboard }: {
       {mobileOpen && (
         <div
           style={{
+            position: "fixed",
+            top: 64,
+            left: 0,
+            right: 0,
+            zIndex: 99,
             borderTop: "1px solid rgba(255,255,255,0.06)",
             background: "rgba(10, 13, 20, 0.98)",
             padding: "1rem 1.5rem 1.5rem",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
           }}
         >
           {/* Nav links */}

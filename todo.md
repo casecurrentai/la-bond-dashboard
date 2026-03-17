@@ -92,3 +92,7 @@
 - [x] Integrate Zuercher Portal adapter for St. John the Baptist
 - [x] Add St. John to dashboard parish dropdown
 - [x] Test end-to-end screener search for St. John (via background cache warmer)
+
+## Mobile Nav Bug Round 2
+
+- [x] Fix hamburger dropdown not appearing on mobile (menu state not rendering)

@@ -179,6 +179,14 @@
    BondCurrent Utility Classes — Law Enforcement Edition
 ══════════════════════════════════════════════════════════════ */
 
+/* Mobile nav helpers — pure CSS, no Tailwind dependency */
+.bc-hamburger { display: none !important; }
+.bc-desktop-only { display: flex !important; }
+@media (max-width: 767px) {
+  .bc-hamburger { display: flex !important; }
+  .bc-desktop-only { display: none !important; }
+}
+
 /* ── Amber gradient text ── */
 .bc-gradient-text {
   background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde68a 100%);
