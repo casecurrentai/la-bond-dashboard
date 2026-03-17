@@ -96,3 +96,13 @@
 ## Mobile Nav Bug Round 2
 
 - [x] Fix hamburger dropdown not appearing on mobile (menu state not rendering)
+
+## St. John Debug
+
+- [x] Debug St. John search: "Harley D Atkinson" not found despite being incarcerated there
+
+## St. John Fix (IP Block Workaround)
+
+- [x] Add tRPC endpoint to manually trigger St. John cache warm from browser
+- [x] Add cache status indicator in dashboard for St. John
+- [x] Add client-side Zuercher fetch as fallback when server-side is blocked

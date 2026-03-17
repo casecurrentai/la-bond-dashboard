@@ -101,6 +101,111 @@ export const appRouter = router({
       }),
   }),
 
+  // ─── St. John Client-Side Screener ─────────────────────────────────────────
+  // The Zuercher portal blocks server-side connections from datacenter IPs.
+  // This endpoint accepts raw Zuercher data fetched client-side and processes
+  // it into a screener result, including bond qualification logic.
+  stjohn: router({
+    screen: publicProcedure
+      .input(z.object({
+        inmate_name: z.string(),
+        caller_budget: z.number().optional(),
+        zuercher_records: z.array(z.object({
+          name: z.string(),
+          hold_reasons: z.string().optional().default(""),
+          arrest_date: z.string().optional(),
+          dob: z.number().optional(),
+          race: z.string().optional(),
+          sex: z.string().optional(),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        const { inmate_name, caller_budget, zuercher_records } = input;
+        const nameParts = inmate_name.toUpperCase().replace(",", "").split(/\s+/).filter(Boolean);
+        const lastName = inmate_name.includes(",")
+          ? inmate_name.split(",")[0].trim().toUpperCase()
+          : nameParts[nameParts.length - 1];
+
+        // Find best match
+        const match = zuercher_records.find(r =>
+          r.name.toUpperCase().includes(lastName)
+        );
+
+        if (!match) {
+          return {
+            found: false,
+            inmate_name_searched: inmate_name,
+            parish: "St. John the Baptist",
+            screener_decision: "NOT_FOUND" as const,
+            voice_prompt_suggestion: `I searched the St. John the Baptist Parish jail roster but couldn't find anyone named ${inmate_name}. Could you verify the spelling of the name?`,
+            jail_contact: {
+              facility: "St. John the Baptist Parish Jail",
+              booking_line: "(985) 652-6338",
+              main_line: "(985) 652-6338",
+              address: "1801 W. Airline Hwy, LaPlace, LA 70068",
+              hours: "24/7",
+            },
+          };
+        }
+
+        // Parse bond from hold_reasons
+        const holdText = match.hold_reasons || "";
+        const bondMatch = holdText.match(/\$([\d,]+(?:\.\d{2})?)/i);
+        const bondAmount = bondMatch ? parseFloat(bondMatch[1].replace(/,/g, "")) : null;
+        const premiumRate = 0.10;
+        const premium = bondAmount ? bondAmount * premiumRate : null;
+        const budget = caller_budget ?? null;
+
+        let decision: "QUALIFIED" | "UNQUALIFIED" | "NEEDS_MANUAL_REVIEW" | "PAYMENT_PLAN_ELIGIBLE";
+        if (!bondAmount) {
+          decision = "NEEDS_MANUAL_REVIEW";
+        } else if (budget !== null && budget >= (premium ?? 0)) {
+          decision = "QUALIFIED";
+        } else if (budget !== null && budget >= (premium ?? 0) * 0.5) {
+          decision = "PAYMENT_PLAN_ELIGIBLE";
+        } else {
+          decision = budget !== null ? "UNQUALIFIED" : "QUALIFIED";
+        }
+
+        // Parse charges
+        const charges = holdText
+          .split(/\n/)
+          .map(l => l.replace(/Bond[^;]*/gi, "").replace(/\$[\d,.]+/g, "").trim())
+          .filter(l => l.length > 3)
+          .slice(0, 5);
+
+        return {
+          found: true,
+          inmate_name_searched: inmate_name,
+          parish: "St. John the Baptist",
+          screener_decision: decision,
+          inmate: {
+            name: match.name,
+            bookingNumber: `STJOHN-${match.arrest_date ?? "unknown"}-${match.name.replace(/\s+/g, "-").slice(0, 20)}`,
+            parish: "St. John the Baptist",
+            bondAmount,
+            bondText: bondAmount ? `$${bondAmount.toLocaleString()}` : "No Bond / Not Set",
+            charges,
+            bookingDate: match.arrest_date ?? "",
+            age: match.dob ?? null,
+            race: match.race ?? null,
+            sex: match.sex ?? null,
+          },
+          bond_amount: bondAmount,
+          premium_amount: premium,
+          premium_rate: premiumRate,
+          data_source: "client-side-zuercher" as const,
+          jail_contact: !bondAmount ? {
+            facility: "St. John the Baptist Parish Jail",
+            booking_line: "(985) 652-6338",
+            main_line: "(985) 652-6338",
+            address: "1801 W. Airline Hwy, LaPlace, LA 70068",
+            hours: "24/7",
+          } : undefined,
+        };
+      }),
+  }),
+
   // ─── Scrape Actions ────────────────────────────────────────────────────────
   scrape: router({
     parish: publicProcedure

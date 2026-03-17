@@ -734,31 +734,121 @@ function ScreenerPanel() {
   const [listening, setListening] = useState(false);
   const [searchAll, setSearchAll] = useState(false);
 
+  const stjohnScreenMutation = trpc.stjohn.screen.useMutation();
+
+  // Fetch St. John inmates directly from the browser (server IP is blocked by Zuercher portal)
+  const fetchZuercherClientSide = async (nameQuery: string): Promise<any[]> => {
+    try {
+      const lastName = nameQuery.includes(",")
+        ? nameQuery.split(",")[0].trim().toUpperCase()
+        : nameQuery.trim().toUpperCase().split(/\s+/).pop() ?? nameQuery.toUpperCase();
+      const resp = await fetch("https://stjohn-so-la.zuercherportal.com/api/portal/inmates/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          name: lastName,
+          race: "all", sex: "all", cell_block: "all", held_for_agency: "any",
+          in_custody: new Date().toISOString(),
+          paging: { count: 50, start: 0 },
+          sorting: { sort_by_column_tag: "name", sort_descending: false },
+        }),
+        credentials: "include",
+      });
+      if (!resp.ok) return [];
+      const json = await resp.json();
+      return Array.isArray(json) ? json : (json.records ?? json.data ?? []);
+    } catch {
+      return [];
+    }
+  };
+
   const runLookup = useCallback(async () => {
     if (!inmateName.trim()) { toast.error("Enter an inmate name"); return; }
     setLoading(true);
     setResult(null);
     try {
       if (searchAll) {
-        // Search all active parishes in parallel, return first match
-        const liveParishes = ACTIVE_PARISHES.map((p) => p.name);
-        const results = await Promise.all(
-          liveParishes.map((p) =>
-            fetch("/api/v1/voice-screener", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                inmate_name: inmateName.trim(),
-                parish: p,
-                caller_budget_available: budget ? parseFloat(budget) : undefined,
-              }),
-            }).then((r) => r.json()).catch(() => null)
-          )
-        );
-        // Prefer a found result; fall back to first not-found with jail_contact
-        const found = results.find((r) => r && r.found);
-        const notFound = results.find((r) => r && !r.found && r.jail_contact);
-        setResult(found || notFound || results[0]);
+        // Search all active parishes in parallel
+        // St. John uses client-side fetch; others use the server API
+        const otherParishes = ACTIVE_PARISHES.filter(p => p.name !== "St. John the Baptist").map(p => p.name);
+        const [serverResults, stjohnRecords] = await Promise.all([
+          Promise.all(
+            otherParishes.map((p) =>
+              fetch("/api/v1/voice-screener", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  inmate_name: inmateName.trim(),
+                  parish: p,
+                  caller_budget_available: budget ? parseFloat(budget) : undefined,
+                }),
+              }).then((r) => r.json()).catch(() => null)
+            )
+          ),
+          fetchZuercherClientSide(inmateName.trim()),
+        ]);
+        let stjohnResult: any = null;
+        if (stjohnRecords.length > 0) {
+          stjohnResult = await stjohnScreenMutation.mutateAsync({
+            inmate_name: inmateName.trim(),
+            caller_budget: budget ? parseFloat(budget) : undefined,
+            zuercher_records: stjohnRecords,
+          }).catch(() => null);
+        }
+        const allResults = [...serverResults, stjohnResult].filter(Boolean);
+        const found = allResults.find((r) => r && r.found);
+        const notFound = allResults.find((r) => r && !r.found && r.jail_contact);
+        setResult(found || notFound || allResults[0]);
+      } else if (parish === "St. John the Baptist") {
+        // Client-side Zuercher fetch for St. John (server IP is blocked by portal)
+        const records = await fetchZuercherClientSide(inmateName.trim());
+        if (records.length === 0) {
+          // Portal unreachable from this browser — fall back to server (will return not-found with jail contact)
+          const res = await fetch("/api/v1/voice-screener", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              inmate_name: inmateName.trim(),
+              parish,
+              caller_budget_available: budget ? parseFloat(budget) : undefined,
+            }),
+          });
+          setResult(await res.json());
+        } else {
+          const screened = await stjohnScreenMutation.mutateAsync({
+            inmate_name: inmateName.trim(),
+            caller_budget: budget ? parseFloat(budget) : undefined,
+            zuercher_records: records,
+          });
+          // Normalize stjohn response to match ScreenerResult shape
+          const normalized: ScreenerResult = {
+            success: true,
+            found: screened.found,
+            screener_decision: screened.screener_decision,
+            inmate_name_confirmed: screened.found ? (screened as any).inmate?.name : undefined,
+            inmate_name_searched: screened.inmate_name_searched,
+            booking_number: screened.found ? (screened as any).inmate?.bookingNumber : undefined,
+            parish: screened.parish,
+            total_bond_amount: screened.found ? (screened as any).bond_amount : null,
+            calculated_premium: screened.found ? (screened as any).premium_amount : null,
+            charges: screened.found ? (screened as any).inmate?.charges : [],
+            booking_date: screened.found ? (screened as any).inmate?.bookingDate : undefined,
+            voice_prompt_suggestion: screened.found
+              ? `I found ${(screened as any).inmate?.name} in the St. John the Baptist Parish jail. Bond is set at ${ (screened as any).bond_amount ? `$${((screened as any).bond_amount as number).toLocaleString()}` : "not yet set" }. The 10% premium is ${ (screened as any).premium_amount ? `$${((screened as any).premium_amount as number).toLocaleString()}` : "pending" }.`
+              : screened.voice_prompt_suggestion,
+            jail_contact: (screened as any).jail_contact ? {
+              facility_name: (screened as any).jail_contact.facility,
+              booking_phone: (screened as any).jail_contact.booking_line,
+              main_phone: (screened as any).jail_contact.main_line,
+              address: (screened as any).jail_contact.address,
+              hours: (screened as any).jail_contact.hours,
+              notes: "",
+              call_script: "",
+            } : null,
+            workflow_action: !(screened as any).bond_amount ? "CALL_BOOKING_DESK" : "PROCEED",
+          };
+          setResult(normalized);
+        }
       } else {
         const res = await fetch("/api/v1/voice-screener", {
           method: "POST",
@@ -776,7 +866,7 @@ function ScreenerPanel() {
     } finally {
       setLoading(false);
     }
-  }, [inmateName, parish, budget, searchAll]);
+  }, [inmateName, parish, budget, searchAll, stjohnScreenMutation]);
 
   const voiceInput = () => {
     const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
