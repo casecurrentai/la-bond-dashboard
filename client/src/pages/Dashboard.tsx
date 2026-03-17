@@ -31,6 +31,8 @@ import {
   User,
   XCircle,
   Zap,
+  Menu,
+  X,
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
@@ -145,10 +147,14 @@ function Sidebar({
   user,
   onLogout,
   onHome,
+  onClose,
+  isMobileOpen,
 }: {
   user: any;
   onLogout: () => void;
   onHome: () => void;
+  onClose?: () => void;
+  isMobileOpen?: boolean;
 }) {
   const navItems = [
     { icon: Activity,  label: "Overview",   active: true },
@@ -160,19 +166,20 @@ function Sidebar({
 
   return (
     <aside
-      style={{
-        width: 220,
-        flexShrink: 0,
-        background: "hsl(var(--card))",
-        borderRight: "1px solid hsl(var(--border))",
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        position: "sticky",
-        top: 0,
-        overflow: "hidden",
-      }}
+      className="bc-sidebar"
+      data-open={isMobileOpen ? "true" : "false"}
     >
+      {/* Mobile close button */}
+      {onClose && (
+        <button
+          className="bc-sidebar-close"
+          onClick={onClose}
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+      )}
+
       {/* Logo */}
       <div
         style={{
@@ -183,7 +190,7 @@ function Sidebar({
           gap: "0.625rem",
           cursor: "pointer",
         }}
-        onClick={onHome}
+        onClick={() => { onHome(); onClose?.(); }}
       >
         <div
           style={{
@@ -261,6 +268,7 @@ function Sidebar({
             key={label}
             onClick={() => {
               if (!active) toast.info(`${label} — coming soon`);
+              onClose?.();
             }}
             style={{
               display: "flex",
@@ -1404,6 +1412,7 @@ export default function Dashboard() {
   const { user, loading, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [scraping, setScraping] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const stats = trpc.dashboard.stats.useQuery();
   const scrapeAll = trpc.scrape.all.useMutation({
@@ -1453,25 +1462,37 @@ export default function Dashboard() {
   const parishBreakdown = stats.data?.parishBreakdown ?? [];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "hsl(var(--background))" }}>
-      <Sidebar user={user} onLogout={logout} onHome={() => setLocation("/")} />
+    <div className="bc-dashboard-root">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="bc-sidebar-backdrop"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <Sidebar
+        user={user}
+        onLogout={logout}
+        onHome={() => setLocation("/")}
+        onClose={() => setSidebarOpen(false)}
+        isMobileOpen={sidebarOpen}
+      />
 
       {/* Main */}
-      <div style={{ flex: 1, overflow: "auto" }}>
+      <div className="bc-dashboard-main">
         {/* Top bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0.875rem 1.5rem",
-            borderBottom: "1px solid hsl(var(--border))",
-            background: "hsl(var(--card))",
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-          }}
-        >
+        <div className="bc-topbar">
+          {/* Hamburger — mobile only */}
+          <button
+            className="bc-hamburger-btn"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+
           <div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
               Command Center
@@ -1494,7 +1515,7 @@ export default function Dashboard() {
         {/* Content */}
         <div style={{ padding: "1.5rem" }}>
           {/* Stats */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
+          <div className="bc-stats-grid">
             <StatCard icon={User}     label="Active Bookings"  value={totalBookings.toLocaleString()} sub="across all parishes" accent="var(--bc-amber)" />
             <StatCard icon={DollarSign} label="Total Bond Value" value={fmtUSD(totalBond)} sub="in current roster" accent="var(--bc-green)" />
             <StatCard icon={MapPin}   label="Parishes Indexed" value={parishBreakdown.length || 8} sub="8 jurisdictions" accent="var(--bc-blue)" />
@@ -1502,7 +1523,7 @@ export default function Dashboard() {
           </div>
 
           {/* Main grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1.25rem" }}>
+          <div className="bc-main-grid">
             <ScreenerPanel />
             <ApiKeyPanel user={user} />
           </div>

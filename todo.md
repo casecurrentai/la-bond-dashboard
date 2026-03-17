@@ -106,3 +106,13 @@
 - [x] Add tRPC endpoint to manually trigger St. John cache warm from browser
 - [x] Add cache status indicator in dashboard for St. John
 - [x] Add client-side Zuercher fetch as fallback when server-side is blocked
+
+## Mobile Dashboard Sidebar Fix
+
+- [x] Hide sidebar by default on ≤768px
+- [x] Add hamburger icon top-left to toggle sidebar as slide-over overlay
+- [x] Overlay: full-height, ~280px wide, semi-transparent backdrop, tap to close
+- [x] Main content fills 100vw when sidebar is hidden
+- [x] Dashboard cards stack in single column on mobile
+- [x] Move logo + footer into overlay menu (already inside sidebar)
+- [x] Keep desktop layout (≥769px) unchanged
