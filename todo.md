@@ -70,3 +70,7 @@
 ## Mobile UX Fixes
 
 - [x] Add hamburger menu to landing page Navbar for mobile view
+
+## Bug Fixes
+
+- [x] Fix screener search: inmate name lookup returns no results

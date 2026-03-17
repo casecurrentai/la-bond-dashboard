@@ -235,8 +235,8 @@ async function liveSearch(
   try {
     let records: any[] = [];
 
-    const parishKey = parish.toLowerCase().replace(/\./g, "").replace(/\s+/g, "_");
-    const result: ScrapeResult = await scrapeParish(parishKey);
+    // Pass the human-readable parish name directly — scrapeParish matches on a.parish.toLowerCase()
+    const result: ScrapeResult = await scrapeParish(parish);
     records = result.bookings || [];
 
     // Find best match by last name then full name
