@@ -22,6 +22,7 @@
 import * as cheerio from "cheerio";
 import * as crypto from "crypto";
 import axios from "axios";
+import { scrapeStJohnZuercher, scrapeStJohnAll } from "./adapters/st-john-zuercher.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -583,6 +584,39 @@ export async function scrapeParish(parish: string): Promise<ScrapeResult> {
       }
     }
 
+    if (
+      parish.toLowerCase() === "st. john the baptist" ||
+      parish.toLowerCase() === "st. john"
+    ) {
+      const startTime = Date.now();
+      try {
+        const bookings = await scrapeStJohnAll();
+        const hash = crypto
+          .createHash("sha256")
+          .update(JSON.stringify(bookings))
+          .digest("hex")
+          .slice(0, 16);
+        return {
+          parish: "St. John the Baptist",
+          bookings,
+          hash,
+          fetchedAt: new Date().toISOString(),
+          durationMs: Date.now() - startTime,
+          bondAvailable: true,
+        };
+      } catch (err) {
+        return {
+          parish: "St. John the Baptist",
+          bookings: [],
+          hash: "",
+          fetchedAt: new Date().toISOString(),
+          durationMs: Date.now() - startTime,
+          bondAvailable: true,
+          error: (err as Error).message,
+        };
+      }
+    }
+
     throw new Error(`No adapter found for parish: ${parish}`);
   }
 
@@ -624,6 +658,7 @@ export async function scrapeAllParishes(): Promise<ScrapeResult[]> {
     ...ADAPTERS.map((a) => a.parish),
     "Orleans",
     "Jefferson",
+    "St. John the Baptist",
   ];
 
   const results: ScrapeResult[] = [];
@@ -664,6 +699,14 @@ export async function searchByName(query: string): Promise<ScrapedBooking[]> {
     results.push(...orléansResults);
   } catch (err) {
     console.warn("[Orleans] Search failed:", (err as Error).message);
+  }
+
+  // Search St. John the Baptist via Zuercher Portal API (supports name search natively)
+  try {
+    const stjohnResults = await scrapeStJohnZuercher(query);
+    results.push(...stjohnResults);
+  } catch (err) {
+    console.warn("[St. John] Search failed:", (err as Error).message);
   }
 
   return results;

@@ -1,0 +1,1 @@
+ALTER TABLE `roster_cache` ADD CONSTRAINT `roster_cache_parish_name_unique` UNIQUE(`parish`,`inmateName`);

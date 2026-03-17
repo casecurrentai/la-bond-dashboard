@@ -8,6 +8,7 @@ import {
   decimal,
   boolean,
   json,
+  uniqueIndex,
 } from "drizzle-orm/mysql-core";
 
 // ─── Core Auth ────────────────────────────────────────────────────────────────
@@ -169,7 +170,9 @@ export const rosterCache = mysqlTable("roster_cache", {
   inmateData: text("inmateData").notNull(), // JSON
   cachedAt: timestamp("cachedAt").defaultNow().notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
-});
+}, (table) => ({
+  parishNameUnique: uniqueIndex("roster_cache_parish_name_unique").on(table.parish, table.inmateName),
+}));
 
 export type RosterCache = typeof rosterCache.$inferSelect;
 

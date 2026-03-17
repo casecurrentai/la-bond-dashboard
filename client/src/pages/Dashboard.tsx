@@ -717,11 +717,12 @@ function NoBondWorkflow({ result }: { result: ScreenerResult }) {
 
 // Parishes with confirmed live data
 const ACTIVE_PARISHES = [
-  { name: "Allen",      status: "live" },
-  { name: "St. Mary",  status: "live" },
-  { name: "Evangeline", status: "live" },
-  { name: "Plaquemines", status: "limited" },
-  { name: "St. Bernard", status: "limited" },
+  { name: "Allen",                 status: "live" },
+  { name: "St. Mary",              status: "live" },
+  { name: "Evangeline",            status: "live" },
+  { name: "St. John the Baptist",  status: "live" },
+  { name: "Plaquemines",           status: "limited" },
+  { name: "St. Bernard",           status: "limited" },
 ];
 
 function ScreenerPanel() {
@@ -903,7 +904,7 @@ function ScreenerPanel() {
             </select>
             {searchAll && (
               <div style={{ marginTop: "0.35rem", fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-amber)", letterSpacing: "0.04em" }}>
-                ▶ Searching Allen · St. Mary · Evangeline · Plaquemines · St. Bernard simultaneously
+                ▶ Searching Allen · St. Mary · Evangeline · St. John the Baptist · Plaquemines · St. Bernard simultaneously
               </div>
             )}
           </div>

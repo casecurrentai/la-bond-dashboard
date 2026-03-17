@@ -1,0 +1,9 @@
+{
+  "query": "DELETE rc1 FROM roster_cache rc1\nINNER JOIN roster_cache rc2\nWHERE rc1.id < rc2.id\n  AND rc1.parish = rc2.parish\n  AND rc1.inmateName = rc2.inmateName;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3jG43XgGpQVQTdi.root --database PmzqLjMVUdTNsxn8Y5dW8X --execute DELETE rc1 FROM roster_cache rc1\nINNER JOIN roster_cache rc2\nWHERE rc1.id < rc2.id\n  AND rc1.parish = rc2.parish\n  AND rc1.inmateName = rc2.inmateName;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 164
+}
