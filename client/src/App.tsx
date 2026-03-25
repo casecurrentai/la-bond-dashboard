@@ -9,12 +9,14 @@ import Dashboard from "./pages/Dashboard";
 import BookingsPage from "./pages/BookingsPage";
 import ActivityPage from "./pages/ActivityPage";
 import HandoffPage from "./pages/HandoffPage";
+import MarketingHome from "./pages/MarketingHome";
 
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={MarketingHome} />
       <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/home"} component={Home} />
       <Route path={"/bookings"} component={BookingsPage} />
       <Route path={"/activity"} component={ActivityPage} />
       <Route path={"/handoff"} component={HandoffPage} />
