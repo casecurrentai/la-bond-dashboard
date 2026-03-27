@@ -116,3 +116,7 @@
 - [x] Dashboard cards stack in single column on mobile
 - [x] Move logo + footer into overlay menu (already inside sidebar)
 - [x] Keep desktop layout (≥769px) unchanged
+
+## St. John Regression (Round 2)
+
+- [ ] Debug St. John search regression: names not returning results again
