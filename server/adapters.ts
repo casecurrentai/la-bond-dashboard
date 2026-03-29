@@ -23,6 +23,7 @@ import * as cheerio from "cheerio";
 import * as crypto from "crypto";
 import axios from "axios";
 import { scrapeStJohnZuercher, scrapeStJohnAll } from "./adapters/st-john-zuercher.js";
+import { scrapeLaVine, scrapeLaVineAll } from "./adapters/la-vine.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -617,6 +618,42 @@ export async function scrapeParish(parish: string): Promise<ScrapeResult> {
       }
     }
 
+    // Handle LA VINE parishes (St. Charles, Ascension, St. James, Assumption)
+    const laVineParishes = ["st. charles", "ascension", "st. james", "assumption"];
+    if (laVineParishes.includes(parish.toLowerCase())) {
+      const startTime = Date.now();
+      // Normalize parish name to match LA_VINE_PARISHES keys
+      const parishMap: Record<string, string> = {
+        "st. charles": "St. Charles",
+        "ascension": "Ascension",
+        "st. james": "St. James",
+        "assumption": "Assumption",
+      };
+      const normalizedParish = parishMap[parish.toLowerCase()] || parish;
+      try {
+        const bookings = await scrapeLaVineAll(normalizedParish);
+        const hash = crypto.createHash("sha256").update(JSON.stringify(bookings)).digest("hex").slice(0, 16);
+        return {
+          parish: normalizedParish,
+          bookings,
+          hash,
+          fetchedAt: new Date().toISOString(),
+          durationMs: Date.now() - startTime,
+          bondAvailable: false,
+        };
+      } catch (err) {
+        return {
+          parish: normalizedParish,
+          bookings: [],
+          hash: "",
+          fetchedAt: new Date().toISOString(),
+          durationMs: Date.now() - startTime,
+          bondAvailable: false,
+          error: (err as Error).message,
+        };
+      }
+    }
+
     throw new Error(`No adapter found for parish: ${parish}`);
   }
 
@@ -659,6 +696,10 @@ export async function scrapeAllParishes(): Promise<ScrapeResult[]> {
     "Orleans",
     "Jefferson",
     "St. John the Baptist",
+    "St. Charles",
+    "Ascension",
+    "St. James",
+    "Assumption",
   ];
 
   const results: ScrapeResult[] = [];
@@ -707,6 +748,17 @@ export async function searchByName(query: string): Promise<ScrapedBooking[]> {
     results.push(...stjohnResults);
   } catch (err) {
     console.warn("[St. John] Search failed:", (err as Error).message);
+  }
+
+  // Search LA VINE parishes (St. Charles, Ascension, St. James, Assumption)
+  const laVineSearchParishes = ["St. Charles", "Ascension", "St. James", "Assumption"];
+  for (const laVineParish of laVineSearchParishes) {
+    try {
+      const laVineResults = await scrapeLaVine(laVineParish, query);
+      results.push(...laVineResults);
+    } catch (err) {
+      console.warn(`[${laVineParish}] LA VINE search failed:`, (err as Error).message);
+    }
   }
 
   return results;

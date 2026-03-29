@@ -131,6 +131,62 @@ export const JAIL_DIRECTORY: Record<string, JailContact> = {
     notes: "Orleans Justice Center main line: (504) 202-9339. Also reachable at (504) 249-7265.",
     callScript: `Good [morning/afternoon/evening], this is [Agent Name] with [Agency Name], a licensed bail bondsman. I'm calling the Orleans Justice Center to inquire about the bond status for a detainee.\n\nDetainee name: [INMATE NAME]\nBooking number (if available): [BOOKING NUMBER]\n\nI'm working with the family to arrange a release and need to confirm the total bond amount currently set. Could you please check your system and provide that information? Thank you.`,
   },
+
+  "St. Charles": {
+    parish: "St. Charles",
+    facilityName: "St. Charles Parish Jail",
+    bookingPhone: "(985) 783-6237",
+    mainPhone: "(985) 783-6237",
+    address: "260 Judge Edward Dufresne Pkwy",
+    city: "Luling",
+    state: "LA",
+    zip: "70070",
+    hours: "24 hours / 7 days",
+    notes: "St. Charles Parish Sheriff's Office main line: (985) 783-6237. Jail booking extension may vary — ask for booking/intake.",
+    callScript: `Good [morning/afternoon/evening], this is [Agent Name] from [Agency Name], a licensed bail bondsman. I'm calling the St. Charles Parish Jail to inquire about bond information for an inmate.\n\nInmate name: [INMATE NAME]\nBooking number (if available): [BOOKING NUMBER]\n\nThe public roster shows this individual is in custody but does not list a bond amount. Could you please confirm whether a bond has been set and the total amount? Thank you.`,
+  },
+
+  "Ascension": {
+    parish: "Ascension",
+    facilityName: "Ascension Parish Jail",
+    bookingPhone: "(225) 621-8300",
+    mainPhone: "(225) 621-8300",
+    address: "828 S. Irma Blvd",
+    city: "Gonzales",
+    state: "LA",
+    zip: "70737",
+    hours: "24 hours / 7 days",
+    notes: "Ascension Parish Sheriff's Office: (225) 621-8300. Ask for the jail/booking department.",
+    callScript: `Good [morning/afternoon/evening], this is [Agent Name] with [Agency Name]. I'm a licensed bail bondsman calling the Ascension Parish Jail to inquire about a bond amount.\n\nInmate name: [INMATE NAME]\nBooking number (if available): [BOOKING NUMBER]\n\nI can see the inmate is in custody on the public roster, but no bond amount is listed. Could you please check and confirm the current bond amount? I'm assisting the family with the release process. Thank you.`,
+  },
+
+  "St. James": {
+    parish: "St. James",
+    facilityName: "St. James Parish Jail",
+    bookingPhone: "(225) 562-2200",
+    mainPhone: "(225) 562-2200",
+    address: "5800 LA-44",
+    city: "Convent",
+    state: "LA",
+    zip: "70723",
+    hours: "24 hours / 7 days",
+    notes: "St. James Parish Sheriff's Office: (225) 562-2200. Ask for jail/booking when connected.",
+    callScript: `Good [morning/afternoon/evening], this is [Agent Name] from [Agency Name], a licensed bail bondsman. I'm calling the St. James Parish Jail to check on a bond amount.\n\nInmate name: [INMATE NAME]\nBooking number (if available): [BOOKING NUMBER]\n\nI'm assisting the inmate's family and need to confirm the current bond amount to begin the release process. Could you please check your records? Thank you.`,
+  },
+
+  "Assumption": {
+    parish: "Assumption",
+    facilityName: "Assumption Parish Jail",
+    bookingPhone: "(985) 369-2341",
+    mainPhone: "(985) 369-2341",
+    address: "4820 LA-308",
+    city: "Napoleonville",
+    state: "LA",
+    zip: "70390",
+    hours: "24 hours / 7 days",
+    notes: "Assumption Parish Sheriff's Office: (985) 369-2341. Ask for the jail/booking department.",
+    callScript: `Good [morning/afternoon/evening], this is [Agent Name] with [Agency Name]. I'm a licensed bail bondsman calling the Assumption Parish Jail to inquire about a bond amount.\n\nInmate name: [INMATE NAME]\nBooking number (if available): [BOOKING NUMBER]\n\nThe public roster shows this individual is in custody but no bond amount is listed. Could you please confirm whether a bond has been set and the total amount? Thank you.`,
+  },
 };
 
 /** Returns jail contact info for a given parish name (case-insensitive). */

@@ -120,3 +120,12 @@
 ## St. John Regression (Round 2)
 
 - [ ] Debug St. John search regression: names not returning results again
+
+## LA VINE Single Adapter (All 6 River Parishes)
+
+- [ ] Verify LA VINE bond amount availability via browser inspection
+- [ ] Build single LAVineAdapter class (Playwright, __doPostBack, table parse)
+- [ ] Register all 6 parishes in adapters.ts (St. John, Orleans, St. Charles, Ascension, St. James, Assumption)
+- [ ] Update cache warmer to include all 6 LA VINE parishes
+- [ ] Update dashboard parish dropdown to show all 6 parishes
+- [ ] Remove/deprecate Zuercher Portal adapter (keep as fallback)

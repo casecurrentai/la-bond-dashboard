@@ -731,6 +731,10 @@ const ACTIVE_PARISHES = [
   { name: "St. John the Baptist",  status: "live" },
   { name: "Plaquemines",           status: "limited" },
   { name: "St. Bernard",           status: "limited" },
+  { name: "St. Charles",           status: "limited" },
+  { name: "Ascension",             status: "limited" },
+  { name: "St. James",             status: "limited" },
+  { name: "Assumption",            status: "limited" },
 ];
 
 function ScreenerPanel() {
@@ -1002,7 +1006,7 @@ function ScreenerPanel() {
             </select>
             {searchAll && (
               <div style={{ marginTop: "0.35rem", fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-amber)", letterSpacing: "0.04em" }}>
-                ▶ Searching Allen · St. Mary · Evangeline · St. John the Baptist · Plaquemines · St. Bernard simultaneously
+                ▶ Searching Allen · St. Mary · Evangeline · St. John the Baptist · Plaquemines · St. Bernard · St. Charles · Ascension · St. James · Assumption simultaneously
               </div>
             )}
           </div>
@@ -1143,6 +1147,10 @@ function ParishStatus() {
     "Jefferson":            { bond: true,  platform: "Zuercher" },
     "Plaquemines":          { bond: false, platform: "LA VINE" },
     "St. Bernard":          { bond: false, platform: "LA VINE" },
+    "St. Charles":          { bond: false, platform: "LA VINE" },
+    "Ascension":            { bond: false, platform: "LA VINE" },
+    "St. James":            { bond: false, platform: "LA VINE" },
+    "Assumption":           { bond: false, platform: "LA VINE" },
     "Orleans":              { bond: false, platform: "Appriss" },
   };
 
@@ -1171,7 +1179,7 @@ function ParishStatus() {
           Parish Coverage
         </span>
         <span style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: "0.625rem", color: "hsl(var(--muted-foreground))" }}>
-          8 jurisdictions
+          12 jurisdictions
         </span>
       </div>
 
@@ -1518,7 +1526,7 @@ export default function Dashboard() {
           <div className="bc-stats-grid">
             <StatCard icon={User}     label="Active Bookings"  value={totalBookings.toLocaleString()} sub="across all parishes" accent="var(--bc-amber)" />
             <StatCard icon={DollarSign} label="Total Bond Value" value={fmtUSD(totalBond)} sub="in current roster" accent="var(--bc-green)" />
-            <StatCard icon={MapPin}   label="Parishes Indexed" value={parishBreakdown.length || 8} sub="8 jurisdictions" accent="var(--bc-blue)" />
+            <StatCard icon={MapPin}   label="Parishes Indexed" value={parishBreakdown.length || 12} sub="12 jurisdictions" accent="var(--bc-blue)" />
             <StatCard icon={Zap}      label="API Status"       value="Operational" sub="POST /api/v1/voice-screener" accent="var(--bc-green)" />
           </div>
 
