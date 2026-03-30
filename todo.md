@@ -129,3 +129,13 @@
 - [ ] Update cache warmer to include all 6 LA VINE parishes
 - [ ] Update dashboard parish dropdown to show all 6 parishes
 - [ ] Remove/deprecate Zuercher Portal adapter (keep as fallback)
+
+## Full B2B SaaS Build (v5 Spec)
+
+- [x] Calls Log page (/dashboard/calls): filterable table, mock data, sortable columns, CSV export
+- [x] Call detail modal: caller info, inmate info, transcript, AI summary, audio player UI
+- [x] Configuration page (/dashboard/config): voice agent settings, financial thresholds, parish toggles, API key
+- [x] Billing page (/dashboard/billing): subscription tier, usage meter, billing history table
+- [x] Update landing page: 12 parishes count, testimonials, how-it-works section, parish partnership section
+- [x] Update dashboard nav: add Calls, Config, Billing links to sidebar
+- [x] Mock data: 25 realistic call records with transcripts and summaries

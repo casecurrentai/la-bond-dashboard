@@ -37,6 +37,9 @@ import {
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import CallsLog from "./CallsLog";
+import ConfigPage from "./ConfigPage";
+import BillingPage from "./BillingPage";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -149,19 +152,24 @@ function Sidebar({
   onHome,
   onClose,
   isMobileOpen,
+  activeView,
+  onViewChange,
 }: {
   user: any;
   onLogout: () => void;
   onHome: () => void;
   onClose?: () => void;
   isMobileOpen?: boolean;
+  activeView: string;
+  onViewChange: (view: string) => void;
 }) {
   const navItems = [
-    { icon: Activity,  label: "Overview",   active: true },
-    { icon: PhoneCall, label: "Screener",    active: false },
-    { icon: Phone,     label: "Call Logs",   active: false },
-    { icon: MapPin,    label: "Coverage",    active: false },
-    { icon: Key,       label: "API Keys",    active: false },
+    { icon: Activity,  label: "Overview",   view: "overview" },
+    { icon: PhoneCall, label: "Screener",    view: "overview" },
+    { icon: Phone,     label: "Call Logs",   view: "calls" },
+    { icon: MapPin,    label: "Coverage",    view: "overview" },
+    { icon: Key,       label: "Config",      view: "config" },
+    { icon: DollarSign,label: "Billing",     view: "billing" },
   ];
 
   return (
@@ -263,11 +271,11 @@ function Sidebar({
         >
           Navigation
         </div>
-        {navItems.map(({ icon: Icon, label, active }) => (
+        {navItems.map(({ icon: Icon, label, view }) => (
           <button
             key={label}
             onClick={() => {
-              if (!active) toast.info(`${label} — coming soon`);
+              onViewChange(view);
               onClose?.();
             }}
             style={{
@@ -278,23 +286,23 @@ function Sidebar({
               padding: "0.5625rem 0.625rem",
               borderRadius: 4,
               border: "none",
-              background: active ? "var(--bc-amber-dim)" : "transparent",
-              color: active ? "var(--bc-amber)" : "hsl(var(--muted-foreground))",
+              background: activeView === view ? "var(--bc-amber-dim)" : "transparent",
+              color: activeView === view ? "var(--bc-amber)" : "hsl(var(--muted-foreground))",
               fontSize: "0.8125rem",
-              fontWeight: active ? 600 : 400,
+              fontWeight: activeView === view ? 600 : 400,
               cursor: "pointer",
               textAlign: "left",
               transition: "all 0.1s",
               marginBottom: "0.125rem",
             }}
             onMouseEnter={(e) => {
-              if (!active) {
+              if (activeView !== view) {
                 (e.currentTarget as HTMLButtonElement).style.background = "hsl(var(--accent))";
                 (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--foreground))";
               }
             }}
             onMouseLeave={(e) => {
-              if (!active) {
+              if (activeView !== view) {
                 (e.currentTarget as HTMLButtonElement).style.background = "transparent";
                 (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--muted-foreground))";
               }
@@ -302,7 +310,7 @@ function Sidebar({
           >
             <Icon size={14} />
             {label}
-            {active && (
+            {activeView === view && (
               <div
                 style={{
                   marginLeft: "auto",
@@ -1421,6 +1429,7 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [scraping, setScraping] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeView, setActiveView] = useState("overview");
 
   const stats = trpc.dashboard.stats.useQuery();
   const scrapeAll = trpc.scrape.all.useMutation({
@@ -1486,6 +1495,8 @@ export default function Dashboard() {
         onHome={() => setLocation("/")}
         onClose={() => setSidebarOpen(false)}
         isMobileOpen={sidebarOpen}
+        activeView={activeView}
+        onViewChange={setActiveView}
       />
 
       {/* Main */}
@@ -1503,7 +1514,7 @@ export default function Dashboard() {
 
           <div>
             <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
-              Command Center
+              {activeView === "calls" ? "Call Logs" : activeView === "config" ? "Configuration" : activeView === "billing" ? "Billing" : "Command Center"}
             </div>
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>
               Louisiana River Parishes · Real-Time Bond Intelligence
@@ -1521,27 +1532,35 @@ export default function Dashboard() {
         </div>
 
         {/* Content */}
-        <div style={{ padding: "1.5rem" }}>
-          {/* Stats */}
-          <div className="bc-stats-grid">
-            <StatCard icon={User}     label="Active Bookings"  value={totalBookings.toLocaleString()} sub="across all parishes" accent="var(--bc-amber)" />
-            <StatCard icon={DollarSign} label="Total Bond Value" value={fmtUSD(totalBond)} sub="in current roster" accent="var(--bc-green)" />
-            <StatCard icon={MapPin}   label="Parishes Indexed" value={parishBreakdown.length || 12} sub="12 jurisdictions" accent="var(--bc-blue)" />
-            <StatCard icon={Zap}      label="API Status"       value="Operational" sub="POST /api/v1/voice-screener" accent="var(--bc-green)" />
-          </div>
+        {activeView === "calls" ? (
+          <CallsLog />
+        ) : activeView === "config" ? (
+          <ConfigPage />
+        ) : activeView === "billing" ? (
+          <BillingPage />
+        ) : (
+          <div style={{ padding: "1.5rem" }}>
+            {/* Stats */}
+            <div className="bc-stats-grid">
+              <StatCard icon={User}     label="Active Bookings"  value={totalBookings.toLocaleString()} sub="across all parishes" accent="var(--bc-amber)" />
+              <StatCard icon={DollarSign} label="Total Bond Value" value={fmtUSD(totalBond)} sub="in current roster" accent="var(--bc-green)" />
+              <StatCard icon={MapPin}   label="Parishes Indexed" value={parishBreakdown.length || 12} sub="12 jurisdictions" accent="var(--bc-blue)" />
+              <StatCard icon={Zap}      label="API Status"       value="Operational" sub="POST /api/v1/voice-screener" accent="var(--bc-green)" />
+            </div>
 
-          {/* Main grid */}
-          <div className="bc-main-grid">
-            <ScreenerPanel />
-            <ApiKeyPanel user={user} />
-          </div>
+            {/* Main grid */}
+            <div className="bc-main-grid">
+              <ScreenerPanel />
+              <ApiKeyPanel user={user} />
+            </div>
 
-          {/* Full-width */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-            <ParishStatus />
-            <ActivityLog />
+            {/* Full-width */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <ParishStatus />
+              <ActivityLog />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

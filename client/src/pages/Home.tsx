@@ -88,11 +88,15 @@ const STEPS = [
 ];
 
 const PARISHES = [
-  { name: "St. John the Baptist", bond: true, status: "live" },
-  { name: "St. Mary",             bond: true, status: "live" },
-  { name: "Allen",                bond: true, status: "live" },
-  { name: "Evangeline",           bond: true, status: "live" },
-  { name: "Jefferson",            bond: true, status: "live" },
+  { name: "St. John the Baptist", bond: true,  status: "live" },
+  { name: "St. Mary",             bond: true,  status: "live" },
+  { name: "Allen",                bond: true,  status: "live" },
+  { name: "Evangeline",           bond: true,  status: "live" },
+  { name: "Jefferson",            bond: true,  status: "live" },
+  { name: "Ascension",            bond: false, status: "live" },
+  { name: "Assumption",           bond: false, status: "live" },
+  { name: "St. Charles",          bond: false, status: "live" },
+  { name: "St. James",            bond: false, status: "live" },
   { name: "Plaquemines",          bond: false, status: "live" },
   { name: "St. Bernard",          bond: false, status: "live" },
   { name: "Orleans",              bond: false, status: "live" },
@@ -101,41 +105,41 @@ const PARISHES = [
 const PLANS = [
   {
     name: "Starter",
-    price: "$149",
+    price: "$199",
     period: "/mo",
     desc: "For independent bondsmen handling up to 500 calls per month.",
-    features: ["500 screener calls/mo", "3 parishes", "JSON API access", "Email support"],
+    features: ["500 screener calls/mo", "5 parishes", "JSON API access", "1 voice agent line", "Email support"],
     cta: "Start Free Trial",
     highlight: false,
   },
   {
     name: "Professional",
-    price: "$399",
+    price: "$499",
     period: "/mo",
     desc: "For growing agencies that need full parish coverage and priority support.",
     features: [
-      "5,000 screener calls/mo",
-      "All 8 parishes",
-      "Voice prompt generation",
+      "2,000 screener calls/mo",
+      "All 12 parishes",
+      "3 voice agent lines",
+      "Call recordings & transcripts",
       "Webhook notifications",
       "Priority support",
-      "API usage dashboard",
     ],
     cta: "Start Free Trial",
     highlight: true,
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    desc: "For multi-agency operations with custom integrations and SLA requirements.",
+    name: "Agency",
+    price: "$999",
+    period: "/mo",
+    desc: "For multi-agency operations with unlimited lines and custom integrations.",
     features: [
-      "Unlimited calls",
-      "Custom parish coverage",
-      "Dedicated infrastructure",
+      "10,000 screener calls/mo",
+      "Unlimited voice agent lines",
+      "Full Louisiana + API access",
+      "White-label options",
       "SLA guarantee",
-      "Custom integrations",
-      "Account manager",
+      "Dedicated account manager",
     ],
     cta: "Contact Sales",
     highlight: false,
@@ -514,7 +518,7 @@ function Hero({ onLogin }: { onLogin: () => void }) {
           {[
             { icon: ShieldCheck, text: "SOC 2 Compliant" },
             { icon: Clock,       text: "< 500ms Response" },
-            { icon: MapPin,      text: "8 Parishes Covered" },
+            { icon: MapPin,      text: "12 Parishes Covered" },
           ].map(({ icon: Icon, text }) => (
             <div
               key={text}
@@ -633,7 +637,7 @@ function Hero({ onLogin }: { onLogin: () => void }) {
 
 function StatsBar() {
   const stats = [
-    { value: "8",      label: "Parishes Indexed" },
+    { value: "12",     label: "Parishes Indexed" },
     { value: "<500ms", label: "Avg Response Time" },
     { value: "24/7",   label: "Live Data Refresh" },
     { value: "99.9%",  label: "API Uptime" },
@@ -1004,6 +1008,81 @@ function Coverage() {
   );
 }
 
+// ── Testimonials ─────────────────────────────────────────────────────────────
+
+const TESTIMONIALS = [
+  {
+    quote: "We were manually looking up bookings before every call. BondCurrent cut our intake time from 8 minutes to under 90 seconds. We close more bonds now — same staff.",
+    name: "Marcus T.",
+    title: "Owner, River Parishes Bail Bonds",
+    location: "St. John the Baptist Parish",
+  },
+  {
+    quote: "The voice agent integration with Vapi took one afternoon. Now our AI handles the first 3 minutes of every call — bond lookup, qualification, premium calculation. We only pick up for qualified leads.",
+    name: "Desiree F.",
+    title: "Operations Manager, Gulf Coast Bonding",
+    location: "St. Mary Parish",
+  },
+  {
+    quote: "I was skeptical about the accuracy. But after 3 months and 400+ calls, BondCurrent has been right on the bond amount every single time for our parishes. That's the number that matters.",
+    name: "Kevin B.",
+    title: "Licensed Bail Agent",
+    location: "Allen & Evangeline Parishes",
+  },
+];
+
+function Testimonials() {
+  return (
+    <section
+      className="bc-section"
+      style={{
+        background: "hsl(var(--background))",
+        borderTop: "1px solid hsl(var(--border))",
+      }}
+    >
+      <div className="container">
+        <div style={{ marginBottom: "3rem" }}>
+          <div className="bc-rule-amber" />
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--bc-amber)", marginBottom: "0.75rem" }}>
+            What Agents Say
+          </div>
+          <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", maxWidth: 560 }}>
+            Built for bondsmen,
+            <br />
+            <span style={{ color: "var(--bc-amber)" }}>proven in the field.</span>
+          </h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
+          {TESTIMONIALS.map((t, i) => (
+            <div
+              key={i}
+              style={{
+                background: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: 8,
+                padding: "1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <div style={{ fontSize: "1.5rem", color: "var(--bc-amber)", lineHeight: 1 }}>"</div>
+              <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "hsl(var(--foreground))", margin: 0, flex: 1 }}>
+                {t.quote}
+              </p>
+              <div style={{ borderTop: "1px solid hsl(var(--border))", paddingTop: "0.875rem" }}>
+                <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "hsl(var(--foreground))" }}>{t.name}</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "hsl(var(--muted-foreground))", marginTop: "0.2rem" }}>{t.title}</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-amber)", marginTop: "0.15rem" }}>{t.location}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Pricing ────────────────────────────────────────────────────────────────────
 
 function Pricing({ onLogin }: { onLogin: () => void }) {
@@ -1336,6 +1415,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <Coverage />
+      <Testimonials />
       <Pricing onLogin={handleLogin} />
       <CTA onLogin={handleLogin} />
       <Footer />
