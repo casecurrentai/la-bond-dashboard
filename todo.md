@@ -139,3 +139,13 @@
 - [x] Update landing page: 12 parishes count, testimonials, how-it-works section, parish partnership section
 - [x] Update dashboard nav: add Calls, Config, Billing links to sidebar
 - [x] Mock data: 25 realistic call records with transcripts and summaries
+
+## Light Theme Redesign (Legal Industry)
+
+- [x] Rebuild CSS design system: light background, slate/navy accent, professional typography
+- [x] Remove dark theme entirely; set ThemeProvider to light
+- [x] Audit and rewrite all copy: remove "99.9% uptime", "1M+ bookings", unverifiable stats
+- [x] Redesign landing page: light layout, honest hero, mobile-first sections
+- [x] Update hero badge: "12 PARISHES · LIVE DATA"
+- [x] Update dashboard: light sidebar, clean card design, mobile-optimized
+- [x] Update CallsLog, ConfigPage, BillingPage to match new theme

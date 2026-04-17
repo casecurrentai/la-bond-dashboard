@@ -143,7 +143,7 @@ export default function ConfigPage() {
     <div style={{ padding: "1.5rem", maxWidth: 860 }}>
       {/* Page header */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--bc-navy)" }}>
           Configuration
         </div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
@@ -152,7 +152,7 @@ export default function ConfigPage() {
       </div>
 
       {/* Phone Configuration */}
-      <Section icon={<Phone size={14} color="var(--bc-amber)" />} title="Phone Configuration">
+      <Section icon={<Phone size={14} color="var(--bc-navy)" />} title="Phone Configuration">
         <FormRow label="Transfer Phone Number" hint="Qualified calls will be transferred to this number.">
           <TextInput value={transferPhone} onChange={setTransferPhone} placeholder="(504) 555-0000" mono />
         </FormRow>
@@ -170,7 +170,7 @@ export default function ConfigPage() {
       </Section>
 
       {/* Financial Settings */}
-      <Section icon={<DollarSign size={14} color="var(--bc-green)" />} title="Financial Settings">
+      <Section icon={<DollarSign size={14} color="var(--bc-teal)" />} title="Financial Settings">
         <FormRow label="Minimum Budget Threshold" hint="Calls below this amount are automatically disqualified.">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <span style={{ fontFamily: "var(--font-mono)", color: "hsl(var(--muted-foreground))" }}>$</span>
@@ -191,7 +191,7 @@ export default function ConfigPage() {
       </Section>
 
       {/* Parish Coverage */}
-      <Section icon={<MapPin size={14} color="var(--bc-blue)" />} title="Parish Coverage">
+      <Section icon={<MapPin size={14} color="var(--bc-teal)" />} title="Parish Coverage">
         <div style={{ marginBottom: "0.875rem", fontSize: "0.875rem", color: "hsl(var(--muted-foreground))" }}>
           Select which parishes your voice agent will screen calls for. Your current plan includes up to 5 parishes.
         </div>
@@ -205,8 +205,8 @@ export default function ConfigPage() {
                 style={{
                   display: "flex", alignItems: "center", gap: "0.625rem",
                   padding: "0.625rem 0.875rem", borderRadius: 6,
-                  border: `1px solid ${active ? "rgba(59,130,246,0.4)" : "hsl(var(--border))"}`,
-                  background: active ? "rgba(59,130,246,0.08)" : "hsl(var(--background))",
+                  border: `1px solid ${active ? "rgba(30,58,95,0.35)" : "hsl(var(--border))"}`,
+                  background: active ? "var(--bc-navy-dim)" : "hsl(var(--background))",
                   cursor: atLimit ? "not-allowed" : "pointer",
                   opacity: atLimit ? 0.5 : 1,
                   transition: "all 0.15s",
@@ -221,8 +221,9 @@ export default function ConfigPage() {
                 />
                 <div style={{
                   width: 16, height: 16, borderRadius: 4, flexShrink: 0,
-                  background: active ? "var(--bc-blue)" : "transparent",
-                  border: `2px solid ${active ? "var(--bc-blue)" : "hsl(var(--border))"}`,
+                  background: active ? "var(--bc-navy)" : "transparent",
+                  border: `2px solid ${active ? "var(--bc-navy)" : "hsl(var(--border))"}`,
+                  transition: "all 0.15s",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   {active && <CheckCircle2 size={10} color="white" />}
@@ -241,7 +242,7 @@ export default function ConfigPage() {
       </Section>
 
       {/* Voice Agent Personality */}
-      <Section icon={<MessageSquare size={14} color="var(--bc-amber)" />} title="Voice Agent Personality">
+      <Section icon={<MessageSquare size={14} color="var(--bc-navy)" />} title="Voice Agent Personality">
         <FormRow label="Greeting Message" hint="The first message your AI agent says when a caller connects.">
           <textarea
             value={greeting}
@@ -285,12 +286,12 @@ export default function ConfigPage() {
       </Section>
 
       {/* API Access */}
-      <Section icon={<Key size={14} color="var(--bc-amber)" />} title="API Access">
+      <Section icon={<Key size={14} color="var(--bc-navy)" />} title="API Access">
         <div style={{ marginBottom: "0.875rem", fontSize: "0.875rem", color: "hsl(var(--muted-foreground))" }}>
           Use this key to call <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem", background: "hsl(var(--background))", padding: "0.1rem 0.4rem", borderRadius: 4, border: "1px solid hsl(var(--border))" }}>POST /api/v1/voice-screener</code> from your voice agent platform (Vapi, Retell, Bland AI, etc.).
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "0.625rem 0.875rem", background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 6, marginBottom: "0.875rem" }}>
-          <Zap size={13} color="var(--bc-amber)" style={{ flexShrink: 0 }} />
+          <Zap size={13} color="var(--bc-navy)" style={{ flexShrink: 0 }} />
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "hsl(var(--foreground))" }}>
             {showKey ? apiKey : "sk_live_bc_" + "•".repeat(28)}
           </span>
@@ -321,7 +322,7 @@ export default function ConfigPage() {
           style={{
             display: "inline-flex", alignItems: "center", gap: "0.5rem",
             padding: "0.625rem 1.5rem", borderRadius: 6,
-            background: saved ? "var(--bc-green)" : "var(--bc-amber)",
+            background: saved ? "var(--bc-green)" : "var(--bc-navy)",
             border: "none", color: "white", fontSize: "0.875rem", fontWeight: 700,
             cursor: "pointer", transition: "background 0.2s",
           }}

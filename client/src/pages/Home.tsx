@@ -1,14 +1,13 @@
-/**
+/*
  * BondCurrent — Marketing Landing Page
- * Law Enforcement Edition
- * Dark, authoritative, tactical design
+ * Legal Professional Edition
+ * Light, authoritative, trustworthy design
  */
 
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import {
   Activity,
-  AlertTriangle,
   ArrowRight,
   CheckCircle2,
   ChevronRight,
@@ -20,47 +19,46 @@ import {
   Mic,
   Phone,
   PhoneCall,
+  Scale,
   Shield,
-  ShieldCheck,
-  Terminal,
   X,
   Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// ── Data ───────────────────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
     icon: PhoneCall,
     title: "Live Inmate Lookup",
-    desc: "Query Louisiana parish jail rosters in real-time. Name, booking number, charges, and bond amount — returned in under 500ms.",
+    desc: "Query Louisiana parish jail rosters in real time. Returns name, booking number, charges, and bond amount where the jail makes that data available online.",
   },
   {
     icon: Shield,
-    title: "Instant Qualification",
-    desc: "Automated risk assessment evaluates bond amount, charge severity, and caller budget to deliver a clear QUALIFIED / REVIEW / DECLINED decision.",
+    title: "Caller Qualification",
+    desc: "Evaluates bond amount and caller-stated budget to produce a QUALIFIED, REVIEW, or DECLINED recommendation. Final decisions remain with your licensed agent.",
   },
   {
     icon: Mic,
-    title: "Voice Agent Ready",
-    desc: "A single POST endpoint integrates with Vapi, Retell, Bland, or any telephony platform. No custom parsing. No glue code.",
+    title: "Voice Agent Integration",
+    desc: "A single POST endpoint integrates with Vapi, Retell, Bland, or any telephony platform. Returns a structured JSON response with a ready-to-speak voice prompt.",
   },
   {
     icon: Zap,
-    title: "Sub-Second Response",
-    desc: "Cached rosters refresh every 30 minutes. Live scrape fallback fires automatically. Your callers never wait.",
+    title: "Fast Response Times",
+    desc: "Cached rosters reduce latency for repeat lookups. Live scrape fallback fires automatically when cached data is stale. Response times vary by parish source.",
   },
   {
     icon: FileText,
-    title: "TTS Voice Prompts",
-    desc: "Every response includes a pre-written, natural-language voice prompt optimized for text-to-speech delivery.",
+    title: "Structured Responses",
+    desc: "Every API response includes bond details, a qualification decision, and a natural-language voice prompt formatted for text-to-speech delivery.",
   },
   {
     icon: Lock,
-    title: "Secure & Compliant",
-    desc: "All data is encrypted in transit and at rest. No PII stored beyond session. Designed for law enforcement-adjacent use cases.",
+    title: "Data Minimization",
+    desc: "No PII is stored beyond the session. All data is encrypted in transit. Designed for bail bond professionals who handle sensitive client information.",
   },
 ];
 
@@ -72,18 +70,18 @@ const STEPS = [
   },
   {
     num: "02",
-    title: "BondCurrent Screens",
-    desc: "Your voice agent POSTs to our API. We query the live parish roster, calculate the 10% premium, and assess qualification.",
+    title: "BondCurrent Queries the Roster",
+    desc: "Your voice agent POSTs to our API. We query the live parish jail roster and return bond details where available.",
   },
   {
     num: "03",
-    title: "Decision Delivered",
-    desc: "A structured JSON response with a qualification decision, bond details, and a ready-to-speak voice prompt is returned in milliseconds.",
+    title: "Qualification Assessment",
+    desc: "The API calculates the 10% premium and returns a qualification recommendation based on the caller's stated budget.",
   },
   {
     num: "04",
-    title: "Agent Takes Over",
-    desc: "Qualified callers are transferred to a live agent. Unqualified callers receive a clear, professional explanation.",
+    title: "Agent Reviews and Decides",
+    desc: "Qualified callers are transferred to a licensed agent who makes the final decision. Unqualified callers receive a clear, professional explanation.",
   },
 ];
 
@@ -109,7 +107,7 @@ const PLANS = [
     period: "/mo",
     desc: "For independent bondsmen handling up to 500 calls per month.",
     features: ["500 screener calls/mo", "5 parishes", "JSON API access", "1 voice agent line", "Email support"],
-    cta: "Start Free Trial",
+    cta: "Request Access",
     highlight: false,
   },
   {
@@ -121,28 +119,49 @@ const PLANS = [
       "2,000 screener calls/mo",
       "All 12 parishes",
       "3 voice agent lines",
-      "Call recordings & transcripts",
+      "Call logs & transcripts",
       "Webhook notifications",
       "Priority support",
     ],
-    cta: "Start Free Trial",
+    cta: "Request Access",
     highlight: true,
   },
   {
     name: "Agency",
     price: "$999",
     period: "/mo",
-    desc: "For multi-agency operations with unlimited lines and custom integrations.",
+    desc: "For multi-agency operations with higher call volumes and custom integrations.",
     features: [
       "10,000 screener calls/mo",
       "Unlimited voice agent lines",
-      "Full Louisiana + API access",
+      "Full Louisiana parish access",
       "White-label options",
-      "SLA guarantee",
       "Dedicated account manager",
+      "Custom integrations",
     ],
     cta: "Contact Sales",
     highlight: false,
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "We were manually looking up bookings before every call. BondCurrent cut our intake time significantly. We handle more inquiries now with the same staff.",
+    name: "Marcus T.",
+    title: "Owner, River Parishes Bail Bonds",
+    location: "St. John the Baptist Parish",
+  },
+  {
+    quote: "The voice agent integration took one afternoon to set up. Now our AI handles the initial lookup and qualification check. We only pick up for callers who are likely to qualify.",
+    name: "Desiree F.",
+    title: "Operations Manager, Gulf Coast Bonding",
+    location: "St. Mary Parish",
+  },
+  {
+    quote: "For the parishes where bond data is available online, the lookups have been accurate and fast. It's become a reliable first step in our intake process.",
+    name: "Kevin B.",
+    title: "Licensed Bail Agent",
+    location: "Allen & Evangeline Parishes",
   },
 ];
 
@@ -155,7 +174,6 @@ function Navbar({ user, onLogin, onDashboard }: {
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const NAV_ITEMS = ["Features", "How It Works", "Coverage", "Pricing"];
-
   const closeMobile = () => setMobileOpen(false);
 
   return (
@@ -166,12 +184,12 @@ function Navbar({ user, onLogin, onDashboard }: {
         left: 0,
         right: 0,
         zIndex: 100,
-        background: "rgba(10, 13, 20, 0.96)",
-        backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(255,255,255,0.97)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid hsl(var(--border))",
+        boxShadow: "0 1px 4px rgba(30,58,95,0.06)",
       }}
     >
-      {/* ── Desktop / mobile top bar ── */}
       <div
         className="container"
         style={{
@@ -188,27 +206,25 @@ function Navbar({ user, onLogin, onDashboard }: {
               width: 34,
               height: 34,
               borderRadius: 6,
-              background: "hsl(var(--card))",
-              border: "1px solid rgba(245,158,11,0.4)",
+              background: "var(--bc-navy)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <Shield size={16} color="var(--bc-amber)" />
+            <Scale size={16} color="white" />
           </div>
           <span
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: "1.125rem",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "hsl(var(--foreground))",
+              letterSpacing: "-0.01em",
+              color: "var(--bc-navy)",
             }}
           >
-            Bond<span style={{ color: "var(--bc-amber)" }}>Current</span>
+            Bond<span style={{ color: "var(--bc-teal)" }}>Current</span>
           </span>
         </div>
 
@@ -223,15 +239,14 @@ function Navbar({ user, onLogin, onDashboard }: {
               href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
               style={{
                 padding: "0.4rem 0.875rem",
-                fontSize: "0.8125rem",
+                fontSize: "0.875rem",
                 fontWeight: 500,
                 color: "hsl(var(--muted-foreground))",
                 textDecoration: "none",
                 borderRadius: 4,
                 transition: "color 0.15s",
-                letterSpacing: "0.02em",
               }}
-              onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "hsl(var(--foreground))"; }}
+              onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "var(--bc-navy)"; }}
               onMouseLeave={(e) => { (e.target as HTMLElement).style.color = "hsl(var(--muted-foreground))"; }}
             >
               {item}
@@ -242,7 +257,7 @@ function Navbar({ user, onLogin, onDashboard }: {
         {/* Desktop CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
           {user ? (
-            <button onClick={onDashboard} className="bc-btn-primary" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
+            <button onClick={onDashboard} className="bc-btn-primary" style={{ fontSize: "0.875rem", padding: "0.5rem 1.125rem" }}>
               Dashboard <ChevronRight size={14} />
             </button>
           ) : (
@@ -251,7 +266,7 @@ function Navbar({ user, onLogin, onDashboard }: {
                 onClick={onLogin}
                 className="bc-desktop-only"
                 style={{
-                  fontSize: "0.8125rem",
+                  fontSize: "0.875rem",
                   fontWeight: 500,
                   color: "hsl(var(--muted-foreground))",
                   background: "none",
@@ -262,8 +277,8 @@ function Navbar({ user, onLogin, onDashboard }: {
               >
                 Sign In
               </button>
-              <button onClick={onLogin} className="bc-btn-primary bc-desktop-only" style={{ fontSize: "0.8125rem", padding: "0.5rem 1.125rem" }}>
-                Get Access <ArrowRight size={13} />
+              <button onClick={onLogin} className="bc-btn-primary bc-desktop-only" style={{ fontSize: "0.875rem", padding: "0.5rem 1.125rem" }}>
+                Request Access <ArrowRight size={13} />
               </button>
             </>
           )}
@@ -276,12 +291,12 @@ function Navbar({ user, onLogin, onDashboard }: {
               width: 38,
               height: 38,
               borderRadius: 6,
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: mobileOpen ? "var(--bc-amber-dim)" : "transparent",
+              border: "1.5px solid hsl(var(--border))",
+              background: mobileOpen ? "var(--bc-navy-dim)" : "transparent",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: mobileOpen ? "var(--bc-amber)" : "hsl(var(--foreground))",
+              color: mobileOpen ? "var(--bc-navy)" : "hsl(var(--foreground))",
               transition: "all 0.15s",
               display: "none",
             }}
@@ -292,7 +307,7 @@ function Navbar({ user, onLogin, onDashboard }: {
         </div>
       </div>
 
-      {/* ── Mobile drawer ── */}
+      {/* Mobile drawer */}
       {mobileOpen && (
         <div
           style={{
@@ -301,13 +316,12 @@ function Navbar({ user, onLogin, onDashboard }: {
             left: 0,
             right: 0,
             zIndex: 99,
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(10, 13, 20, 0.98)",
-            padding: "1rem 1.5rem 1.5rem",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+            borderTop: "1px solid hsl(var(--border))",
+            background: "rgba(255,255,255,0.98)",
+            padding: "1rem 1.25rem 1.5rem",
+            boxShadow: "0 8px 24px rgba(30,58,95,0.12)",
           }}
         >
-          {/* Nav links */}
           <nav style={{ display: "flex", flexDirection: "column", gap: "0.125rem", marginBottom: "1.25rem" }}>
             {NAV_ITEMS.map((item) => (
               <a
@@ -316,21 +330,18 @@ function Navbar({ user, onLogin, onDashboard }: {
                 onClick={closeMobile}
                 style={{
                   display: "block",
-                  padding: "0.75rem 0.875rem",
+                  padding: "0.875rem 0.75rem",
                   fontSize: "1rem",
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
+                  fontWeight: 500,
                   color: "hsl(var(--foreground))",
                   textDecoration: "none",
                   borderRadius: 4,
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  borderBottom: "1px solid hsl(var(--border))",
                   transition: "background 0.1s, color 0.1s",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "var(--bc-amber-dim)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--bc-amber)";
+                  (e.currentTarget as HTMLElement).style.background = "var(--bc-navy-dim)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--bc-navy)";
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLElement).style.background = "transparent";
@@ -341,8 +352,6 @@ function Navbar({ user, onLogin, onDashboard }: {
               </a>
             ))}
           </nav>
-
-          {/* Mobile CTA buttons */}
           <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
             {user ? (
               <button
@@ -359,7 +368,7 @@ function Navbar({ user, onLogin, onDashboard }: {
                   className="bc-btn-primary"
                   style={{ justifyContent: "center", fontSize: "0.9375rem", padding: "0.75rem" }}
                 >
-                  Get Access <ArrowRight size={15} />
+                  Request Access <ArrowRight size={15} />
                 </button>
                 <button
                   onClick={() => { closeMobile(); onLogin(); }}
@@ -385,250 +394,246 @@ function Hero({ onLogin }: { onLogin: () => void }) {
       id="hero"
       style={{
         position: "relative",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
         paddingTop: "64px",
         overflow: "hidden",
         background: "hsl(var(--background))",
       }}
     >
-      {/* Background layers */}
+      {/* Subtle background */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           backgroundImage: `
-            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,158,11,0.08) 0%, transparent 60%),
-            radial-gradient(circle at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)
+            radial-gradient(ellipse 70% 50% at 60% 0%, rgba(30,58,95,0.05) 0%, transparent 60%),
+            radial-gradient(ellipse 40% 40% at 10% 80%, rgba(13,115,119,0.04) 0%, transparent 60%)
           `,
           pointerEvents: "none",
         }}
       />
-      {/* Dot grid */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-          pointerEvents: "none",
-        }}
-      />
-      {/* Horizontal rule at top */}
-      <div
-        style={{
-          position: "absolute",
-          top: "64px",
-          left: 0,
-          right: 0,
-          height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(245,158,11,0.3), transparent)",
-        }}
-      />
 
-      <div className="container" style={{ position: "relative", zIndex: 1, padding: "5rem 1.5rem" }}>
-        {/* Status badge */}
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+        {/* Two-column layout on desktop, stacked on mobile */}
         <div
           style={{
-            display: "inline-flex",
+            display: "grid",
+            gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)",
+            gap: "3rem",
             alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.35rem 0.875rem",
-            borderRadius: 3,
-            background: "rgba(245,158,11,0.08)",
-            border: "1px solid rgba(245,158,11,0.2)",
-            marginBottom: "2rem",
+            padding: "5rem 0 4rem",
           }}
+          className="bc-hero-grid"
         >
-          <span
-            className="bc-status-dot live bc-pulse"
-          />
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.6875rem",
-              fontWeight: 500,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "var(--bc-amber)",
-            }}
-          >
-            Live · Louisiana River Parishes · 8 Jurisdictions
-          </span>
-        </div>
-
-        {/* Main headline */}
-        <h1
-          style={{
-            maxWidth: "820px",
-            marginBottom: "1.5rem",
-            color: "hsl(var(--foreground))",
-            lineHeight: 1.05,
-          }}
-        >
-          Bond Screening.{" "}
-          <span style={{ color: "var(--bc-amber)" }}>Automated.</span>
-          <br />
-          Decisions in Seconds.
-        </h1>
-
-        {/* Sub-headline */}
-        <p
-          style={{
-            maxWidth: "560px",
-            fontSize: "1.125rem",
-            lineHeight: 1.7,
-            color: "hsl(var(--muted-foreground))",
-            marginBottom: "2.5rem",
-            fontWeight: 400,
-          }}
-        >
-          BondCurrent connects your AI voice agent to live Louisiana parish jail rosters.
-          Qualify callers, calculate premiums, and route ready clients — before a human picks up.
-        </p>
-
-        {/* CTAs */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "3.5rem" }}>
-          <button
-            onClick={onLogin}
-            className="bc-btn-primary"
-            style={{ fontSize: "1rem", padding: "0.875rem 2rem" }}
-          >
-            Request Access <ArrowRight size={16} />
-          </button>
-          <a
-            href="#how-it-works"
-            className="bc-btn-outline"
-            style={{ fontSize: "1rem", padding: "0.875rem 2rem", textDecoration: "none" }}
-          >
-            See How It Works
-          </a>
-        </div>
-
-        {/* Trust signals */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "2rem",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            { icon: ShieldCheck, text: "SOC 2 Compliant" },
-            { icon: Clock,       text: "< 500ms Response" },
-            { icon: MapPin,      text: "12 Parishes Covered" },
-          ].map(({ icon: Icon, text }) => (
+          {/* Left: copy */}
+          <div>
+            {/* Status badge */}
             <div
-              key={text}
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
-                gap: "0.4rem",
-                fontSize: "0.8125rem",
-                color: "hsl(var(--muted-foreground))",
+                gap: "0.5rem",
+                padding: "0.3rem 0.75rem",
+                borderRadius: 4,
+                background: "var(--bc-navy-dim)",
+                border: "1px solid rgba(30,58,95,0.15)",
+                marginBottom: "1.75rem",
               }}
             >
-              <Icon size={13} color="var(--bc-amber)" />
-              {text}
+              <span className="bc-status-dot live bc-pulse" />
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.6875rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "var(--bc-navy)",
+                }}
+              >
+                Live · 12 Louisiana Parishes
+              </span>
             </div>
-          ))}
-        </div>
 
-        {/* Live API preview card */}
-        <div
-          style={{
-            marginTop: "4rem",
-            maxWidth: "640px",
-            borderRadius: 8,
-            border: "1px solid hsl(var(--border))",
-            background: "rgba(0,0,0,0.4)",
-            overflow: "hidden",
-          }}
-        >
-          {/* Terminal bar */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.625rem 1rem",
-              background: "rgba(255,255,255,0.03)",
-              borderBottom: "1px solid hsl(var(--border))",
-            }}
-          >
-            <Terminal size={12} color="var(--bc-amber)" />
-            <span
+            {/* Headline */}
+            <h1
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.6875rem",
+                marginBottom: "1.25rem",
+                color: "var(--bc-navy)",
+                lineHeight: 1.1,
+                fontSize: "clamp(2rem, 4.5vw, 3.25rem)",
+              }}
+            >
+              Bond Screening
+              <br />
+              for Louisiana
+              <br />
+              <span style={{ color: "var(--bc-teal)" }}>Bail Bondsmen.</span>
+            </h1>
+
+            {/* Sub-headline */}
+            <p
+              style={{
+                maxWidth: "480px",
+                fontSize: "1.0625rem",
+                lineHeight: 1.75,
                 color: "hsl(var(--muted-foreground))",
-                letterSpacing: "0.06em",
+                marginBottom: "2rem",
+                fontWeight: 400,
               }}
             >
-              POST /api/v1/voice-screener
-            </span>
-            <span
-              style={{
-                marginLeft: "auto",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.6875rem",
-                color: "var(--bc-green)",
-              }}
-            >
-              200 OK · 312ms
-            </span>
+              BondCurrent connects your AI voice agent to live Louisiana parish jail rosters.
+              Look up inmates, assess caller qualification, and route ready clients — before a licensed agent picks up.
+            </p>
+
+            {/* CTAs */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", flexWrap: "wrap", marginBottom: "2rem" }}>
+              <button
+                onClick={onLogin}
+                className="bc-btn-primary"
+                style={{ fontSize: "0.9375rem", padding: "0.75rem 1.75rem" }}
+              >
+                Request Access <ArrowRight size={15} />
+              </button>
+              <a
+                href="#how-it-works"
+                className="bc-btn-outline"
+                style={{ fontSize: "0.9375rem", padding: "0.75rem 1.75rem", textDecoration: "none" }}
+              >
+                See How It Works
+              </a>
+            </div>
+
+            {/* Trust signals */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", flexWrap: "wrap" }}>
+              {[
+                { icon: MapPin,  text: "12 Parishes" },
+                { icon: Clock,   text: "Live Data" },
+                { icon: Shield,  text: "Data Minimization" },
+              ].map(({ icon: Icon, text }) => (
+                <div
+                  key={text}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                    fontSize: "0.8125rem",
+                    color: "hsl(var(--muted-foreground))",
+                  }}
+                >
+                  <Icon size={13} color="var(--bc-teal)" />
+                  {text}
+                </div>
+              ))}
+            </div>
           </div>
-          {/* Code */}
-          <div
-            style={{
-              padding: "1.25rem",
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.8125rem",
-              lineHeight: 1.75,
-              color: "#94a3b8",
-            }}
-          >
-            <div><span style={{ color: "#64748b" }}>{"// Request"}</span></div>
-            <div><span style={{ color: "#f8fafc" }}>{"{"}</span></div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"inmate_name"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#86efac" }}>"Johnson, Marcus"</span><span style={{ color: "#64748b" }}>,</span>
+
+          {/* Right: API preview card */}
+          <div>
+            <div
+              style={{
+                borderRadius: 10,
+                border: "1px solid hsl(var(--border))",
+                background: "hsl(var(--card))",
+                overflow: "hidden",
+                boxShadow: "var(--elevate-3)",
+              }}
+            >
+              {/* Card header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  padding: "0.75rem 1rem",
+                  background: "var(--bc-navy)",
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <Activity size={13} color="rgba(255,255,255,0.6)" />
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    color: "rgba(255,255,255,0.7)",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  POST /api/v1/voice-screener
+                </span>
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    color: "rgba(134,239,172,0.9)",
+                  }}
+                >
+                  200 OK
+                </span>
+              </div>
+              {/* Code */}
+              <div
+                style={{
+                  padding: "1.25rem",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.8125rem",
+                  lineHeight: 1.75,
+                  background: "#1a2740",
+                  color: "#94a3b8",
+                }}
+              >
+                <div><span style={{ color: "#64748b" }}>{"// Request"}</span></div>
+                <div><span style={{ color: "#cbd5e1" }}>{"{"}</span></div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"inmate_name"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#86efac" }}>"Johnson, Marcus"</span><span style={{ color: "#64748b" }}>,</span>
+                </div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"parish"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#86efac" }}>"St. John the Baptist"</span>
+                </div>
+                <div><span style={{ color: "#cbd5e1" }}>{"}"}</span></div>
+                <div style={{ marginTop: "0.75rem" }}><span style={{ color: "#64748b" }}>{"// Response"}</span></div>
+                <div><span style={{ color: "#cbd5e1" }}>{"{"}</span></div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"screener_decision"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#34d399" }}>"QUALIFIED"</span><span style={{ color: "#64748b" }}>,</span>
+                </div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"total_bond_amount"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#fbbf24" }}>25000</span><span style={{ color: "#64748b" }}>,</span>
+                </div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"calculated_premium"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#fbbf24" }}>2500</span><span style={{ color: "#64748b" }}>,</span>
+                </div>
+                <div style={{ paddingLeft: "1.25rem" }}>
+                  <span style={{ color: "#93c5fd" }}>"voice_prompt"</span>
+                  <span style={{ color: "#64748b" }}>: </span>
+                  <span style={{ color: "#86efac" }}>"Marcus is in custody..."</span>
+                </div>
+                <div><span style={{ color: "#cbd5e1" }}>{"}"}</span></div>
+              </div>
             </div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"parish"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#86efac" }}>"St. John the Baptist"</span>
-            </div>
-            <div><span style={{ color: "#f8fafc" }}>{"}"}</span></div>
-            <div style={{ marginTop: "0.75rem" }}><span style={{ color: "#64748b" }}>{"// Response"}</span></div>
-            <div><span style={{ color: "#f8fafc" }}>{"{"}</span></div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"screener_decision"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#34d399" }}>"QUALIFIED"</span><span style={{ color: "#64748b" }}>,</span>
-            </div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"total_bond_amount"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#93c5fd" }}>25000</span><span style={{ color: "#64748b" }}>,</span>
-            </div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"calculated_premium"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#93c5fd" }}>2500</span><span style={{ color: "#64748b" }}>,</span>
-            </div>
-            <div style={{ paddingLeft: "1.25rem" }}>
-              <span style={{ color: "#fbbf24" }}>"voice_prompt_suggestion"</span>
-              <span style={{ color: "#64748b" }}>: </span>
-              <span style={{ color: "#86efac" }}>"Good news — Marcus is eligible..."</span>
-            </div>
-            <div><span style={{ color: "#f8fafc" }}>{"}"}</span></div>
           </div>
         </div>
       </div>
+
+      {/* Mobile hero grid override */}
+      <style>{`
+        @media (max-width: 768px) {
+          .bc-hero-grid {
+            grid-template-columns: 1fr !important;
+            padding: 3rem 0 2rem !important;
+            gap: 2rem !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -637,10 +642,10 @@ function Hero({ onLogin }: { onLogin: () => void }) {
 
 function StatsBar() {
   const stats = [
-    { value: "12",     label: "Parishes Indexed" },
-    { value: "<500ms", label: "Avg Response Time" },
-    { value: "24/7",   label: "Live Data Refresh" },
-    { value: "99.9%",  label: "API Uptime" },
+    { value: "12",    label: "Parishes Indexed" },
+    { value: "5",     label: "With Bond Data" },
+    { value: "30m",   label: "Cache Refresh Cycle" },
+    { value: "REST",  label: "API Protocol" },
   ];
 
   return (
@@ -648,7 +653,7 @@ function StatsBar() {
       style={{
         borderTop: "1px solid hsl(var(--border))",
         borderBottom: "1px solid hsl(var(--border))",
-        background: "hsl(var(--card))",
+        background: "var(--bc-navy)",
       }}
     >
       <div
@@ -663,18 +668,18 @@ function StatsBar() {
           <div
             key={s.label}
             style={{
-              padding: "1.75rem 1.5rem",
+              padding: "1.5rem 1.25rem",
               textAlign: "center",
-              borderRight: i < stats.length - 1 ? "1px solid hsl(var(--border))" : "none",
+              borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.1)" : "none",
             }}
           >
             <div
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "2rem",
-                fontWeight: 800,
-                letterSpacing: "0.04em",
-                color: "var(--bc-amber)",
+                fontSize: "1.75rem",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "#ffffff",
                 lineHeight: 1,
                 marginBottom: "0.35rem",
               }}
@@ -684,10 +689,10 @@ function StatsBar() {
             <div
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "0.6875rem",
+                fontSize: "0.625rem",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "hsl(var(--muted-foreground))",
+                color: "rgba(255,255,255,0.55)",
               }}
             >
               {s.label}
@@ -695,6 +700,11 @@ function StatsBar() {
           </div>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .bc-stats-bar-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -705,87 +715,75 @@ function Features() {
   return (
     <section id="features" className="bc-section" style={{ background: "hsl(var(--background))" }}>
       <div className="container">
-        {/* Section header */}
-        <div style={{ marginBottom: "3.5rem" }}>
+        <div style={{ marginBottom: "3rem" }}>
           <div className="bc-rule-amber" />
-          <div
+          <p
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: "0.6875rem",
-              letterSpacing: "0.12em",
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: "var(--bc-amber)",
+              color: "var(--bc-teal)",
               marginBottom: "0.75rem",
             }}
           >
-            Capabilities
-          </div>
-          <h2 style={{ maxWidth: 520, marginBottom: "1rem" }}>
-            Built for the<br />
-            <span style={{ color: "var(--bc-amber)" }}>Bail Bond Industry</span>
+            Platform Capabilities
+          </p>
+          <h2 style={{ color: "var(--bc-navy)", maxWidth: 520, marginBottom: "1rem" }}>
+            What BondCurrent does
           </h2>
-          <p style={{ maxWidth: 480, color: "hsl(var(--muted-foreground))", fontSize: "1rem", lineHeight: 1.7 }}>
-            Every feature is designed around the specific workflow of Louisiana bail bond agencies integrating AI voice agents.
+          <p style={{ maxWidth: 540, color: "hsl(var(--muted-foreground))", fontSize: "1rem", lineHeight: 1.7 }}>
+            A focused set of tools for bail bond agencies that want to automate the first step of their intake process.
           </p>
         </div>
 
-        {/* Grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: "1px",
-            background: "hsl(var(--border))",
-            border: "1px solid hsl(var(--border))",
-            borderRadius: 8,
-            overflow: "hidden",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1.25rem",
           }}
         >
-          {FEATURES.map(({ icon: Icon, title, desc }) => (
+          {FEATURES.map((f) => (
             <div
-              key={title}
+              key={f.title}
               style={{
                 background: "hsl(var(--card))",
-                padding: "2rem",
-                transition: "background 0.15s",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: 8,
+                padding: "1.5rem",
+                boxShadow: "var(--elevate-1)",
+                transition: "box-shadow 0.2s, transform 0.2s",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.background = "hsl(var(--accent))";
+                (e.currentTarget as HTMLElement).style.boxShadow = "var(--elevate-2)";
+                (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.background = "hsl(var(--card))";
+                (e.currentTarget as HTMLElement).style.boxShadow = "var(--elevate-1)";
+                (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
               }}
             >
               <div
                 style={{
                   width: 40,
                   height: 40,
-                  borderRadius: 6,
-                  background: "var(--bc-amber-dim)",
-                  border: "1px solid rgba(245,158,11,0.2)",
+                  borderRadius: 8,
+                  background: "var(--bc-navy-dim)",
+                  border: "1px solid rgba(30,58,95,0.15)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "1.25rem",
+                  marginBottom: "1rem",
                 }}
               >
-                <Icon size={18} color="var(--bc-amber)" />
+                <f.icon size={18} color="var(--bc-navy)" />
               </div>
-              <h3
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "1.125rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: "hsl(var(--foreground))",
-                  marginBottom: "0.625rem",
-                }}
-              >
-                {title}
+              <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem", color: "var(--bc-navy)", fontFamily: "var(--font-sans)" }}>
+                {f.title}
               </h3>
-              <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", lineHeight: 1.7 }}>
-                {desc}
+              <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", lineHeight: 1.65, margin: 0 }}>
+                {f.desc}
               </p>
             </div>
           ))}
@@ -799,37 +797,32 @@ function Features() {
 
 function HowItWorks() {
   return (
-    <section
-      id="how-it-works"
-      className="bc-section"
-      style={{ background: "hsl(var(--card))", borderTop: "1px solid hsl(var(--border))", borderBottom: "1px solid hsl(var(--border))" }}
-    >
+    <section id="how-it-works" className="bc-section" style={{ background: "hsl(var(--secondary))", borderTop: "1px solid hsl(var(--border))", borderBottom: "1px solid hsl(var(--border))" }}>
       <div className="container">
-        <div style={{ marginBottom: "3.5rem" }}>
+        <div style={{ marginBottom: "3rem" }}>
           <div className="bc-rule-amber" />
-          <div
+          <p
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: "0.6875rem",
-              letterSpacing: "0.12em",
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: "var(--bc-amber)",
+              color: "var(--bc-teal)",
               marginBottom: "0.75rem",
             }}
           >
-            Protocol
-          </div>
-          <h2>
-            How the<br />
-            <span style={{ color: "var(--bc-amber)" }}>Screener Works</span>
+            Workflow
+          </p>
+          <h2 style={{ color: "var(--bc-navy)", maxWidth: 480 }}>
+            How a screened call works
           </h2>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: "2rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "1.5rem",
           }}
         >
           {STEPS.map((step, i) => (
@@ -840,45 +833,63 @@ function HowItWorks() {
                   style={{
                     position: "absolute",
                     top: "1.25rem",
-                    left: "calc(100% + 1rem)",
-                    width: "calc(2rem - 2px)",
+                    right: "-0.75rem",
+                    width: "1.5rem",
                     height: "1px",
-                    background: "linear-gradient(90deg, rgba(245,158,11,0.4), rgba(245,158,11,0.1))",
+                    background: "hsl(var(--border))",
+                    display: "none",
                   }}
-                  className="hidden lg:block"
+                  className="bc-step-connector"
                 />
               )}
               <div
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "3rem",
-                  fontWeight: 900,
-                  letterSpacing: "0.04em",
-                  color: "rgba(245,158,11,0.15)",
-                  lineHeight: 1,
-                  marginBottom: "1rem",
+                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: 8,
+                  padding: "1.5rem",
+                  boxShadow: "var(--elevate-1)",
+                  height: "100%",
                 }}
               >
-                {step.num}
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    color: "var(--bc-teal)",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {step.num}
+                </div>
+                <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem", color: "var(--bc-navy)", fontFamily: "var(--font-sans)" }}>
+                  {step.title}
+                </h3>
+                <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", lineHeight: 1.65, margin: 0 }}>
+                  {step.desc}
+                </p>
               </div>
-              <h3
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: "hsl(var(--foreground))",
-                  marginBottom: "0.625rem",
-                }}
-              >
-                {step.title}
-              </h3>
-              <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", lineHeight: 1.7 }}>
-                {step.desc}
-              </p>
             </div>
           ))}
+        </div>
+
+        {/* Disclaimer */}
+        <div
+          style={{
+            marginTop: "2.5rem",
+            padding: "1rem 1.25rem",
+            background: "hsl(var(--card))",
+            border: "1px solid hsl(var(--border))",
+            borderLeft: "3px solid var(--bc-navy)",
+            borderRadius: 6,
+            fontSize: "0.8125rem",
+            color: "hsl(var(--muted-foreground))",
+            lineHeight: 1.65,
+          }}
+        >
+          <strong style={{ color: "hsl(var(--foreground))" }}>Note:</strong> BondCurrent provides data and qualification recommendations as a tool to assist licensed bail bond agents. All final bonding decisions are made by the licensed agent, not by this platform. Bond data availability varies by parish — some jails do not publish bond amounts online.
         </div>
       </div>
     </section>
@@ -891,116 +902,76 @@ function Coverage() {
   return (
     <section id="coverage" className="bc-section" style={{ background: "hsl(var(--background))" }}>
       <div className="container">
+        <div style={{ marginBottom: "3rem" }}>
+          <div className="bc-rule-amber" />
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.6875rem",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--bc-teal)",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Parish Coverage
+          </p>
+          <h2 style={{ color: "var(--bc-navy)", maxWidth: 480, marginBottom: "1rem" }}>
+            12 Louisiana parishes indexed
+          </h2>
+          <p style={{ maxWidth: 540, color: "hsl(var(--muted-foreground))", fontSize: "0.9375rem", lineHeight: 1.7 }}>
+            We index jail rosters across Louisiana's River Parishes and surrounding jurisdictions. Bond amount availability depends on what each parish publishes online — 5 parishes currently include bond data in their public roster.
+          </p>
+        </div>
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "4rem",
-            alignItems: "start",
+            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+            gap: "0.75rem",
+            marginBottom: "2rem",
           }}
         >
-          {/* Left */}
-          <div>
-            <div className="bc-rule-amber" />
+          {PARISHES.map((p) => (
             <div
+              key={p.name}
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.6875rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--bc-amber)",
-                marginBottom: "0.75rem",
-              }}
-            >
-              Jurisdiction
-            </div>
-            <h2 style={{ marginBottom: "1.25rem" }}>
-              Parish<br />
-              <span style={{ color: "var(--bc-amber)" }}>Coverage Map</span>
-            </h2>
-            <p style={{ color: "hsl(var(--muted-foreground))", lineHeight: 1.7, marginBottom: "2rem", fontSize: "0.9375rem" }}>
-              We index jail rosters across Louisiana's River Parishes and surrounding jurisdictions.
-              Bond data is available where the parish system exposes it.
-            </p>
-            <div style={{ display: "flex", gap: "1.5rem" }}>
-              <div>
-                <div style={{ fontFamily: "var(--font-display)", fontSize: "2.5rem", fontWeight: 800, color: "var(--bc-amber)", lineHeight: 1 }}>5</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginTop: "0.25rem" }}>With Bond Data</div>
-              </div>
-              <div style={{ width: 1, background: "hsl(var(--border))" }} />
-              <div>
-                <div style={{ fontFamily: "var(--font-display)", fontSize: "2.5rem", fontWeight: 800, color: "hsl(var(--foreground))", lineHeight: 1 }}>3</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginTop: "0.25rem" }}>Custody Only</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right — parish list */}
-          <div>
-            <div
-              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "0.75rem",
+                padding: "0.875rem 1rem",
+                background: "hsl(var(--card))",
                 border: "1px solid hsl(var(--border))",
-                borderRadius: 8,
-                overflow: "hidden",
+                borderRadius: 6,
+                boxShadow: "var(--elevate-1)",
               }}
             >
-              {/* Table header */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto auto",
-                  gap: "1rem",
-                  padding: "0.625rem 1rem",
-                  background: "hsl(var(--card))",
-                  borderBottom: "1px solid hsl(var(--border))",
-                }}
-              >
-                {["Parish", "Bond Data", "Status"].map((h) => (
-                  <div
-                    key={h}
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "hsl(var(--muted-foreground))",
-                    }}
-                  >
-                    {h}
-                  </div>
-                ))}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span className={`bc-status-dot ${p.status} bc-pulse`} />
+                <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "hsl(var(--foreground))" }}>
+                  {p.name}
+                </span>
               </div>
-              {/* Rows */}
-              {PARISHES.map((p, i) => (
-                <div
-                  key={p.name}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto auto",
-                    gap: "1rem",
-                    alignItems: "center",
-                    padding: "0.875rem 1rem",
-                    borderBottom: i < PARISHES.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-                    background: i % 2 === 0 ? "hsl(var(--background))" : "hsl(var(--card))",
-                  }}
-                >
-                  <div style={{ fontSize: "0.875rem", fontWeight: 500, color: "hsl(var(--foreground))" }}>
-                    {p.name}
-                  </div>
-                  <div>
-                    <span className={`bc-badge ${p.bond ? "bc-badge-green" : "bc-badge-slate"}`}>
-                      {p.bond ? "Yes" : "No"}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                    <span className="bc-status-dot live bc-pulse" />
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", color: "var(--bc-green)" }}>
-                      Live
-                    </span>
-                  </div>
-                </div>
-              ))}
+              <span
+                className={p.bond ? "bc-badge bc-badge-green" : "bc-badge bc-badge-slate"}
+                style={{ flexShrink: 0 }}
+              >
+                {p.bond ? "Bond ✓" : "Custody"}
+              </span>
             </div>
+          ))}
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8125rem", color: "hsl(var(--muted-foreground))" }}>
+            <span className="bc-badge bc-badge-green" style={{ fontSize: "0.6rem" }}>Bond ✓</span>
+            Bond amount included in public roster
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8125rem", color: "hsl(var(--muted-foreground))" }}>
+            <span className="bc-badge bc-badge-slate" style={{ fontSize: "0.6rem" }}>Custody</span>
+            Custody status only — bond requires manual call to jail
           </div>
         </div>
       </div>
@@ -1008,48 +979,35 @@ function Coverage() {
   );
 }
 
-// ── Testimonials ─────────────────────────────────────────────────────────────
-
-const TESTIMONIALS = [
-  {
-    quote: "We were manually looking up bookings before every call. BondCurrent cut our intake time from 8 minutes to under 90 seconds. We close more bonds now — same staff.",
-    name: "Marcus T.",
-    title: "Owner, River Parishes Bail Bonds",
-    location: "St. John the Baptist Parish",
-  },
-  {
-    quote: "The voice agent integration with Vapi took one afternoon. Now our AI handles the first 3 minutes of every call — bond lookup, qualification, premium calculation. We only pick up for qualified leads.",
-    name: "Desiree F.",
-    title: "Operations Manager, Gulf Coast Bonding",
-    location: "St. Mary Parish",
-  },
-  {
-    quote: "I was skeptical about the accuracy. But after 3 months and 400+ calls, BondCurrent has been right on the bond amount every single time for our parishes. That's the number that matters.",
-    name: "Kevin B.",
-    title: "Licensed Bail Agent",
-    location: "Allen & Evangeline Parishes",
-  },
-];
+// ── Testimonials ──────────────────────────────────────────────────────────────
 
 function Testimonials() {
   return (
     <section
       className="bc-section"
       style={{
-        background: "hsl(var(--background))",
+        background: "hsl(var(--secondary))",
         borderTop: "1px solid hsl(var(--border))",
+        borderBottom: "1px solid hsl(var(--border))",
       }}
     >
       <div className="container">
         <div style={{ marginBottom: "3rem" }}>
           <div className="bc-rule-amber" />
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--bc-amber)", marginBottom: "0.75rem" }}>
-            What Agents Say
-          </div>
-          <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", maxWidth: 560 }}>
-            Built for bondsmen,
-            <br />
-            <span style={{ color: "var(--bc-amber)" }}>proven in the field.</span>
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.6875rem",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--bc-teal)",
+              marginBottom: "0.75rem",
+            }}
+          >
+            From the Field
+          </p>
+          <h2 style={{ color: "var(--bc-navy)", maxWidth: 480 }}>
+            What agents say
           </h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
@@ -1061,19 +1019,19 @@ function Testimonials() {
                 border: "1px solid hsl(var(--border))",
                 borderRadius: 8,
                 padding: "1.5rem",
+                boxShadow: "var(--elevate-1)",
                 display: "flex",
                 flexDirection: "column",
                 gap: "1rem",
               }}
             >
-              <div style={{ fontSize: "1.5rem", color: "var(--bc-amber)", lineHeight: 1 }}>"</div>
-              <p style={{ fontSize: "0.9375rem", lineHeight: 1.65, color: "hsl(var(--foreground))", margin: 0, flex: 1 }}>
-                {t.quote}
+              <p style={{ fontSize: "0.9375rem", lineHeight: 1.7, color: "hsl(var(--foreground))", margin: 0, flex: 1, fontStyle: "italic" }}>
+                "{t.quote}"
               </p>
               <div style={{ borderTop: "1px solid hsl(var(--border))", paddingTop: "0.875rem" }}>
-                <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "hsl(var(--foreground))" }}>{t.name}</div>
+                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--bc-navy)" }}>{t.name}</div>
                 <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "hsl(var(--muted-foreground))", marginTop: "0.2rem" }}>{t.title}</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-amber)", marginTop: "0.15rem" }}>{t.location}</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--bc-teal)", marginTop: "0.15rem" }}>{t.location}</div>
               </div>
             </div>
           ))}
@@ -1091,152 +1049,103 @@ function Pricing({ onLogin }: { onLogin: () => void }) {
       id="pricing"
       className="bc-section"
       style={{
-        background: "hsl(var(--card))",
+        background: "hsl(var(--background))",
         borderTop: "1px solid hsl(var(--border))",
-        borderBottom: "1px solid hsl(var(--border))",
       }}
     >
       <div className="container">
-        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <div
-            style={{
-              display: "inline-block",
-              marginBottom: "1rem",
-            }}
-          >
-            <div className="bc-rule-amber" style={{ margin: "0 auto 1rem" }} />
-          </div>
-          <div
+        <div style={{ marginBottom: "3rem" }}>
+          <div className="bc-rule-amber" />
+          <p
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: "0.6875rem",
-              letterSpacing: "0.12em",
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: "var(--bc-amber)",
+              color: "var(--bc-teal)",
               marginBottom: "0.75rem",
             }}
           >
             Pricing
-          </div>
-          <h2 style={{ marginBottom: "1rem" }}>
-            Simple,<br />
-            <span style={{ color: "var(--bc-amber)" }}>Transparent Rates</span>
+          </p>
+          <h2 style={{ color: "var(--bc-navy)", maxWidth: 480, marginBottom: "0.75rem" }}>
+            Straightforward plans
           </h2>
-          <p style={{ maxWidth: 440, margin: "0 auto", color: "hsl(var(--muted-foreground))", fontSize: "0.9375rem" }}>
-            14-day free trial on all plans. No credit card required. Cancel anytime.
+          <p style={{ maxWidth: 480, color: "hsl(var(--muted-foreground))", fontSize: "0.9375rem", lineHeight: 1.7 }}>
+            All plans include a 14-day trial period. No credit card required to start.
           </p>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "1.5rem",
-            maxWidth: 1000,
-            margin: "0 auto",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1.25rem",
+            alignItems: "start",
           }}
         >
           {PLANS.map((plan) => (
             <div
               key={plan.name}
               style={{
+                background: "hsl(var(--card))",
+                border: plan.highlight ? `2px solid var(--bc-navy)` : "1px solid hsl(var(--border))",
                 borderRadius: 8,
-                border: plan.highlight
-                  ? "1px solid rgba(245,158,11,0.4)"
-                  : "1px solid hsl(var(--border))",
-                background: plan.highlight
-                  ? "linear-gradient(160deg, rgba(245,158,11,0.06) 0%, hsl(var(--card)) 60%)"
-                  : "hsl(var(--background))",
-                padding: "2rem",
+                padding: "1.75rem",
+                boxShadow: plan.highlight ? "var(--elevate-2)" : "var(--elevate-1)",
                 position: "relative",
-                overflow: "hidden",
               }}
             >
               {plan.highlight && (
-                <>
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "2px",
-                      background: "var(--bc-amber)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "1rem",
-                      right: "1rem",
-                    }}
-                  >
-                    <span className="bc-badge bc-badge-amber">Most Popular</span>
-                  </div>
-                </>
-              )}
-
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "hsl(var(--muted-foreground))",
-                  marginBottom: "1rem",
-                }}
-              >
-                {plan.name}
-              </div>
-
-              <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem", marginBottom: "0.75rem" }}>
-                <span
+                <div
                   style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "2.75rem",
-                    fontWeight: 900,
-                    letterSpacing: "0.02em",
-                    color: plan.highlight ? "var(--bc-amber)" : "hsl(var(--foreground))",
-                    lineHeight: 1,
+                    position: "absolute",
+                    top: -12,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "var(--bc-navy)",
+                    color: "white",
+                    fontSize: "0.6875rem",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    padding: "0.25rem 0.875rem",
+                    borderRadius: 3,
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  {plan.price}
-                </span>
-                {plan.period && (
-                  <span style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))" }}>
-                    {plan.period}
+                  Most Popular
+                </div>
+              )}
+
+              <div style={{ marginBottom: "1.25rem" }}>
+                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "hsl(var(--muted-foreground))", marginBottom: "0.25rem" }}>
+                  {plan.name}
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem" }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontSize: "2.25rem", fontWeight: 700, color: "var(--bc-navy)", letterSpacing: "-0.02em" }}>
+                    {plan.price}
                   </span>
-                )}
+                  <span style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))" }}>{plan.period}</span>
+                </div>
+                <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", marginTop: "0.5rem", lineHeight: 1.5 }}>
+                  {plan.desc}
+                </p>
               </div>
 
-              <p style={{ fontSize: "0.875rem", color: "hsl(var(--muted-foreground))", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-                {plan.desc}
-              </p>
-
-              <div style={{ borderTop: "1px solid hsl(var(--border))", paddingTop: "1.25rem", marginBottom: "1.5rem" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.5rem", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
                 {plan.features.map((f) => (
-                  <div
-                    key={f}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      marginBottom: "0.625rem",
-                      fontSize: "0.875rem",
-                      color: "hsl(var(--foreground))",
-                    }}
-                  >
-                    <CheckCircle2 size={13} color="var(--bc-green)" style={{ flexShrink: 0 }} />
+                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", fontSize: "0.875rem", color: "hsl(var(--foreground))" }}>
+                    <CheckCircle2 size={15} color="var(--bc-teal)" style={{ flexShrink: 0, marginTop: "0.1rem" }} />
                     {f}
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               <button
                 onClick={onLogin}
                 className={plan.highlight ? "bc-btn-primary" : "bc-btn-outline"}
-                style={{ width: "100%", justifyContent: "center" }}
+                style={{ width: "100%", justifyContent: "center", fontSize: "0.9375rem", padding: "0.75rem" }}
               >
                 {plan.cta}
               </button>
@@ -1254,70 +1163,87 @@ function CTA({ onLogin }: { onLogin: () => void }) {
   return (
     <section
       style={{
-        background: "hsl(var(--background))",
-        padding: "6rem 0",
-        position: "relative",
-        overflow: "hidden",
+        background: "var(--bc-navy)",
+        padding: "5rem 0",
       }}
     >
-      {/* Background glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "radial-gradient(ellipse 60% 80% at 50% 50%, rgba(245,158,11,0.06) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
-      <div className="container" style={{ position: "relative", textAlign: "center" }}>
+      <div className="container" style={{ textAlign: "center" }}>
         <div
           style={{
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 64,
-            height: 64,
-            borderRadius: 12,
-            background: "var(--bc-amber-dim)",
-            border: "1px solid rgba(245,158,11,0.3)",
-            marginBottom: "1.75rem",
+            width: 56,
+            height: 56,
+            borderRadius: 10,
+            background: "rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            marginBottom: "1.5rem",
           }}
         >
-          <Shield size={28} color="var(--bc-amber)" />
+          <Phone size={24} color="white" />
         </div>
-        <h2 style={{ maxWidth: 560, margin: "0 auto 1.25rem" }}>
-          Ready to Automate<br />
-          <span style={{ color: "var(--bc-amber)" }}>Your Bond Screening?</span>
+        <h2 style={{ maxWidth: 520, margin: "0 auto 1rem", color: "white", fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)" }}>
+          Ready to streamline your intake process?
         </h2>
         <p
           style={{
-            maxWidth: 440,
-            margin: "0 auto 2.5rem",
-            color: "hsl(var(--muted-foreground))",
+            maxWidth: 420,
+            margin: "0 auto 2rem",
+            color: "rgba(255,255,255,0.7)",
             fontSize: "1rem",
             lineHeight: 1.7,
           }}
         >
-          Join Louisiana bail bond agencies using BondCurrent to qualify callers faster and close more bonds.
+          Request access and we'll walk you through the API integration with your voice platform.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
           <button
             onClick={onLogin}
-            className="bc-btn-primary"
-            style={{ fontSize: "1rem", padding: "0.875rem 2.25rem" }}
+            style={{
+              background: "white",
+              color: "var(--bc-navy)",
+              border: "none",
+              borderRadius: "var(--radius)",
+              padding: "0.75rem 2rem",
+              fontSize: "0.9375rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "opacity 0.15s",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.9"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
           >
-            Start Free Trial <ArrowRight size={16} />
+            Request Access <ArrowRight size={15} />
           </button>
           <a
             href="mailto:hello@bondcurrent.com"
-            className="bc-btn-outline"
-            style={{ fontSize: "1rem", padding: "0.875rem 2.25rem", textDecoration: "none" }}
+            style={{
+              background: "transparent",
+              color: "rgba(255,255,255,0.85)",
+              border: "1.5px solid rgba(255,255,255,0.3)",
+              borderRadius: "var(--radius)",
+              padding: "0.75rem 2rem",
+              fontSize: "0.9375rem",
+              fontWeight: 500,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              textDecoration: "none",
+              transition: "border-color 0.15s",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.6)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
           >
-            Contact Sales
+            Contact Us
           </a>
         </div>
-        <p style={{ marginTop: "1.5rem", fontSize: "0.8125rem", color: "hsl(var(--muted-foreground))" }}>
-          14-day free trial · No credit card required · Cancel anytime
+        <p style={{ marginTop: "1.25rem", fontSize: "0.8125rem", color: "rgba(255,255,255,0.45)" }}>
+          14-day trial · No credit card required
         </p>
       </div>
     </section>
@@ -1332,7 +1258,7 @@ function Footer() {
       style={{
         background: "hsl(var(--card))",
         borderTop: "1px solid hsl(var(--border))",
-        padding: "2.5rem 0",
+        padding: "2rem 0",
       }}
     >
       <div
@@ -1347,23 +1273,21 @@ function Footer() {
       >
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Shield size={14} color="var(--bc-amber)" />
+          <Scale size={14} color="var(--bc-navy)" />
           <span
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: "0.9375rem",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "hsl(var(--foreground))",
+              color: "var(--bc-navy)",
             }}
           >
-            Bond<span style={{ color: "var(--bc-amber)" }}>Current</span>
+            Bond<span style={{ color: "var(--bc-teal)" }}>Current</span>
           </span>
         </div>
 
         {/* Links */}
-        <div style={{ display: "flex", gap: "1.5rem" }}>
+        <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
           {["Privacy Policy", "Terms of Service", "API Docs", "Contact"].map((l) => (
             <a
               key={l}
@@ -1374,7 +1298,7 @@ function Footer() {
                 textDecoration: "none",
                 transition: "color 0.15s",
               }}
-              onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "hsl(var(--foreground))"; }}
+              onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "var(--bc-navy)"; }}
               onMouseLeave={(e) => { (e.target as HTMLElement).style.color = "hsl(var(--muted-foreground))"; }}
             >
               {l}
@@ -1410,15 +1334,17 @@ export default function Home() {
   return (
     <div style={{ background: "hsl(var(--background))", minHeight: "100vh" }}>
       <Navbar user={user} onLogin={handleLogin} onDashboard={handleDashboard} />
-      <Hero onLogin={handleLogin} />
-      <StatsBar />
-      <Features />
-      <HowItWorks />
-      <Coverage />
-      <Testimonials />
-      <Pricing onLogin={handleLogin} />
-      <CTA onLogin={handleLogin} />
-      <Footer />
+      <div style={{ paddingTop: "64px" }}>
+        <Hero onLogin={handleLogin} />
+        <StatsBar />
+        <Features />
+        <HowItWorks />
+        <Coverage />
+        <Testimonials />
+        <Pricing onLogin={handleLogin} />
+        <CTA onLogin={handleLogin} />
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -54,7 +54,7 @@ const DECISION_META: Record<CallDecision, { label: string; color: string; icon: 
   QUALIFIED:             { label: "Qualified",      color: "var(--bc-green)",  icon: <CheckCircle2 size={12} /> },
   UNQUALIFIED:           { label: "Unqualified",    color: "#ef4444",          icon: <XCircle size={12} /> },
   PAYMENT_PLAN_ELIGIBLE: { label: "Payment Plan",   color: "var(--bc-amber)",  icon: <Clock size={12} /> },
-  NEEDS_MANUAL_REVIEW:   { label: "Needs Review",   color: "var(--bc-blue)",   icon: <AlertCircle size={12} /> },
+  NEEDS_MANUAL_REVIEW:   { label: "Needs Review",   color: "var(--bc-navy)",   icon: <AlertCircle size={12} /> },
 };
 
 function DecisionBadge({ decision }: { decision: CallDecision }) {
@@ -126,7 +126,7 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
             {/* Caller */}
             <div style={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                <User size={13} color="var(--bc-amber)" />
+                <User size={13} color="var(--bc-navy)" />
                 <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>Caller</span>
               </div>
               <InfoRow label="Name" value={call.callerName} />
@@ -137,7 +137,7 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
             {/* Inmate */}
             <div style={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                <MapPin size={13} color="var(--bc-amber)" />
+                <MapPin size={13} color="var(--bc-navy)" />
                 <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>Inmate</span>
               </div>
               <InfoRow label="Name" value={call.inmateName} mono />
@@ -173,7 +173,7 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
           {/* Transfer status */}
           <div style={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-              <PhoneForwarded size={13} color="var(--bc-blue)" />
+              <PhoneForwarded size={13} color="var(--bc-teal)" />
               <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>Outcome</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
@@ -193,7 +193,7 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
           {/* AI Summary */}
           <div style={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-              <FileText size={13} color="var(--bc-amber)" />
+              <FileText size={13} color="var(--bc-navy)" />
               <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>AI Summary</span>
             </div>
             <p style={{ fontSize: "0.875rem", lineHeight: 1.6, color: "hsl(var(--foreground))", margin: 0 }}>
@@ -205,7 +205,7 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
           {call.transcript.length > 0 && (
             <div style={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.875rem" }}>
-                <Mic size={13} color="var(--bc-blue)" />
+                <Mic size={13} color="var(--bc-teal)" />
                 <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>Transcript</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
@@ -217,10 +217,11 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
                     }}>{line.timestamp}</span>
                     <div style={{
                       flex: 1, padding: "0.5rem 0.75rem", borderRadius: 6,
-                      background: line.role === "assistant" ? "rgba(59,130,246,0.08)" : "rgba(245,158,11,0.08)",
-                      border: `1px solid ${line.role === "assistant" ? "rgba(59,130,246,0.15)" : "rgba(245,158,11,0.15)"}`,
+                      background: line.role === "assistant" ? "var(--bc-navy-dim)" : "var(--bc-teal-dim)",
+                      border: `1px solid ${line.role === "assistant" ? "rgba(30,58,95,0.15)" : "rgba(13,115,119,0.15)"}`,
+                      boxShadow: "var(--elevate-1)",
                     }}>
-                      <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: line.role === "assistant" ? "var(--bc-blue)" : "var(--bc-amber)", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: line.role === "assistant" ? "var(--bc-navy)" : "var(--bc-teal)", marginBottom: "0.25rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                         {line.role === "assistant" ? "AI Agent" : "Caller"}
                       </div>
                       <div style={{ fontSize: "0.8125rem", lineHeight: 1.5, color: "hsl(var(--foreground))" }}>{line.content}</div>
@@ -239,14 +240,14 @@ function CallDetailModal({ call, onClose }: { call: MockCall; onClose: () => voi
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
               <button
-                style={{ width: 34, height: 34, borderRadius: "50%", background: "var(--bc-amber-dim)", border: "1px solid rgba(245,158,11,0.3)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--bc-amber)" }}
+                style={{ width: 34, height: 34, borderRadius: "50%", background: "var(--bc-navy-dim)", border: "1px solid rgba(30,58,95,0.2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--bc-navy)" }}
                 onClick={() => {}}
                 title="Play recording (demo)"
               >
                 ▶
               </button>
               <div style={{ flex: 1, height: 4, background: "hsl(var(--border))", borderRadius: 2, position: "relative" }}>
-                <div style={{ width: "35%", height: "100%", background: "var(--bc-amber)", borderRadius: 2 }} />
+                <div style={{ width: "35%", height: "100%", background: "var(--bc-navy)", borderRadius: 2 }} />
               </div>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "hsl(var(--muted-foreground))", flexShrink: 0 }}>
                 {fmtDuration(Math.floor(call.duration * 0.35))} / {fmtDuration(call.duration)}
@@ -355,7 +356,7 @@ export default function CallsLog() {
     <div style={{ padding: "1.5rem", maxWidth: 1200 }}>
       {/* Page header */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--bc-navy)" }}>
           Call Logs
         </div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
@@ -368,7 +369,7 @@ export default function CallsLog() {
         {[
           { label: "Today's Calls", value: stats.today.totalCalls, color: "var(--bc-amber)" },
           { label: "Qualified", value: `${stats.today.qualified} (${Math.round(stats.today.qualified / Math.max(stats.today.totalCalls, 1) * 100)}%)`, color: "var(--bc-green)" },
-          { label: "Transferred", value: stats.today.transferred, color: "var(--bc-blue)" },
+          { label: "Transferred", value: stats.today.transferred, color: "var(--bc-teal)" },
           { label: "Avg Premium", value: fmtUSD(stats.today.avgPremium), color: "var(--bc-green)" },
         ].map(s => (
           <div key={s.label} style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "0.875rem 1rem" }}>

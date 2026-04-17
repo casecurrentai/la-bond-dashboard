@@ -1,6 +1,6 @@
 /**
- * BondCurrent Dashboard — Law Enforcement Edition
- * Dark, authoritative, data-dense layout
+ * BondCurrent Dashboard — Legal Professional Edition
+ * Light, authoritative, data-dense layout
  */
 
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -25,6 +25,7 @@ import {
   PhoneCall,
   PhoneForwarded,
   RefreshCw,
+  Scale,
   Search,
   Shield,
   Terminal,
@@ -202,30 +203,29 @@ function Sidebar({
       >
         <div
           style={{
-            width: 30,
-            height: 30,
-            borderRadius: 6,
-            background: "var(--bc-amber-dim)",
-            border: "1px solid rgba(245,158,11,0.3)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Shield size={14} color="var(--bc-amber)" />
+          width: 30,
+          height: 30,
+          borderRadius: 6,
+          background: "rgba(255,255,255,0.15)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Scale size={14} color="#ffffff" />
         </div>
         <span
           style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 800,
-            fontSize: "1rem",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "hsl(var(--foreground))",
-          }}
-        >
-          Bond<span style={{ color: "var(--bc-amber)" }}>Current</span>
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          fontSize: "1rem",
+          letterSpacing: "-0.01em",
+          color: "#ffffff",
+        }}
+      >
+        Bond<span style={{ color: "rgba(255,255,255,0.65)" }}>Current</span>
         </span>
       </div>
 
@@ -235,8 +235,8 @@ function Sidebar({
           margin: "0.75rem 0.75rem 0",
           padding: "0.5rem 0.75rem",
           borderRadius: 4,
-          background: "rgba(34,197,94,0.06)",
-          border: "1px solid rgba(34,197,94,0.15)",
+          background: "rgba(255,255,255,0.07)",
+          border: "1px solid rgba(255,255,255,0.12)",
           display: "flex",
           alignItems: "center",
           gap: "0.5rem",
@@ -247,12 +247,12 @@ function Sidebar({
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "0.6rem",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: "var(--bc-green)",
-          }}
-        >
-          All Systems Operational
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "rgba(134,239,172,0.9)",
+        }}
+      >
+        All Systems Operational
         </span>
       </div>
 
@@ -260,16 +260,16 @@ function Sidebar({
       <nav style={{ flex: 1, padding: "0.75rem 0.5rem", overflowY: "auto" }}>
         <div
           style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.5875rem",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "hsl(var(--muted-foreground))",
-            padding: "0.5rem 0.5rem 0.25rem",
-            marginBottom: "0.25rem",
-          }}
-        >
-          Navigation
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.5875rem",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.4)",
+          padding: "0.5rem 0.5rem 0.25rem",
+          marginBottom: "0.25rem",
+        }}
+      >
+        Navigation
         </div>
         {navItems.map(({ icon: Icon, label, view }) => (
           <button
@@ -286,8 +286,8 @@ function Sidebar({
               padding: "0.5625rem 0.625rem",
               borderRadius: 4,
               border: "none",
-              background: activeView === view ? "var(--bc-amber-dim)" : "transparent",
-              color: activeView === view ? "var(--bc-amber)" : "hsl(var(--muted-foreground))",
+              background: activeView === view ? "rgba(255,255,255,0.12)" : "transparent",
+              color: activeView === view ? "#ffffff" : "rgba(255,255,255,0.6)",
               fontSize: "0.8125rem",
               fontWeight: activeView === view ? 600 : 400,
               cursor: "pointer",
@@ -297,14 +297,14 @@ function Sidebar({
             }}
             onMouseEnter={(e) => {
               if (activeView !== view) {
-                (e.currentTarget as HTMLButtonElement).style.background = "hsl(var(--accent))";
-                (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--foreground))";
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.08)";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.85)";
               }
             }}
             onMouseLeave={(e) => {
               if (activeView !== view) {
                 (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--muted-foreground))";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.6)";
               }
             }}
           >
@@ -317,7 +317,7 @@ function Sidebar({
                   width: 4,
                   height: 4,
                   borderRadius: "50%",
-                  background: "var(--bc-amber)",
+                  background: "rgba(255,255,255,0.9)",
                 }}
               />
             )}
@@ -329,23 +329,23 @@ function Sidebar({
       <div
         style={{
           padding: "0.875rem 0.75rem",
-          borderTop: "1px solid hsl(var(--border))",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
+        borderTop: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
           <div
             style={{
               width: 28,
               height: 28,
               borderRadius: "50%",
-              background: "var(--bc-amber-dim)",
-              border: "1px solid rgba(245,158,11,0.3)",
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.2)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "0.6875rem",
               fontWeight: 700,
-              color: "var(--bc-amber)",
+              color: "#ffffff",
               flexShrink: 0,
             }}
           >
@@ -354,22 +354,22 @@ function Sidebar({
           <div style={{ overflow: "hidden" }}>
             <div
               style={{
-                fontSize: "0.8125rem",
-                fontWeight: 600,
-                color: "hsl(var(--foreground))",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+              fontSize: "0.8125rem",
+              fontWeight: 600,
+              color: "#ffffff",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
               }}
             >
               {user?.name || "User"}
             </div>
             <div
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.625rem",
-                color: "hsl(var(--muted-foreground))",
-                letterSpacing: "0.04em",
+            fontFamily: "var(--font-mono)",
+              fontSize: "0.625rem",
+              color: "rgba(255,255,255,0.45)",
+              letterSpacing: "0.04em",
               }}
             >
               Pro Plan
@@ -387,17 +387,17 @@ function Sidebar({
             borderRadius: 4,
             border: "none",
             background: "transparent",
-            color: "hsl(var(--muted-foreground))",
+            color: "rgba(255,255,255,0.5)",
             fontSize: "0.75rem",
             cursor: "pointer",
             transition: "all 0.1s",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--bc-red)";
-            (e.currentTarget as HTMLButtonElement).style.background = "var(--bc-red-dim)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#fca5a5";
+            (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.15)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--muted-foreground))";
+            (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.5)";
             (e.currentTarget as HTMLButtonElement).style.background = "transparent";
           }}
         >
@@ -1454,8 +1454,8 @@ export default function Dashboard() {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "hsl(var(--background))" }}>
         <div style={{ textAlign: "center", maxWidth: 380, padding: "2rem" }}>
-          <div style={{ width: 56, height: 56, borderRadius: 10, background: "var(--bc-amber-dim)", border: "1px solid rgba(245,158,11,0.3)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
-            <Shield size={24} color="var(--bc-amber)" />
+          <div style={{ width: 56, height: 56, borderRadius: 10, background: "var(--bc-navy-dim)", border: "1px solid rgba(30,58,95,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+            <Scale size={24} color="var(--bc-navy)" />
           </div>
           <h2 style={{ marginBottom: "0.75rem", fontSize: "1.75rem" }}>Authentication Required</h2>
           <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9375rem", marginBottom: "1.75rem", lineHeight: 1.6 }}>
@@ -1513,7 +1513,7 @@ export default function Dashboard() {
           </button>
 
           <div>
-            <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--bc-navy)" }}>
               {activeView === "calls" ? "Call Logs" : activeView === "config" ? "Configuration" : activeView === "billing" ? "Billing" : "Command Center"}
             </div>
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))" }}>

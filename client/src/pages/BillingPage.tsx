@@ -92,7 +92,7 @@ export default function BillingPage() {
     <div style={{ padding: "1.5rem", maxWidth: 900 }}>
       {/* Page header */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "hsl(var(--foreground))" }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, letterSpacing: "-0.01em", color: "var(--bc-navy)" }}>
           Billing
         </div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "hsl(var(--muted-foreground))", marginTop: 2 }}>
@@ -105,11 +105,11 @@ export default function BillingPage() {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-              <Star size={14} color="var(--bc-amber)" fill="var(--bc-amber)" />
+              <Star size={14} color="var(--bc-navy)" fill="var(--bc-navy)" />
               <span style={{ fontFamily: "var(--font-display)", fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                 Professional Plan
               </span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", background: "rgba(245,158,11,0.15)", color: "var(--bc-amber)", padding: "0.15rem 0.5rem", borderRadius: 4, border: "1px solid rgba(245,158,11,0.3)" }}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", background: "var(--bc-teal-dim)", color: "var(--bc-teal)", padding: "0.15rem 0.5rem", borderRadius: 4, border: "1px solid rgba(13,115,119,0.25)" }}>
                 ACTIVE
               </span>
             </div>
@@ -146,7 +146,7 @@ export default function BillingPage() {
       {/* Usage this month */}
       <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, padding: "1.25rem", marginBottom: "1.25rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "1rem" }}>
-          <BarChart2 size={14} color="var(--bc-blue)" />
+          <BarChart2 size={14} color="var(--bc-navy)" />
           <span style={{ fontFamily: "var(--font-display)", fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Usage This Month
           </span>
@@ -159,7 +159,7 @@ export default function BillingPage() {
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.625rem", color: "hsl(var(--muted-foreground))", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
               API Calls
             </div>
-            <UsageBar used={usedCalls} total={2000} color="var(--bc-blue)" />
+            <UsageBar used={usedCalls} total={2000} color="var(--bc-navy)" />
           </div>
           <div>
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.625rem", color: "hsl(var(--muted-foreground))", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
@@ -177,7 +177,7 @@ export default function BillingPage() {
       <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, overflow: "hidden", marginBottom: "1.25rem" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.875rem 1.25rem", borderBottom: "1px solid hsl(var(--border))" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <Zap size={14} color="var(--bc-amber)" />
+            <Zap size={14} color="var(--bc-navy)" />
             <span style={{ fontFamily: "var(--font-display)", fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Available Plans
             </span>
@@ -190,7 +190,7 @@ export default function BillingPage() {
                 style={{
                   padding: "0.3rem 0.75rem", border: "none", cursor: "pointer",
                   fontFamily: "var(--font-mono)", fontSize: "0.7rem", textTransform: "uppercase",
-                  background: billingCycle === cycle ? "var(--bc-amber)" : "transparent",
+                  background: billingCycle === cycle ? "var(--bc-navy)" : "transparent",
                   color: billingCycle === cycle ? "white" : "hsl(var(--muted-foreground))",
                   transition: "all 0.15s",
                 }}
@@ -210,12 +210,12 @@ export default function BillingPage() {
                 style={{
                   padding: "1.25rem",
                   borderRight: i < 2 ? "1px solid hsl(var(--border))" : "none",
-                  background: p.popular ? "rgba(245,158,11,0.04)" : "transparent",
+                  background: p.popular ? "var(--bc-navy-dim)" : "transparent",
                   position: "relative",
                 }}
               >
                 {p.popular && (
-                  <div style={{ position: "absolute", top: 10, right: 10, fontFamily: "var(--font-mono)", fontSize: "0.55rem", background: "var(--bc-amber)", color: "white", padding: "0.15rem 0.5rem", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  <div style={{ position: "absolute", top: 10, right: 10, fontFamily: "var(--font-mono)", fontSize: "0.55rem", background: "var(--bc-navy)", color: "white", padding: "0.15rem 0.5rem", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                     Most Popular
                   </div>
                 )}
@@ -238,7 +238,7 @@ export default function BillingPage() {
                   </div>
                 ) : (
                   <button
-                    style={{ width: "100%", padding: "0.5rem", background: p.popular ? "var(--bc-amber)" : "transparent", border: `1px solid ${p.popular ? "var(--bc-amber)" : "hsl(var(--border))"}`, borderRadius: 6, color: p.popular ? "white" : "hsl(var(--foreground))", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer" }}
+                    style={{ width: "100%", padding: "0.5rem", background: p.popular ? "var(--bc-navy)" : "transparent", border: `1px solid ${p.popular ? "var(--bc-navy)" : "hsl(var(--border))"}`, borderRadius: 6, color: p.popular ? "white" : "hsl(var(--foreground))", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer" }}
                     onClick={() => toast.info(`Upgrade to ${p.name} (demo)`)}
                   >
                     {p.id === "agency" ? "Contact Sales" : `Upgrade to ${p.name}`}
@@ -253,7 +253,7 @@ export default function BillingPage() {
       {/* Billing history */}
       <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "0.875rem 1.25rem", borderBottom: "1px solid hsl(var(--border))" }}>
-          <CreditCard size={14} color="var(--bc-amber)" />
+          <CreditCard size={14} color="var(--bc-navy)" />
           <span style={{ fontFamily: "var(--font-display)", fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Billing History
           </span>
@@ -282,7 +282,7 @@ export default function BillingPage() {
                 </td>
                 <td style={{ padding: "0.75rem 1.25rem" }}>
                   <button
-                    style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", background: "none", border: "none", cursor: "pointer", color: "var(--bc-blue)", fontFamily: "var(--font-mono)", fontSize: "0.75rem", padding: 0 }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", background: "none", border: "none", cursor: "pointer", color: "var(--bc-teal)", fontFamily: "var(--font-mono)", fontSize: "0.75rem", padding: 0 }}
                     onClick={() => toast.info(`Downloading ${row.invoiceId} (demo)`)}
                   >
                     <Download size={12} /> PDF
